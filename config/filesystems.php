@@ -45,12 +45,12 @@ return [
 
         'source' => [
             'driver' => 'local',
-            'root' => '/tmp/source'
+            'root' => env('SOURCE_DIR')
         ],
 
         'destination' => [
             'driver' => 'local',
-            'root' => '/tmp/dest'
+            'root' => env('DESTINATION_DIR')
         ],
 
         'local' => [

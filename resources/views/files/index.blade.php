@@ -1,8 +1,10 @@
-@extends('layout')
+@extends('layouts.app')
 
 @section('contents')
 
-<form method="POST" action="{{ route('copy.store') }}">
+@include('partials.switch_category', ['text' => 'Torrents', 'route' => route('torrent.index')])
+
+<form method="POST" action="{{ route('file.copy') }}">
 {{ csrf_field() }}
 <h3 class="title is-3">
     Current Files
@@ -11,13 +13,12 @@
             <i class="fa fa-download"></i>
         </span>
     </button>
-    <a href="{{ route('refresh') }}" class="button is-warning">
+    <a href="{{ route('file.refresh') }}" class="button is-warning">
         <span class="icon">
             <i class="fa fa-refresh"></i>
         </span>
     </a>
 </h3>
-
 
 <table class="table is-striped">
     <thead>
