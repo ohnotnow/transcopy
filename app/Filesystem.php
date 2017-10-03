@@ -9,9 +9,19 @@ use App\FileEntry;
 
 class Filesystem
 {
+    protected $source;
+
+    public function __construct($source = null)
+    {
+        if (!$source) {
+            $source = Storage::disk('source');
+        }
+        $this->source = $source;
+    }
+
     public function index()
     {
-        return collect(Storage::disk('source')->listContents())->map(function ($entry) {
+        return collect($this->source->listContents())->map(function ($entry) {
             return FileEntry::updateOrCreate(['path' => $entry['path']], $entry);
         });
     }

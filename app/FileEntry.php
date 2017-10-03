@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class FileEntry extends Model
 {
@@ -16,5 +17,25 @@ class FileEntry extends Model
     public function isDirectory()
     {
         return !$this->isFile();
+    }
+
+    public function getFullPath()
+    {
+        return $this->source()->getDriver()->getAdapter()->applyPathPrefix($this->path);
+    }
+
+    public function getBasename()
+    {
+        return $this->path;
+    }
+
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    public function source()
+    {
+        return Storage::disk('source');
     }
 }

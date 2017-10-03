@@ -7,9 +7,8 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\FileEntry;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
+use App\FileEntry;
 
 class CopyFile implements ShouldQueue
 {
@@ -17,41 +16,31 @@ class CopyFile implements ShouldQueue
 
     public $file;
 
-    public function __construct(FileEntry $file)
+    public function __construct($file)
     {
         $this->file = $file;
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
     {
         if ($this->file->isDirectory()) {
-            return $this->copyDirectory();
+            return $this->copyDirectory($this->file);
         }
-        return $this->copyFile();
+        return $this->copyFile($this->file->getFullPath(), $this->file->getBasename());
     }
 
-    public function copyDirectory()
+    protected function copyDirectory($directory)
     {
-        return File::copyDirectory($this->getFullSourcePath(), $this->getFullDestinationPath());
+        return collect($directory->source()->listContents($directory->getPath(), true))->filter(function ($entry) {
+            return $entry['type'] === 'file';
+        })->each(function ($entry) {
+            $fullPath = $this->file->source()->getDriver()->getAdapter()->applyPathPrefix($entry['path']);
+            $this->copyFile($fullPath, $entry['path']);
+        });
     }
 
-    public function copyFile()
+    protected function copyFile($sourceName, $destName)
     {
-        return File::copy($this->getFullSourcePath(), $this->getFullDestinationPath());
-    }
-
-    public function getFullSourcePath()
-    {
-        return Storage::disk('source')->getDriver()->getAdapter()->applyPathPrefix($this->file->path);
-    }
-
-    public function getFullDestinationPath()
-    {
-        return Storage::disk('destination')->getDriver()->getAdapter()->applyPathPrefix($this->file->path);
+        Storage::disk('destination')->put($destName, fopen($sourceName, 'r+'));
     }
 }

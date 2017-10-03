@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class TorrentEntry extends Model
 {
@@ -47,8 +48,23 @@ class TorrentEntry extends Model
         return ! $this->isFile();
     }
 
-    public function basename()
+    public function getBasename()
     {
         return File::basename($this->path);
+    }
+
+    public function getFullPath()
+    {
+        return $this->path;
+    }
+
+    public function getPath()
+    {
+        return $this->getBasename();
+    }
+
+    public function source()
+    {
+        return Storage::disk('torrents');
     }
 }

@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Jobs\CopyTorrent;
+use App\Jobs\CopyFile;
 use App\TorrentEntry;
-use Carbon\Carbon;
 
 class TorrentJobController extends Controller
 {
@@ -18,8 +17,8 @@ class TorrentJobController extends Controller
         $fileList = [];
         foreach ($request->copies as $fileId) {
             $torrent = TorrentEntry::findOrFail($fileId);
-            $fileList[] = $torrent->basename();
-            CopyTorrent::dispatch($torrent);
+            $fileList[] = $torrent->getBasename();
+            CopyFile::dispatch($torrent);
         }
 
         return redirect()->route('torrent.index')->with(['fileList' => $fileList]);

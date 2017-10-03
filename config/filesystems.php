@@ -48,15 +48,25 @@ return [
             'root' => env('SOURCE_DIR')
         ],
 
-        'destination' => [
+        'torrents' => [
             'driver' => 'local',
-            'root' => env('DESTINATION_DIR')
+            'root' => env('TORRENT_DIR')
         ],
 
-        'local' => [
-            'driver' => 'local',
-            'root' => storage_path('app'),
+        'destination' => [
+            'driver' => 's3',
+            'key' => 'LRTRHEKPWGMOAP9XGR5K',
+            'secret' => 'tU3ZFKKZx6cTnaGW3r0Pa0Vs1LputKng4NwtllN9',
+            'region' => 'us-east-1',
+            'bucket' => 'vids',
+            'endpoint' => env('MINIO_ENDPOINT', 'http://192.168.1.70:9000'),
+            'use_path_style_endpoint' => true,
         ],
+
+        // 'destination' => [
+        //     'driver' => 'local',
+        //     'root' => storage_path('app'),
+        // ],
 
         'public' => [
             'driver' => 'local',
