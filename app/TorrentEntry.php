@@ -5,8 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use App\Copyable;
 
-class TorrentEntry extends Model
+class TorrentEntry extends Model implements Copyable
 {
     protected $guarded = [];
 

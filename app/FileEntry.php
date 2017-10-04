@@ -4,8 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use App\Copyable;
 
-class FileEntry extends Model
+class FileEntry extends Model implements Copyable
 {
     protected $guarded = [];
 

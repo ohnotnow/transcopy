@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Storage;
-use App\FileEntry;
+use App\Copyable;
 
 class CopyFile implements ShouldQueue
 {
@@ -16,7 +16,7 @@ class CopyFile implements ShouldQueue
 
     public $file;
 
-    public function __construct($file)
+    public function __construct(Copyable $file)
     {
         $this->file = $file;
     }
@@ -41,7 +41,6 @@ class CopyFile implements ShouldQueue
 
     protected function copyFile($sourceName, $destName)
     {
-        //dd($sourceName, $destName);
         Storage::disk('destination')->put($destName, fopen($sourceName, 'r+'));
     }
 }
