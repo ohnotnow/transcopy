@@ -41,6 +41,7 @@ class CopyFile implements ShouldQueue
 
     protected function copyFile($sourceName, $destName)
     {
+        //dd($sourceName, $destName);
         Storage::disk('destination')->put($destName, fopen($sourceName, 'r+'));
     }
 }
