@@ -35,7 +35,7 @@ class TorrentEntry extends Model
         if ($size >= 1024) {
             return number_format($size / 1024, 0) . 'KB';
         }
-        return $bytes . 'bytes';
+        return $size . 'bytes';
     }
 
     public function isFile()
