@@ -41,11 +41,11 @@ class FilesystemTest extends TestCase
         factory(FileEntry::class, 8)->create();
         $this->assertCount(8, FileEntry::all());
 
-        Storage::disk('source')->put('file1', 'hello');
-        Storage::disk('source')->put('file2', 'there');
-        Storage::disk('source')->put('dir1/file3', 'trout');
-        Storage::disk('source')->put('dir1/file4', 'mask');
-        Storage::disk('source')->put('dir2/file5', 'replica');
+        Storage::disk('source')->put('file1', 'hello'); // 1
+        Storage::disk('source')->put('file2', 'there'); // 2
+        Storage::disk('source')->put('dir1/file3', 'trout'); // 3
+        Storage::disk('source')->put('dir1/file4', 'mask'); //
+        Storage::disk('source')->put('dir2/file5', 'replica'); // 4
         $files = (new Filesystem)->refresh();
 
         $this->assertCount(4, FileEntry::all());
