@@ -43,7 +43,7 @@ return [
 
     'disks' => [
 
-        'source' => [
+        'files' => [
             'driver' => 'local',
             'root' => env('SOURCE_DIR')
         ],
@@ -55,34 +55,18 @@ return [
 
         'destination' => [
             'driver' => 's3',
-            'key' => 'LRTRHEKPWGMOAP9XGR5K',
-            'secret' => 'tU3ZFKKZx6cTnaGW3r0Pa0Vs1LputKng4NwtllN9',
-            'region' => 'us-east-1',
-            'bucket' => 'vids',
-            'endpoint' => env('MINIO_ENDPOINT', 'http://192.168.1.70:9000'),
+            'key' => env("MINIO_KEY"),
+            'secret' => env("MINIO_SECERT"),
+            'region' => env("MINIO_REGION"),
+            'bucket' => env("MINIO_BUCKET"),
+            'endpoint' => env('MINIO_ENDPOINT'),
             'use_path_style_endpoint' => true,
         ],
 
         // 'destination' => [
         //     'driver' => 'local',
-        //     'root' => storage_path('app'),
+        //     'root' => '/tmp/destination',
         // ],
-
-        'public' => [
-            'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
-            'visibility' => 'public',
-        ],
-
-        's3' => [
-            'driver' => 's3',
-            'key' => env('AWS_KEY'),
-            'secret' => env('AWS_SECRET'),
-            'region' => env('AWS_REGION'),
-            'bucket' => env('AWS_BUCKET'),
-        ],
-
     ],
 
 ];

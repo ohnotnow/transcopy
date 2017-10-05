@@ -15,4 +15,6 @@ interface Copyable
     public function getBasename();
 
     public function source();
+
+    public function exists();
 }

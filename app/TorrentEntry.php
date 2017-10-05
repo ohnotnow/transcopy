@@ -68,4 +68,9 @@ class TorrentEntry extends Model implements Copyable
     {
         return Storage::disk('torrents');
     }
+
+    public function exists()
+    {
+        return $this->source()->exists($this->getBasename());
+    }
 }

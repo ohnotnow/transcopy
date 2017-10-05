@@ -14,7 +14,7 @@ class Filesystem
     public function __construct($source = null)
     {
         if (!$source) {
-            $source = Storage::disk('source');
+            $source = Storage::disk('files');
         }
         $this->source = $source;
     }

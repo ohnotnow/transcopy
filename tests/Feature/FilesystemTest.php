@@ -15,12 +15,12 @@ class FilesystemTest extends TestCase
     /** @test */
     public function can_get_a_list_of_files_in_a_directory()
     {
-        Storage::fake('source');
-        Storage::disk('source')->put('file1', 'hello');
-        Storage::disk('source')->put('file2', 'there');
-        Storage::disk('source')->put('dir1/file3', 'trout');
-        Storage::disk('source')->put('dir1/file4', 'mask');
-        Storage::disk('source')->put('dir2/file5', 'replica');
+        Storage::fake('files');
+        Storage::disk('files')->put('file1', 'hello');
+        Storage::disk('files')->put('file2', 'there');
+        Storage::disk('files')->put('dir1/file3', 'trout');
+        Storage::disk('files')->put('dir1/file4', 'mask');
+        Storage::disk('files')->put('dir2/file5', 'replica');
 
         $files = (new Filesystem)->index();
 
@@ -37,15 +37,15 @@ class FilesystemTest extends TestCase
     /** @test */
     public function can_refresh_the_list_of_files()
     {
-        Storage::fake('source');
+        Storage::fake('files');
         factory(FileEntry::class, 8)->create();
         $this->assertCount(8, FileEntry::all());
 
-        Storage::disk('source')->put('file1', 'hello'); // 1
-        Storage::disk('source')->put('file2', 'there'); // 2
-        Storage::disk('source')->put('dir1/file3', 'trout'); // 3
-        Storage::disk('source')->put('dir1/file4', 'mask'); //
-        Storage::disk('source')->put('dir2/file5', 'replica'); // 4
+        Storage::disk('files')->put('file1', 'hello'); // 1
+        Storage::disk('files')->put('file2', 'there'); // 2
+        Storage::disk('files')->put('dir1/file3', 'trout'); // 3
+        Storage::disk('files')->put('dir1/file4', 'mask'); //
+        Storage::disk('files')->put('dir2/file5', 'replica'); // 4
         $files = (new Filesystem)->refresh();
 
         $this->assertCount(4, FileEntry::all());

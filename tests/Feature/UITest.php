@@ -37,8 +37,8 @@ class UITest extends TestCase
         $response->assertSee($file->basename);
 
         $file->delete();
-        Storage::fake('source');
-        Storage::disk('source')->put('file1', 'hello');
+        Storage::fake('files');
+        Storage::disk('files')->put('file1', 'hello');
 
         $response = $this->get(route('file.refresh'));
         $response = $this->get(route('file.index'));

@@ -37,6 +37,11 @@ class FileEntry extends Model implements Copyable
 
     public function source()
     {
-        return Storage::disk('source');
+        return Storage::disk('files');
+    }
+
+    public function exists()
+    {
+        return $this->source()->exists($this->getBasename());
     }
 }

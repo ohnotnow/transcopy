@@ -18,9 +18,9 @@ class CopyTest extends TestCase
     /** @test */
     public function can_copy_a_regular_file_entry()
     {
-        Storage::fake('source');
+        Storage::fake('files');
         Storage::fake('destination');
-        Storage::disk('source')->put('file1', 'hello');
+        Storage::disk('files')->put('file1', 'hello');
         (new Filesystem)->index();
         $file = FileEntry::first();
 
@@ -32,12 +32,12 @@ class CopyTest extends TestCase
     /** @test */
     public function can_recusively_copy_a_file_entry_which_is_a_directory()
     {
-        Storage::fake('source');
+        Storage::fake('files');
         Storage::fake('destination');
-        Storage::disk('source')->put('dir1/file1', 'dead');
-        Storage::disk('source')->put('dir1/file2', 'apples');
-        Storage::disk('source')->put('dir1/dir2/file3', 'dont');
-        Storage::disk('source')->put('dir1/dir2/file4', 'rot');
+        Storage::disk('files')->put('dir1/file1', 'dead');
+        Storage::disk('files')->put('dir1/file2', 'apples');
+        Storage::disk('files')->put('dir1/dir2/file3', 'dont');
+        Storage::disk('files')->put('dir1/dir2/file4', 'rot');
         (new Filesystem)->index();
         $file = FileEntry::first();
 
