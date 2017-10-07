@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Mail;
@@ -19,14 +20,22 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        //DB::statement(DB::raw('PRAGMA journal_mode=WAL'));
+
         Queue::failing(function (JobFailed $event) {
+            $job = $event->job->payload();
+            $jobObj = unserialize($job['data']['command']);
+            $filename = $jobObj->file->getBasename();
             if (config('transcopy.send_failure_notifications')) {
-                Mail::to(config('transcopy.notification_address'))->send(new CopyFailed($event->job));
+                Mail::to(config('transcopy.notification_address'))->send(new CopyFailed($filename));
             }
         });
         Queue::after(function (JobProcessed $event) {
+            $job = $event->job->payload();
+            $jobObj = unserialize($job['data']['command']);
+            $filename = $jobObj->file->getBasename();
             if (config('transcopy.send_success_notifications')) {
-                Mail::to(config('transcopy.notification_address'))->send(new CopySucceeded($event->job));
+                Mail::to(config('transcopy.notification_address'))->send(new CopySucceeded($filename));
             }
         });
     }

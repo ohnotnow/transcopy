@@ -1,4 +1,4 @@
 @component('mail::message')
 # Transcopy
 
-{{ $job->getBasename() }} was successfully copied.
+{{ $filename }} was successfully copied.

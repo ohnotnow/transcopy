@@ -10,6 +10,7 @@ class FileController extends Controller
 {
     public function index()
     {
+        (new Filesystem)->index();
         $files = FileEntry::orderByDesc('timestamp')->get();
         return view('files.index', compact('files'));
     }

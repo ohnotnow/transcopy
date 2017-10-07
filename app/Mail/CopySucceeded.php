@@ -11,11 +11,11 @@ class CopySucceeded extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $job;
+    public $filename;
 
-    public function __construct($job)
+    public function __construct($filename)
     {
-        $this->job = $job;
+        $this->filename = $filename;
     }
 
     /**

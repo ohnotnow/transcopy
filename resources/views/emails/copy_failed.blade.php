@@ -1,5 +1,5 @@
 @component('mail::message')
 # Transcopy
 
-{{ $job->getBasename() }} failed to copy
+{{ $filename }} failed to copy
 

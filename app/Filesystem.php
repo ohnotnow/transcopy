@@ -2,6 +2,7 @@
 
 namespace App;
 
+use DB;
 use League\Flysystem\Filesystem as Flysystem;
 use League\Flysystem\Adapter\Local;
 use Illuminate\Support\Facades\Storage;
@@ -21,8 +22,10 @@ class Filesystem
 
     public function index()
     {
-        return collect($this->source->listContents())->map(function ($entry) {
-            return FileEntry::updateOrCreate(['path' => $entry['path']], $entry);
+        return DB::transaction(function () {
+            return collect($this->source->listContents())->map(function ($entry) {
+                return FileEntry::updateOrCreate(['path' => $entry['path']], $entry);
+            });
         });
     }
 
