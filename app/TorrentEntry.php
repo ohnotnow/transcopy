@@ -14,7 +14,7 @@ class TorrentEntry extends Model implements Copyable
     public function formattedEta()
     {
         if ($this->eta >= 0) {
-            return $this->eta / 60;
+            return intval($this->eta / 60) . 'min';
         }
         return 'Done';
     }

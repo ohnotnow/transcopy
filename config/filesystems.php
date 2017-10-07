@@ -45,7 +45,7 @@ return [
 
         'files' => [
             'driver' => 'local',
-            'root' => env('SOURCE_DIR')
+            'root' => env('FILE_DIR')
         ],
 
         'torrents' => [
