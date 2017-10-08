@@ -31,10 +31,10 @@ class TorrentEntry extends Model implements Copyable
             return number_format($size / 1073741824, 1) . 'GB';
         }
         if ($size >= 1048576) {
-            return number_format($size / 1048576, 1). 'MB';
+            return number_format($size / 1048576, 0). 'MB';
         }
         if ($size >= 1024) {
-            return number_format($size / 1024, 1) . 'KB';
+            return number_format($size / 1024, 0) . 'KB';
         }
         return $size . 'bytes';
     }
