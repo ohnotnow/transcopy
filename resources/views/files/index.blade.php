@@ -25,26 +25,23 @@
         <tr>
             <th>Name</th>
             <th>Size</th>
-            <th>Copy?</th>
         </tr>
     </thead>
     <tbody>
         @foreach ($files as $file)
             <tr>
                 <td>
-                    {{ $file->basename }}
-                    @if ($file->isDirectory())
-                        /
-                    @endif
-                </td>
-                <td>{{ $file->size }}</td>
-                <td>
                     <div class="checkbox">
                         <label>
                             <input type="checkbox" name="copies[{{ $file->id }}]" value="{{ $file->id }}">
+                            {{ $file->basename }}
+                            @if ($file->isDirectory())
+                                /
+                            @endif
                         </label>
                     </div>
                 </td>
+                <td>{{ $file->size }}</td>
             </tr>
         @endforeach
     </tbody>

@@ -29,14 +29,18 @@
             <th>Size</th>
             <th>ETA</th>
             <th>%</th>
-            <th>Copy?</th>
         </tr>
     </thead>
     <tbody>
         @foreach ($torrents as $torrent)
             <tr>
                 <td>
-                    {{ $torrent->name}}
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="copies[{{ $torrent->id }}]" value="{{ $torrent->id }}">
+                            {{ $torrent->name}}
+                        </label>
+                    </div>
                 </td>
                 <td>
                     {{ $torrent->torrent_id }}
@@ -44,13 +48,6 @@
                 <td>{{ $torrent->formattedSize() }}</td>
                 <td>{{ $torrent->formattedEta() }}</td>
                 <td>{{ $torrent->formattedPercentDone() }}</td>
-                <td>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" name="copies[{{ $torrent->id }}]" value="{{ $torrent->id }}">
-                        </label>
-                    </div>
-                </td>
             </tr>
         @endforeach
     </tbody>
