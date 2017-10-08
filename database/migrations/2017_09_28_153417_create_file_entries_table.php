@@ -18,7 +18,7 @@ class CreateFileEntriesTable extends Migration
             $table->string("type");
             $table->string("path");
             $table->unsignedInteger("timestamp");
-            $table->unsignedInteger("size")->default(0);
+            $table->bigInteger("size")->default(0);
             $table->string("dirname");
             $table->string("basename");
             $table->string("extension")->nullable();

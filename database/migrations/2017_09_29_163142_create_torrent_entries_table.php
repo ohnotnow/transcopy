@@ -17,7 +17,7 @@ class CreateTorrentEntriesTable extends Migration
             $table->increments('id');
             $table->integer('torrent_id');
             $table->string('name');
-            $table->integer('size');
+            $table->bigInteger('size');
             $table->float('percent');
             $table->string('path');
             $table->integer('eta');
