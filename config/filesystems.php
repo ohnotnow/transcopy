@@ -56,7 +56,7 @@ return [
         'destination' => [
             'driver' => 's3',
             'key' => env("MINIO_KEY"),
-            'secret' => env("MINIO_SECERT"),
+            'secret' => env("MINIO_SECRET"),
             'region' => env("MINIO_REGION"),
             'bucket' => env("MINIO_BUCKET"),
             'endpoint' => env('MINIO_ENDPOINT'),
