@@ -65,7 +65,7 @@ return [
 
         // 'destination' => [
         //     'driver' => 'local',
-        //     'root' => '/tmp/destination',
+        //     'root' => env('DEST_DIR'),
         // ],
     ],
 
