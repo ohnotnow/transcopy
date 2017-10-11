@@ -33,4 +33,12 @@ class FakeTorrent
         TorrentEntry::truncate();
         return $this->index();
     }
+
+    public function update($id)
+    {
+        return TorrentEntry::updateOrCreate(['torrent_id' => $id], [
+            'percent' => $this->faker->numberBetween(1, 100),
+            'eta' => $this->faker->randomNumber(),
+        ]);
+    }
 }

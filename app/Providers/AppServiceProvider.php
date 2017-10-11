@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
+use Transmission\Client;
+use Transmission\Transmission;
 use App\Mail\CopyFailed;
 use App\Mail\CopySucceeded;
 
@@ -20,7 +22,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //DB::statement(DB::raw('PRAGMA journal_mode=WAL'));
+        $this->app->bind(Transmission::class, function ($app) {
+            $client = new Client();
+            if (config('transcopy.username')) {
+                $client->authenticate(config('transcopy.username'), config('transcopy.password'));
+            }
+            $transmission = new Transmission(config('transcopy.host', '127.0.0.1'), config('transcopy.port', 9091));
+            $transmission->setClient($client);
+            return $transmission;
+        });
 
         Queue::failing(function (JobFailed $event) {
             $job = $event->job->payload();
