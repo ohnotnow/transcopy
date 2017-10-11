@@ -33,7 +33,9 @@ class AppServiceProvider extends ServiceProvider
         Queue::after(function (JobProcessed $event) {
             $job = $event->job->payload();
             $jobObj = unserialize($job['data']['command']);
-            $filename = $jobObj->file->getBasename();
+            //$filename = $jobObj->file->getBasename();
+            $filename = 'fred';
+//            dd($jobObj);
             if (config('transcopy.send_success_notifications')) {
                 Mail::to(config('transcopy.notification_address'))->send(new CopySucceeded($filename));
             }

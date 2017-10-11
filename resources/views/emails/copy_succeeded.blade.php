@@ -1,4 +1,6 @@
 @component('mail::message')
 # Transcopy
 
-{{ $filename }} was successfully copied.
+"{{ $filename }}" was successfully copied.
+
+@endcomponent

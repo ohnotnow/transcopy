@@ -1,5 +1,7 @@
 @component('mail::message')
 # Transcopy
 
-{{ $filename }} failed to copy
+"{{ $filename }}" failed to copy
+
+@endcomponent
 

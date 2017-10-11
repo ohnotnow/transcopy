@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 use App\Filesystem;
 use App\FileEntry;
 use App\TorrentEntry;
@@ -18,6 +19,7 @@ class CopyTest extends TestCase
     /** @test */
     public function can_copy_a_regular_file_entry()
     {
+        Mail::fake();
         Storage::fake('files');
         Storage::fake('destination');
         Storage::disk('files')->put('file1', 'hello');
@@ -32,6 +34,7 @@ class CopyTest extends TestCase
     /** @test */
     public function can_recusively_copy_a_file_entry_which_is_a_directory()
     {
+        Mail::fake();
         Storage::fake('files');
         Storage::fake('destination');
         Storage::disk('files')->put('dir1/file1', 'dead');
@@ -52,6 +55,7 @@ class CopyTest extends TestCase
     /** @test */
     public function can_copy_a_regular_torrrent_entry()
     {
+        Mail::fake();
         Storage::fake('torrents');
         Storage::fake('destination');
         Storage::disk('torrents')->put('file1', 'hello');
@@ -66,6 +70,7 @@ class CopyTest extends TestCase
     /** @test */
     public function can_recusively_copy_a_torrent_entry_which_is_a_directory()
     {
+        Mail::fake();
         Storage::fake('torrents');
         Storage::fake('destination');
         Storage::disk('torrents')->put('dir1/file1', 'dead');

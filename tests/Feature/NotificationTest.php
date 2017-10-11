@@ -29,7 +29,7 @@ class NotificationTest extends TestCase
         try {
             CopyFile::dispatch($nonExistantFile);
         } catch (\Exception $e) {
-            Mail::assertQueued(CopyFailed::class, function ($mail) {
+            Mail::assertSent(CopyFailed::class, function ($mail) {
                 return $mail->hasTo('test@example.com');
             });
             return true;
@@ -50,7 +50,7 @@ class NotificationTest extends TestCase
         try {
             CopyFile::dispatch($nonExistantFile);
         } catch (\Exception $e) {
-            Mail::assertNotQueued(CopyFailed::class);
+            Mail::assertNotSent(CopyFailed::class);
             return true;
         }
 
@@ -70,7 +70,7 @@ class NotificationTest extends TestCase
 
         CopyFile::dispatch($file);
 
-        Mail::assertQueued(CopySucceeded::class, function ($mail) {
+        Mail::assertSent(CopySucceeded::class, function ($mail) {
             return $mail->hasTo('test@example.com');
         });
     }
@@ -88,6 +88,6 @@ class NotificationTest extends TestCase
 
         CopyFile::dispatch($file);
 
-        Mail::assertNotQueued(CopySucceeded::class);
+        Mail::assertNotSent(CopySucceeded::class);
     }
 }
