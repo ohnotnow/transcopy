@@ -11,6 +11,11 @@ class TorrentEntry extends Model implements Copyable
 {
     protected $guarded = [];
 
+    public function isStillDownloading()
+    {
+        return $this->eta >= 0;
+    }
+
     public function formattedEta()
     {
         if ($this->eta >= 0) {

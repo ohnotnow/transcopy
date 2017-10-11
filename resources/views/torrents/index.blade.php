@@ -7,7 +7,7 @@
 <form method="POST" action="{{ route('torrent.copy') }}">
 {{ csrf_field() }}
 <h3 class="title is-3">
-    Current Torrents
+    Torrents
     <button class="button is-success">
         <span class="icon">
             <i class="fa fa-download"></i>
@@ -20,38 +20,22 @@
     </a>
 </h3>
 
-
-<table class="table is-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>ID</th>
-            <th>Size</th>
-            <th>ETA</th>
-            <th>%</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($torrents as $torrent)
-            <tr>
-                <td>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" name="copies[{{ $torrent->id }}]" value="{{ $torrent->id }}">
-                            {{ $torrent->name}}
-                        </label>
-                    </div>
-                </td>
-                <td>
-                    {{ $torrent->torrent_id }}
-                </td>
-                <td>{{ $torrent->formattedSize() }}</td>
-                <td>{{ $torrent->formattedEta() }}</td>
-                <td>{{ $torrent->formattedPercentDone() }}</td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
+@foreach ($torrents as $torrent)
+    <div class="columns">
+        <div class="column">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="copies[{{ $torrent->id }}]" value="{{ $torrent->id }}">
+                    {{ $torrent->name}} ({{ $torrent->formattedSize() }})
+                    @if ($torrent->isStillDownloading())
+                        ETA: {{ $torrent->formattedEta() }}
+                        Done: {{ $torrent->formattedPercentDone() }}%
+                    @endif
+                </label>
+            </div>
+        </div>
+    </div>
+@endforeach
 
 </form>
 
