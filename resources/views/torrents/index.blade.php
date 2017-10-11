@@ -29,7 +29,7 @@
                     {{ $torrent->name}} ({{ $torrent->formattedSize() }})
                     @if ($torrent->isStillDownloading())
                         ETA: {{ $torrent->formattedEta() }}
-                        Done: {{ $torrent->formattedPercentDone() }}%
+                        Done: {{ $torrent->percent }}%
                         <a href="{{ route('torrent.update', $torrent->torrent_id) }}" class="button is-small is-light">
                             <span class="icon">
                                 <i class="fa fa-refresh"></i>

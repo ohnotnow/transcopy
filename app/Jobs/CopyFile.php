@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -32,11 +31,8 @@ class CopyFile implements ShouldQueue
 
     protected function copyDirectory($directory)
     {
-        return collect($directory->source()->listContents($directory->getPath(), true))->filter(function ($entry) {
-            return $entry['type'] === 'file';
-        })->each(function ($entry) {
-            $fullPath = $this->file->source()->getDriver()->getAdapter()->applyPathPrefix($entry['path']);
-            $this->copyFile($fullPath, $entry['path']);
+        return $directory->findFiles()->each(function ($entry) {
+            $this->copyFile($entry['fullpath'], $entry['path']);
         });
     }
 

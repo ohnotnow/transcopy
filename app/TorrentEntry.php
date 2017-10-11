@@ -6,10 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use App\Copyable;
+use App\SharedCopyableLogic;
 
 class TorrentEntry extends Model implements Copyable
 {
+    use SharedCopyableLogic;
+
     protected $guarded = [];
+
+    protected $diskName = 'torrents';
 
     public function isStillDownloading()
     {
@@ -18,15 +23,10 @@ class TorrentEntry extends Model implements Copyable
 
     public function formattedEta()
     {
-        if ($this->eta >= 0) {
+        if ($this->isStillDownloading()) {
             return intval($this->eta / 60) . 'min';
         }
         return 'Done';
-    }
-
-    public function formattedPercentDone()
-    {
-        return $this->percent;
     }
 
     public function formattedSize()
@@ -67,15 +67,5 @@ class TorrentEntry extends Model implements Copyable
     public function getPath()
     {
         return $this->getBasename();
-    }
-
-    public function source()
-    {
-        return Storage::disk('torrents');
-    }
-
-    public function exists()
-    {
-        return $this->source()->exists($this->getBasename());
     }
 }
