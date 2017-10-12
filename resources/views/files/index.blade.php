@@ -26,11 +26,11 @@
             <div class="checkbox">
                 <label>
                     <input type="checkbox" name="copies[{{ $file->id }}]" value="{{ $file->id }}">
-                    {{ $file->basename }}
+                    {{ $file->webFriendlyName() }}
                     @if ($file->isDirectory())
                         /
                     @endif
-                    ({{ $file->size }})
+                    ({{ $file->formattedSize() }})
                 </label>
             </div>
         </div>

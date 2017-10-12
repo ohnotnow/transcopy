@@ -4,22 +4,18 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use App\Copyable;
 use App\SharedCopyableLogic;
+use App\FormattingHelpers;
 
 class TorrentEntry extends Model implements Copyable
 {
     use SharedCopyableLogic;
+    use FormattingHelpers;
 
     protected $guarded = [];
 
     protected $diskName = 'torrents';
-
-    public function isStillDownloading()
-    {
-        return $this->eta >= 0;
-    }
 
     public function formattedEta()
     {
@@ -29,30 +25,9 @@ class TorrentEntry extends Model implements Copyable
         return 'Done';
     }
 
-    public function formattedSize()
+    public function isStillDownloading()
     {
-        $size = $this->size;
-        if ($size >= 1073741824) {
-            return number_format($size / 1073741824, 1) . 'GB';
-        }
-        if ($size >= 1048576) {
-            return number_format($size / 1048576, 0). 'MB';
-        }
-        if ($size >= 1024) {
-            return number_format($size / 1024, 0) . 'KB';
-        }
-        return $size . 'bytes';
-    }
-
-    public function webFriendlyName()
-    {
-        $parts = preg_split('/[\._]+/', $this->getBasename());
-        $extension = pathinfo($this->getBasename(), PATHINFO_EXTENSION);
-        if ($extension) {
-            $parts = array_slice($parts, 0, -1);
-            $extension = '.' . $extension;
-        }
-        return implode(' ', $parts) . $extension;
+        return $this->eta >= 0;
     }
 
     public function isFile()

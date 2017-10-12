@@ -3,13 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 use App\Copyable;
 use App\SharedCopyableLogic;
+use App\FormattingHelpers;
 
 class FileEntry extends Model implements Copyable
 {
     use SharedCopyableLogic;
+    use FormattingHelpers;
 
     protected $guarded = [];
 
@@ -39,29 +40,4 @@ class FileEntry extends Model implements Copyable
     {
         return $this->path;
     }
-
-    // public function source()
-    // {
-    //     return Storage::disk('files');
-    // }
-
-    // public function exists()
-    // {
-    //     return $this->source()->exists($this->getBasename());
-    // }
-
-    // public function applyPathPrefix(string $filename) : string
-    // {
-    //     return $this->source()->getDriver()->getAdapter()->applyPathPrefix($filename);
-    // }
-
-    // public function findFiles()
-    // {
-    //     return collect($this->source()->listContents($this->getPath(), true))->filter(function ($entry) {
-    //         return $entry['type'] === 'file';
-    //     })->map(function ($entry) {
-    //         $entry['fullpath'] = $this->applyPathPrefix($entry['path']);
-    //         return $entry;
-    //     });
-    // }
 }
