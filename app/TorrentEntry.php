@@ -44,6 +44,17 @@ class TorrentEntry extends Model implements Copyable
         return $size . 'bytes';
     }
 
+    public function webFriendlyName()
+    {
+        $parts = preg_split('/[\._]+/', $this->getBasename());
+        $extension = pathinfo($this->getBasename(), PATHINFO_EXTENSION);
+        if ($extension) {
+            $parts = array_slice($parts, 0, -1);
+            $extension = '.' . $extension;
+        }
+        return implode(' ', $parts) . $extension;
+    }
+
     public function isFile()
     {
         return File::isFile($this->path);

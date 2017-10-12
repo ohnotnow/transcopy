@@ -26,7 +26,7 @@
             <div class="checkbox">
                 <label>
                     <input type="checkbox" name="copies[{{ $torrent->id }}]" value="{{ $torrent->id }}">
-                    {{ $torrent->name}} ({{ $torrent->formattedSize() }})
+                    {{ $torrent->webFriendlyName() }} ({{ $torrent->formattedSize() }})
                     @if ($torrent->isStillDownloading())
                         ETA: {{ $torrent->formattedEta() }}
                         Done: {{ $torrent->percent }}%
