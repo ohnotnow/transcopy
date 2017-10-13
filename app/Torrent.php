@@ -4,9 +4,7 @@ namespace App;
 
 use DB;
 use App\TorrentEntry;
-use Transmission\Client;
 use Transmission\Transmission;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Torrent
 {
