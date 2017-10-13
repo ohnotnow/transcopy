@@ -8,6 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use App\Copyable;
 
 class CopyFile implements ShouldQueue
@@ -39,5 +40,6 @@ class CopyFile implements ShouldQueue
     protected function copyFile($sourceName, $destName)
     {
         Storage::disk('destination')->put($destName, fopen($sourceName, 'r+'));
+        Log::info('Copied ' . $destName);
     }
 }

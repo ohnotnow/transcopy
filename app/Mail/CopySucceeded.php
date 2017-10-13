@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use Log;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -25,6 +26,7 @@ class CopySucceeded extends Mailable
      */
     public function build()
     {
+        Log::info('Mail: Successfully Copied ' . $destName);
         return $this->markdown('emails.copy_succeeded');
     }
 }

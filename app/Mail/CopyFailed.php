@@ -2,11 +2,11 @@
 
 namespace App\Mail;
 
+use Log;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Jobs\CopyFile;
 
 class CopyFailed extends Mailable
 {
@@ -26,6 +26,7 @@ class CopyFailed extends Mailable
      */
     public function build()
     {
+        Log::info('Mail: Failed to Copy ' . $destName);
         return $this->markdown('emails.copy_failed');
     }
 }
