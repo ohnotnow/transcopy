@@ -26,7 +26,7 @@ class CopyFailed extends Mailable
      */
     public function build()
     {
-        Log::info('Mail: Failed to Copy ' . $destName);
+        Log::info('Mail: Failed to Copy ' . $this->filename);
         return $this->markdown('emails.copy_failed');
     }
 }

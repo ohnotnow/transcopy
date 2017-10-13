@@ -26,7 +26,7 @@ class CopySucceeded extends Mailable
      */
     public function build()
     {
-        Log::info('Mail: Successfully Copied ' . $destName);
+        Log::info('Mail: Successfully Copied ' . $this->filename);
         return $this->markdown('emails.copy_succeeded');
     }
 }
