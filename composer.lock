@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "16ae7329f5e31cb2c30e501954949509",
+    "content-hash": "6728927069d05dda59e1bf374d39342c",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.36.23",
+            "version": "3.36.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "755ff10ad2ea4ebb04b4e2b150a4a4fb13a22060"
+                "reference": "96f2c1525d3fd17a0802329c309c76c01a78aa51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/755ff10ad2ea4ebb04b4e2b150a4a4fb13a22060",
-                "reference": "755ff10ad2ea4ebb04b4e2b150a4a4fb13a22060",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/96f2c1525d3fd17a0802329c309c76c01a78aa51",
+                "reference": "96f2c1525d3fd17a0802329c309c76c01a78aa51",
                 "shasum": ""
             },
             "require": {
@@ -84,7 +84,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-10-06T22:26:58+00:00"
+            "time": "2017-10-12T19:45:50+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -711,6 +711,48 @@
                 "http client"
             ],
             "time": "2017-08-19T09:43:47+00:00"
+        },
+        {
+            "name": "kslr/transmission-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kslr/transmission-php.git",
+                "reference": "11d3524ba776ea5aa21bd6678653cb6b219fb11d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kslr/transmission-php/zipball/11d3524ba776ea5aa21bd6678653cb6b219fb11d",
+                "reference": "11d3524ba776ea5aa21bd6678653cb6b219fb11d",
+                "shasum": ""
+            },
+            "require": {
+                "kriswallsmith/buzz": ">=0.9",
+                "symfony/property-access": ">=2.2.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Transmission": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Kslr",
+                    "email": "hi@kslr.org"
+                }
+            ],
+            "description": "PHP Transmission client",
+            "keywords": [
+                "download",
+                "torrent",
+                "transmission"
+            ],
+            "time": "2017-10-13T04:35:55+00:00"
         },
         {
             "name": "laravel/framework",
@@ -1423,54 +1465,6 @@
                 "php"
             ],
             "time": "2017-09-02T17:10:46+00:00"
-        },
-        {
-            "name": "ohnotnow/transmission-php",
-            "version": "dev-sizefix",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ohnotnow/transmission-php.git",
-                "reference": "28911084d008c0583f5d87676c70fde62fd57f54"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ohnotnow/transmission-php/zipball/28911084d008c0583f5d87676c70fde62fd57f54",
-                "reference": "28911084d008c0583f5d87676c70fde62fd57f54",
-                "shasum": ""
-            },
-            "require": {
-                "kriswallsmith/buzz": ">=0.9",
-                "symfony/property-access": ">=2.2.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Transmission": "lib/"
-                }
-            },
-            "license": [
-                "BSD-2-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Kslr",
-                    "email": "hi@kslr.org"
-                },
-                {
-                    "name": "Ohnotnow",
-                    "email": "ohnotnow@dontbother.com"
-                }
-            ],
-            "description": "PHP Transmission client",
-            "keywords": [
-                "download",
-                "torrent",
-                "transmission"
-            ],
-            "support": {
-                "source": "https://github.com/ohnotnow/transmission-php/tree/dev-sizefix"
-            },
-            "time": "2017-10-08T10:40:58+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -4720,7 +4714,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "ohnotnow/transmission-php": 20
+        "kslr/transmission-php": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
