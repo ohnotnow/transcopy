@@ -36,6 +36,11 @@
                             </span>
                         </a>
                     @endif
+                    @if ($torrent->was_copied)
+                        <span class="icon" title="Already copied">
+                            <i class="fa fa-check"></i>
+                        </span>
+                    @endif
                 </label>
             </div>
         </div>

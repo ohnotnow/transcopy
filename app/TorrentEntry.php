@@ -15,6 +15,10 @@ class TorrentEntry extends Model implements Copyable
 
     protected $guarded = [];
 
+    protected $casts = [
+        'was_copied' => 'boolean',
+    ];
+
     protected $diskName = 'torrents';
 
     public function formattedEta()

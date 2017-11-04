@@ -16,7 +16,7 @@ class TorrentListController extends Controller
 
     public function update($id = null)
     {
-        app(Torrent::class)->refresh();
+        app(Torrent::class)->index();
         return redirect()->route('torrent.index');
     }
 }

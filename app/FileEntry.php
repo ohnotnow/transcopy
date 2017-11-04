@@ -14,6 +14,10 @@ class FileEntry extends Model implements Copyable
 
     protected $guarded = [];
 
+    protected $casts = [
+        'was_copied' => 'boolean',
+    ];
+
     protected $diskName = 'files';
 
     public function isFile()

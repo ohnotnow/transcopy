@@ -12,6 +12,8 @@ use App\Jobs\CopyFile;
 use App\Mail\CopyFailed;
 use App\Mail\CopySucceeded;
 use App\Filesystem;
+use App\FakeTorrent;
+use App\TorrentEntry;
 
 class NotificationTest extends TestCase
 {
@@ -90,4 +92,6 @@ class NotificationTest extends TestCase
 
         Mail::assertNotSent(CopySucceeded::class);
     }
+
+
 }

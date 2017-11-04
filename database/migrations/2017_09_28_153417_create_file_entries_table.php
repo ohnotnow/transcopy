@@ -23,6 +23,7 @@ class CreateFileEntriesTable extends Migration
             $table->string("basename");
             $table->string("extension")->nullable();
             $table->string("filename");
+            $table->boolean('was_copied')->default(false);
             $table->timestamps();
         });
     }

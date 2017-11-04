@@ -21,6 +21,7 @@ class CreateTorrentEntriesTable extends Migration
             $table->float('percent');
             $table->string('path');
             $table->integer('eta');
+            $table->boolean('was_copied')->default(false);
             $table->timestamps();
         });
     }

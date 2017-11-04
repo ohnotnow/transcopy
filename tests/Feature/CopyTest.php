@@ -87,4 +87,29 @@ class CopyTest extends TestCase
         Storage::disk('destination')->assertExists('dir1/dir2/file3');
         Storage::disk('destination')->assertExists('dir1/dir2/file4');
     }
+
+    /** @test */
+    public function a_successful_job_will_mark_its_file_or_torrent_as_copied_in_the_db()
+    {
+        Storage::fake('files');
+        Storage::fake('destination');
+        Mail::fake();
+        config(['transcopy' => ['send_success_notifications' => false]]);
+        Storage::disk('files')->put('test', 'hello'); (new Filesystem)->index();
+        $file = FileEntry::first();
+        $this->assertFalse($file->was_copied);
+
+        CopyFile::dispatch($file);
+
+        $this->assertTrue($file->fresh()->was_copied);
+
+        Storage::disk('torrents')->put('file1', 'hello');
+        app(FakeTorrent::class)->index();
+        $torrent = TorrentEntry::first();
+        $this->assertFalse($torrent->was_copied);
+
+        CopyFile::dispatch($torrent);
+
+        $this->assertTrue($torrent->fresh()->was_copied);
+    }
 }

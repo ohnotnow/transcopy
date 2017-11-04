@@ -31,4 +31,8 @@ trait SharedCopyableLogic
         });
     }
 
+    public function markCopied()
+    {
+        $this->update(['was_copied' => true]);
+    }
 }
