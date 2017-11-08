@@ -1,0 +1,28 @@
+
+@tailwind preflight;
+
+@tailwind utilities;
+
+
+.icon-button {
+    @apply .w-8 .text-black;
+}
+.icon-button:hover {
+    @apply .opacity-50;
+}
+
+button:hover {
+    @apply .opacity-50;
+}
+a {
+    @apply .text-black .no-underline;
+}
+a:hover {
+    @apply .opacity-50 .underline;
+}
+.icon-small {
+    @apply .w-4 .text-black .shadow mx-2 my-0;
+}
+.icon-small:hover {
+    @apply .bg-white .shadow-lg;
+}

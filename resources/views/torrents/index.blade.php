@@ -2,51 +2,56 @@
 
 @section('contents')
 
-@include('partials.switch_category', ['text' => 'Files', 'route' => route('file.index')])
-
 <form method="POST" action="{{ route('torrent.copy') }}">
 {{ csrf_field() }}
-<h3 class="title is-3">
-    Torrents
-    <button class="button is-success">
-        <span class="icon">
-            <i class="fa fa-download"></i>
-        </span>
-    </button>
-    <a href="{{ route('torrent.refresh') }}" class="button is-warning">
-        <span class="icon">
-            <i class="fa fa-refresh"></i>
-        </span>
-    </a>
-</h3>
-
-@foreach ($torrents as $torrent)
-    <div class="columns">
-        <div class="column">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" name="copies[{{ $torrent->id }}]" value="{{ $torrent->id }}">
-                    {{ $torrent->webFriendlyName() }} ({{ $torrent->formattedSize() }})
-                    @if ($torrent->isStillDownloading())
-                        ETA: {{ $torrent->formattedEta() }}
-                        Done: {{ $torrent->percent }}%
-                        <a href="{{ route('torrent.update', $torrent->torrent_id) }}" class="button is-small is-light">
-                            <span class="icon">
-                                <i class="fa fa-refresh"></i>
-                            </span>
-                        </a>
-                    @endif
-                    @if ($torrent->was_copied)
-                        <span class="icon" title="Already copied">
-                            <i class="fa fa-check"></i>
-                        </span>
-                    @endif
-                </label>
-            </div>
+<h3 class="text-xl shadow rounded p-4 bg-grey-lighter">
+    <div class="inline-flex items-center">
+        <div class="flex-1 mx-2">
+            <button title="Download">
+                @svg('zondicons/arrow-outline-down.svg', 'icon-button')
+            </button>
+        </div>
+        <div class="flex-1 mx-2">
+            <a href="{{ route('torrent.refresh') }}" title="Refresh list">
+                @svg('zondicons/reload.svg', 'icon-button')
+            </a>
+        </div>
+        <div class="flex-1 mx-2">
+            <span class="underline">Torrents</span>
+        </div>
+        <div class="flex-1">
+            <a href="{{ route('file.index') }}">Files</a>
         </div>
     </div>
-@endforeach
+</h3>
 
+<div class="py-8 px-4 border-l-2">
+@foreach ($torrents as $torrent)
+    <div class="mb-4">
+        <label>
+            <input type="checkbox" name="copies[{{ $torrent->id }}]" value="{{ $torrent->id }}">
+            {{ $torrent->webFriendlyName() }} 
+            <span class="opacity-50">
+                ({{ $torrent->formattedSize() }})
+                @if ($torrent->isStillDownloading())
+                    ETA: {{ $torrent->formattedEta() }}
+                    Done: {{ $torrent->percent }}%
+                    <a href="{{ route('torrent.update', $torrent->torrent_id) }}" class="icon-small">
+                        <span class="w-4">
+                            @svg('zondicons/reload.svg', 'icon-small')
+                        </span>
+                    </a>
+                @endif
+                @if ($torrent->was_copied)
+                    <span title="Already copied">
+                        @svg('zondicons/checkmark.svg', 'w-4')
+                    </span>
+                @endif
+            </span>
+        </label>
+    </div>
+@endforeach
+</div>
 </form>
 
 @endsection

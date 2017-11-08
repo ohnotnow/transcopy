@@ -3,15 +3,16 @@
 namespace App\Providers;
 
 use DB;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Queue;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\Events\JobFailed;
-use Illuminate\Queue\Events\JobProcessed;
-use Transmission\Client;
-use Transmission\Transmission;
 use App\Mail\CopyFailed;
+use Transmission\Client;
 use App\Mail\CopySucceeded;
+use Transmission\Transmission;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Queue\Events\JobProcessed;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -48,6 +49,19 @@ class AppServiceProvider extends ServiceProvider
                 Mail::to(config('transcopy.notification_address'))->send(new CopySucceeded($filename));
             }
         });
+
+        Blade::directive('svg', function ($arguments) {
+            list($path, $class) = array_pad(explode(',', trim($arguments, "() ")), 2, '');
+            $path = trim($path, "' ");
+            $class = trim($class, "' ");
+
+            $svg = new \DOMDocument();
+            $svg->load(public_path($path));
+            $svg->documentElement->setAttribute("class", $class);
+            $output = $svg->saveXML($svg->documentElement);
+
+            return $output;
+        });    
     }
 
     /**

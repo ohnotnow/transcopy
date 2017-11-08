@@ -7,7 +7,7 @@
 
     <title>Transcopy</title>
 
-    <link rel="stylesheet" href="{{ asset('/css/bulma.css') }}">
+    <link rel="stylesheet" href="{{ asset('/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('/css/fa/css/font-awesome.min.css') }}">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -17,7 +17,7 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container px-4 mx-auto pb-8">
         <div class="section">
             @yield('contents')
         </div>
