@@ -22,6 +22,6 @@ class FileJobController extends Controller
             CopyFile::dispatch($file);
         }
 
-        return redirect()->route('file.index')->with(['fileList' => $fileList]);
+        return redirect()->route('file.index')->with(['fileList' => implode(', ', $fileList)]);
     }
 }

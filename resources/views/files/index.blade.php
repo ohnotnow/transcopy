@@ -23,6 +23,7 @@
             <span class="underline">Files</span>
         </div>
     </div>
+    @include('partials.file_notification')
 </h3>
 
 <div class="py-8 px-4 border-l-2">

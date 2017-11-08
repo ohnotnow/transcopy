@@ -21,6 +21,6 @@ class TorrentJobController extends Controller
             CopyFile::dispatch($torrent);
         }
 
-        return redirect()->route('torrent.index')->with(['fileList' => $fileList]);
+        return redirect()->route('torrent.index')->with(['fileList' => implode(', ', $fileList)]);
     }
 }

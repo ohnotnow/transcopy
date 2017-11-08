@@ -1,10 +1,5 @@
 @if (session('fileList'))
-    <nav class="breadcrumb has-bullet-separator" aria-label="breadcrumbs">
-      <ul>
-        <li><a href="#">Now Copying :</a></li>
-        @foreach (session('fileList') as $file)
-            <li><a href="#">{{ $file }}</a></li>
-        @endforeach
-      </ul>
-    </nav>
+    <div class="opacity-50 mb-2 text-sm mx-2 mt-2">
+        Now Copying : {{ session('fileList') }}
+    </div>
 @endif
