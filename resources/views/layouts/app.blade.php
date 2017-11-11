@@ -8,6 +8,12 @@
     <title>Transcopy</title>
 
     <link rel="stylesheet" href="{{ asset('/css/app.css') }}">
+    <script>
+        function spin() {
+            document.getElementsByClassName('refresh-button')[0].classList.add('spin');
+        }
+    </script>
+</script>
 </head>
 
 <body>

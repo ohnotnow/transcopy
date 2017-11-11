@@ -12,8 +12,8 @@
             </button>
         </div>
         <div class="flex-1 mx-2">
-            <a href="{{ route('torrent.refresh') }}" title="Refresh list">
-                @svg('zondicons/reload.svg', 'icon-button')
+            <a href="{{ route('torrent.refresh') }}" title="Refresh list" onClick="spin()">
+                @svg('zondicons/reload.svg', 'icon-button refresh-button')
             </a>
         </div>
         <div class="flex-1 mx-2">
