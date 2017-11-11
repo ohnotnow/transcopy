@@ -97,19 +97,19 @@ class CopyTest extends TestCase
         config(['transcopy' => ['send_success_notifications' => false]]);
         Storage::disk('files')->put('test', 'hello'); (new Filesystem)->index();
         $file = FileEntry::first();
-        $this->assertFalse($file->was_copied);
+        $this->assertFalse($file->wasAlreadyCopied());
 
         CopyFile::dispatch($file);
 
-        $this->assertTrue($file->fresh()->was_copied);
+        $this->assertTrue($file->fresh()->wasAlreadyCopied());
 
         Storage::disk('torrents')->put('file1', 'hello');
         app(FakeTorrent::class)->index();
         $torrent = TorrentEntry::first();
-        $this->assertFalse($torrent->was_copied);
+        $this->assertFalse($torrent->wasAlreadyCopied());
 
         CopyFile::dispatch($torrent);
 
-        $this->assertTrue($torrent->fresh()->was_copied);
+        $this->assertTrue($torrent->fresh()->wasAlreadyCopied());
     }
 }

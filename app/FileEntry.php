@@ -30,6 +30,11 @@ class FileEntry extends Model implements Copyable
         return !$this->isFile();
     }
 
+    public function wasAlreadyCopied()
+    {
+        return $this->was_copied;
+    }
+
     public function getFullPath()
     {
         return $this->source()->getDriver()->getAdapter()->applyPathPrefix($this->path);

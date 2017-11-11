@@ -34,6 +34,11 @@ class TorrentEntry extends Model implements Copyable
         return $this->eta >= 0;
     }
 
+    public function wasAlreadyCopied()
+    {
+        return $this->was_copied;
+    }
+
     public function isFile()
     {
         return File::isFile($this->path);

@@ -43,7 +43,7 @@
                         </span>
                     </a>
                 @endif
-                @if ($torrent->was_copied)
+                @if ($torrent->wasAlreadyCopied())
                     <span title="Already copied">
                         @svg('zondicons/checkmark.svg', 'w-4')
                     </span>
