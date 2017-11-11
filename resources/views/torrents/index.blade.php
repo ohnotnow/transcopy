@@ -26,7 +26,7 @@
     @include('partials.file_notification')
 </h3>
 
-<div class="py-8 px-4 border-l-2">
+<div class="py-8 px-4 border-l-2 border-grey">
 @foreach ($torrents as $torrent)
     <div class="mb-4">
         <label>

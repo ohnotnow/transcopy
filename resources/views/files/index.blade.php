@@ -26,7 +26,7 @@
     @include('partials.file_notification')
 </h3>
 
-<div class="py-8 px-4 border-l-2">
+<div class="py-8 px-4 border-l-2 border-grey">
     @foreach ($files as $file)
         <div class="mb-4">
             <label>
