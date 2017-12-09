@@ -10,3 +10,6 @@ Route::get('/torrents', 'TorrentListController@index')->name('torrent.index');
 Route::get('/torrents/refresh', 'TorrentListController@update')->name('torrent.refresh');
 Route::get('/torrents/{id}/refresh', 'TorrentController@update')->name('torrent.update');
 Route::post('/torrents/copy', 'TorrentJobController@store')->name('torrent.copy');
+
+Route::get('/api/torrents', 'Api\TorrentListController@index')->name('api.torrent.index');
+Route::get('/api/torrents/{id}', 'Api\TorrentListController@show')->name('api.torrent.show');

@@ -1,3 +1,8 @@
+/*
+    - Make torrent list refresh with new torrents every ~10s?
+    - Update incomplete torrents every ~10s?
+    - Auto-copy new complete torrents?
+*/
 <template>
     <div>
         <ul>
@@ -12,7 +17,8 @@
     export default {
         data() {
             return {
-                torrents: []
+                torrents: [],
+                lastChecked: 0
             }
         },
 
@@ -26,13 +32,15 @@
                 axios.get('/api/torrents')
                     .then((response) => {
                         this.torrents = response.data.data;
+                        this.lastChecked = Math.floor(Date.now() / 1000);
                     });
             },
 
-            getChangedTorrents() {
-                axios.get('/api/torrents/updates')
+            getUpdatedTorrents() {
+                axios.get('/api/torrents?since=' + this.lastChecked)
                     .then((response) => {
                         console.log('hello');
+                        console.log(response.data.data);
                     });
             }
         }

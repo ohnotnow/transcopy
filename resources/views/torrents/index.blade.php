@@ -27,6 +27,7 @@
 </h3>
 
 <div class="py-8 px-4 border-l-2 border-grey">
+    <torrent-list></torrent-list>
 @foreach ($torrents as $torrent)
     <div class="mb-4">
         <label>
