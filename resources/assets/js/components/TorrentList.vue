@@ -51,6 +51,7 @@
                 torrents: [],
                 copies: [],
                 copyList: '',
+                timeouts: [],
                 refreshing: true
             }
         },
@@ -84,7 +85,7 @@
                         let updatedTorrent = response.data.data;
                         this.torrents.splice(index, 1, updatedTorrent);
                         if (updatedTorrent.incomplete) {
-                            setTimeout(this.updateTorrent(torrent), 1000);
+                            this.timeouts.push(setTimeout(this.updateTorrent(torrent), 1000));
                         }
                     });
             },
@@ -93,7 +94,7 @@
                 console.log(this.copies);
                 axios.post('/api/copy/torrents', {copies: this.copies})
                     .then((response) => {
-                        this.copyList = 'Copying';
+                        this.copyList = 'Copying: ' + response.data.message;
                         this.copies = [];
                     });
             },
@@ -105,6 +106,10 @@
                         this.copyList = '';
                         this.torrents = response.data.data;
                         this.refreshing = false;
+                        this.timeouts.forEach((timeout) => {
+                            clearTimeout(timeout);
+                        });
+                        this.timeouts = [];
                         setTimeout(this.getUpdatedTorrents, 1000);
                     })
                     .catch((error) => {

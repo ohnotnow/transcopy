@@ -1673,6 +1673,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             torrents: [],
             copies: [],
             copyList: '',
+            timeouts: [],
             refreshing: true
         };
     },
@@ -1712,7 +1713,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 var updatedTorrent = response.data.data;
                 _this3.torrents.splice(index, 1, updatedTorrent);
                 if (updatedTorrent.incomplete) {
-                    setTimeout(_this3.updateTorrent(torrent), 1000);
+                    _this3.timeouts.push(setTimeout(_this3.updateTorrent(torrent), 1000));
                 }
             });
         },
@@ -1721,7 +1722,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             console.log(this.copies);
             axios.post('/api/copy/torrents', { copies: this.copies }).then(function (response) {
-                _this4.copyList = 'Copying';
+                _this4.copyList = 'Copying: ' + response.data.message;
                 _this4.copies = [];
             });
         },
@@ -1733,6 +1734,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this5.copyList = '';
                 _this5.torrents = response.data.data;
                 _this5.refreshing = false;
+                _this5.timeouts.forEach(function (timeout) {
+                    clearTimeout(timeout);
+                });
+                _this5.timeouts = [];
                 setTimeout(_this5.getUpdatedTorrents, 1000);
             }).catch(function (error) {
                 _this5.copyList = 'Error';
