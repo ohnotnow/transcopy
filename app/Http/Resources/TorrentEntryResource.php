@@ -16,7 +16,9 @@ class TorrentEntryResource extends Resource
             'eta' => $this->formattedEta(),
             'size' => $this->formattedSize(),
             'copied' => $this->wasAlreadyCopied(),
+            'percent' => number_format($this->percent, 2),
             'incomplete' => $this->isStillDownloading(),
+            //'incomplete' => rand(0, 1),
         ];
     }
 }

@@ -21,7 +21,7 @@ class TorrentJobTest extends TestCase
         $torrent2 = factory(TorrentEntry::class)->create();
         $torrent3 = factory(TorrentEntry::class)->create();
 
-        $response = $this->post(route('torrent.copy'), [
+        $response = $this->post(route('api.torrent.copy'), [
             'copies' => [
                 $torrent1->id,
                 $torrent3->id,

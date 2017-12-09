@@ -1635,16 +1635,48 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
             torrents: [],
-            lastChecked: 0
+            copies: [],
+            copyList: '',
+            refreshing: true
         };
     },
     mounted: function mounted() {
-        console.log('Component mounted.');
         this.getAllTorrents();
     },
 
@@ -1654,14 +1686,57 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this = this;
 
             axios.get('/api/torrents').then(function (response) {
+                _this.refreshing = false;
                 _this.torrents = response.data.data;
-                _this.lastChecked = Math.floor(Date.now() / 1000);
+                setTimeout(_this.getUpdatedTorrents, 1000);
             });
         },
         getUpdatedTorrents: function getUpdatedTorrents() {
-            axios.get('/api/torrents?since=' + this.lastChecked).then(function (response) {
-                console.log('hello');
-                console.log(response.data.data);
+            var _this2 = this;
+
+            var incomplete = this.torrents.filter(function (torrent) {
+                return torrent.incomplete;
+            });
+            var counter = 0;
+            incomplete.forEach(function (torrent) {
+                _this2.updateTorrent(torrent);
+            });
+        },
+        updateTorrent: function updateTorrent(torrent) {
+            var _this3 = this;
+
+            axios.get('/api/torrents/' + torrent.torrent_id).then(function (response) {
+                var index = _this3.torrents.findIndex(function (curTorrent) {
+                    return curTorrent.id == torrent.id;
+                });
+                var updatedTorrent = response.data.data;
+                _this3.torrents.splice(index, 1, updatedTorrent);
+                if (updatedTorrent.incomplete) {
+                    setTimeout(_this3.updateTorrent(torrent), 1000);
+                }
+            });
+        },
+        copyTorrents: function copyTorrents() {
+            var _this4 = this;
+
+            console.log(this.copies);
+            axios.post('/api/copy/torrents', { copies: this.copies }).then(function (response) {
+                _this4.copyList = 'Copying';
+                _this4.copies = [];
+            });
+        },
+        refreshTorrents: function refreshTorrents() {
+            var _this5 = this;
+
+            this.refreshing = true;
+            axios.post('/api/refresh/torrents').then(function (response) {
+                _this5.copyList = '';
+                _this5.torrents = response.data.data;
+                _this5.refreshing = false;
+                setTimeout(_this5.getUpdatedTorrents, 1000);
+            }).catch(function (error) {
+                _this5.copyList = 'Error';
+                _this5.refreshing = false;
             });
         }
     }
@@ -2260,13 +2335,146 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _c("h3", { staticClass: "text-xl shadow rounded p-4 bg-grey-lighter" }, [
+      _c("div", { staticClass: "inline-flex items-center" }, [
+        _c("div", { staticClass: "flex-1 mx-2" }, [
+          _c(
+            "button",
+            { attrs: { title: "Download" }, on: { click: _vm.copyTorrents } },
+            [
+              _c(
+                "svg",
+                {
+                  staticClass: "icon-button",
+                  attrs: {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    viewBox: "0 0 20 20"
+                  }
+                },
+                [
+                  _c("path", {
+                    attrs: {
+                      d:
+                        "M10 20a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-2-8V5h4v5h3l-5 5-5-5h3z"
+                    }
+                  })
+                ]
+              )
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "flex-1 mx-2" }, [
+          _c(
+            "a",
+            {
+              attrs: { href: "#", title: "Refresh list" },
+              on: { click: _vm.refreshTorrents }
+            },
+            [
+              _c(
+                "svg",
+                {
+                  staticClass: "icon-button refresh-button",
+                  class: { spin: _vm.refreshing },
+                  attrs: {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    viewBox: "0 0 20 20"
+                  }
+                },
+                [
+                  _c("path", {
+                    attrs: {
+                      d:
+                        "M14.66 15.66A8 8 0 1 1 17 10h-2a6 6 0 1 0-1.76 4.24l1.42 1.42zM12 10h8l-4 4-4-4z"
+                    }
+                  })
+                ]
+              )
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "flex mx-2" }, [
+          _vm._v("\n                " + _vm._s(_vm.copyList) + "\n            ")
+        ])
+      ])
+    ]),
+    _vm._v(" "),
     _c(
-      "ul",
-      _vm._l(_vm.torrents, function(ref) {
-        var index = ref.index
-        var torrent = ref.torrent
-        return _c("li", [
-          _vm._v("\n            " + _vm._s(torrent.name) + "\n        ")
+      "div",
+      { staticClass: "py-8 px-4 border-l-2 border-grey" },
+      _vm._l(_vm.torrents, function(torrent, index) {
+        return _c("div", { staticClass: "mb-4" }, [
+          _c("label", [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.copies,
+                  expression: "copies"
+                }
+              ],
+              attrs: { type: "checkbox" },
+              domProps: {
+                value: torrent.id,
+                checked: Array.isArray(_vm.copies)
+                  ? _vm._i(_vm.copies, torrent.id) > -1
+                  : _vm.copies
+              },
+              on: {
+                change: function($event) {
+                  var $$a = _vm.copies,
+                    $$el = $event.target,
+                    $$c = $$el.checked ? true : false
+                  if (Array.isArray($$a)) {
+                    var $$v = torrent.id,
+                      $$i = _vm._i($$a, $$v)
+                    if ($$el.checked) {
+                      $$i < 0 && (_vm.copies = $$a.concat([$$v]))
+                    } else {
+                      $$i > -1 &&
+                        (_vm.copies = $$a
+                          .slice(0, $$i)
+                          .concat($$a.slice($$i + 1)))
+                    }
+                  } else {
+                    _vm.copies = $$c
+                  }
+                }
+              }
+            }),
+            _vm._v(
+              "\n                " + _vm._s(torrent.name) + "\n                "
+            ),
+            _c("span", { staticClass: "opacity-50" }, [
+              _vm._v(
+                "\n                    (" +
+                  _vm._s(torrent.size) +
+                  ")\n                    "
+              ),
+              torrent.incomplete
+                ? _c("span", [
+                    _vm._v(
+                      "\n                        ETA: " +
+                        _vm._s(torrent.eta) +
+                        "\n                        Done: " +
+                        _vm._s(torrent.percent) +
+                        "%\n                    "
+                    )
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              torrent.copied
+                ? _c("span", { attrs: { title: "Already copied" } }, [
+                    _vm._v(
+                      "\n                        (COPIED)\n                    "
+                    )
+                  ])
+                : _vm._e()
+            ])
+          ])
         ])
       })
     )

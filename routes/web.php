@@ -13,3 +13,5 @@ Route::post('/torrents/copy', 'TorrentJobController@store')->name('torrent.copy'
 
 Route::get('/api/torrents', 'Api\TorrentListController@index')->name('api.torrent.index');
 Route::get('/api/torrents/{id}', 'Api\TorrentListController@show')->name('api.torrent.show');
+Route::post('/api/copy/torrents', 'TorrentJobController@store')->name('api.torrent.copy');
+Route::post('/api/refresh/torrents', 'Api\TorrentListController@update')->name('api.torrent.refresh');

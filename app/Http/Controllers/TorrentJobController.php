@@ -11,16 +11,13 @@ class TorrentJobController extends Controller
     public function store(Request $request)
     {
         if (!$request->exists('copies')) {
-            return redirect()->back();
+            return response(422);
         }
 
-        $fileList = [];
         foreach ($request->copies as $fileId) {
-            $torrent = TorrentEntry::findOrFail($fileId);
-            $fileList[] = $torrent->getBasename();
-            CopyFile::dispatch($torrent);
+            CopyFile::dispatch(TorrentEntry::findOrFail($fileId));
         }
 
-        return redirect()->route('torrent.index')->with(['fileList' => implode(', ', $fileList)]);
+        return response(200);
     }
 }
