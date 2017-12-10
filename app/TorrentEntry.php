@@ -39,7 +39,7 @@ class TorrentEntry extends Model implements Copyable
 
     public function isStillDownloading()
     {
-        return $this->percent < 1.0;
+        return $this->percent < 100;
     }
 
     public function isComplete()
