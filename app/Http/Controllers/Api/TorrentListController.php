@@ -17,7 +17,6 @@ class TorrentListController extends Controller
 
     public function update()
     {
-        TorrentEntry::truncate();
         app(Torrent::class)->index();
         return TorrentEntryResource::collection(TorrentEntry::orderByDesc('torrent_id')->get());
     }
