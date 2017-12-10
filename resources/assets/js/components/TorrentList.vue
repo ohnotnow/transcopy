@@ -94,7 +94,7 @@
                 console.log(this.copies);
                 axios.post('/api/copy/torrents', {copies: this.copies})
                     .then((response) => {
-                        this.copyList = 'Copying: ' + response.data.message;
+                        this.copyList = 'Copying: ' + response.data.data.message;
                         this.copies = [];
                     });
             },
