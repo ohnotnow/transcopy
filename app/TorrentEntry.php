@@ -23,15 +23,28 @@ class TorrentEntry extends Model implements Copyable
 
     public function formattedEta()
     {
-        if ($this->isStillDownloading()) {
-            return intval($this->eta / 60) . 'min';
+        if ($this->isComplete()) {
+            return 'Done';
         }
-        return 'Done';
+
+        $mins = intval($this->eta / 60);
+        if ($mins < 60) {
+            return $mins . 'min';
+        }
+
+        $hours = intval($mins / 60);
+        $mins = $mins % 60;
+        return "{$hours}hr {$mins}mins";
     }
 
     public function isStillDownloading()
     {
-        return $this->eta >= 0;
+        return $this->percent < 1.0;
+    }
+
+    public function isComplete()
+    {
+        return ! $this->isStillDownloading();
     }
 
     public function wasAlreadyCopied()
