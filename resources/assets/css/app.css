@@ -10,7 +10,9 @@
 .icon-button:hover {
     @apply .opacity-50;
 }
-
+.error {
+    @apply .text-red;
+}
 button:hover {
     @apply .opacity-50;
 }

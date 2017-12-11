@@ -17,8 +17,8 @@
                         <svg class="icon-button refresh-button" :class="{ spin: refreshing }" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M14.66 15.66A8 8 0 1 1 17 10h-2a6 6 0 1 0-1.76 4.24l1.42 1.42zM12 10h8l-4 4-4-4z"/></svg>
                     </a>
                 </div>
-                <div class="flex mx-2">
-                    {{ copyList }}
+                <div class="flex mx-2" v-show="serverError">
+                    {{ serverError }}
                 </div>                    
             </div>
         </h3>
@@ -29,6 +29,7 @@
                     :torrent="torrent"
                     @selected="select(torrent.id)"
                     @unselected="unselect(torrent.id)"
+                    @error="serverError = 'Error refreshing ' + torrent.name"
                 >
                 </torrent-entry>
             </div>
@@ -43,7 +44,8 @@
                 torrents: [],
                 copies: [],
                 copyList: '',
-                refreshing: true
+                refreshing: true,
+                serverError: false,
             }
         },
 
@@ -70,9 +72,13 @@
             },
 
             copyTorrents() {
+                this.serverError = false;
                 axios.post('/api/copy/torrents', {copies: this.copies})
                     .then((response) => {
                         this.markTorrentsAsCopying();
+                    })
+                    .catch((error) => {
+                        this.serverError = error.response.data.message;
                     });
             },
 
@@ -88,6 +94,7 @@
 
             refreshTorrents() {
                 this.refreshing = true;
+                this.serverError = false;
                 axios.post('/api/refresh/torrents')
                     .then((response) => {
                         this.torrents = response.data.data;
@@ -96,6 +103,7 @@
                     .catch((error) => {
                         this.copyList = 'Error';
                         this.refreshing = false;
+                        this.serverError = error.response.data.message;
                     });
             }
         }

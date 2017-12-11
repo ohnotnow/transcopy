@@ -680,6 +680,11 @@ button,
   color: #ffffff;
 }
 
+.text-red,
+.hover\:text-red:hover {
+  color: #aa2b2f;
+}
+
 .leading-normal {
   line-height: 1.5;
 }
@@ -844,6 +849,11 @@ button,
   background-color: #ffffff;
 }
 
+.bg-red,
+.hover\:bg-red:hover {
+  background-color: #aa2b2f;
+}
+
 .bg-bottom {
   background-position: bottom;
 }
@@ -959,6 +969,11 @@ button,
 .border-white,
 .hover\:border-white:hover {
   border-color: #ffffff;
+}
+
+.border-red,
+.hover\:border-red:hover {
+  border-color: #aa2b2f;
 }
 
 .border-dashed {
@@ -1799,6 +1814,10 @@ button,
   opacity: .5;
 }
 
+.error {
+  color: #aa2b2f;
+}
+
 button:hover {
   opacity: .5;
 }
@@ -1967,6 +1986,11 @@ a:hover {
     color: #ffffff;
   }
 
+  .sm\:text-red,
+  .sm\:hover\:text-red:hover {
+    color: #aa2b2f;
+  }
+
   .sm\:leading-normal {
     line-height: 1.5;
   }
@@ -2131,6 +2155,11 @@ a:hover {
     background-color: #ffffff;
   }
 
+  .sm\:bg-red,
+  .sm\:hover\:bg-red:hover {
+    background-color: #aa2b2f;
+  }
+
   .sm\:bg-bottom {
     background-position: bottom;
   }
@@ -2246,6 +2275,11 @@ a:hover {
   .sm\:border-white,
   .sm\:hover\:border-white:hover {
     border-color: #ffffff;
+  }
+
+  .sm\:border-red,
+  .sm\:hover\:border-red:hover {
+    border-color: #aa2b2f;
   }
 
   .sm\:border-dashed {
@@ -3101,6 +3135,11 @@ a:hover {
     color: #ffffff;
   }
 
+  .md\:text-red,
+  .md\:hover\:text-red:hover {
+    color: #aa2b2f;
+  }
+
   .md\:leading-normal {
     line-height: 1.5;
   }
@@ -3265,6 +3304,11 @@ a:hover {
     background-color: #ffffff;
   }
 
+  .md\:bg-red,
+  .md\:hover\:bg-red:hover {
+    background-color: #aa2b2f;
+  }
+
   .md\:bg-bottom {
     background-position: bottom;
   }
@@ -3380,6 +3424,11 @@ a:hover {
   .md\:border-white,
   .md\:hover\:border-white:hover {
     border-color: #ffffff;
+  }
+
+  .md\:border-red,
+  .md\:hover\:border-red:hover {
+    border-color: #aa2b2f;
   }
 
   .md\:border-dashed {
@@ -4235,6 +4284,11 @@ a:hover {
     color: #ffffff;
   }
 
+  .lg\:text-red,
+  .lg\:hover\:text-red:hover {
+    color: #aa2b2f;
+  }
+
   .lg\:leading-normal {
     line-height: 1.5;
   }
@@ -4399,6 +4453,11 @@ a:hover {
     background-color: #ffffff;
   }
 
+  .lg\:bg-red,
+  .lg\:hover\:bg-red:hover {
+    background-color: #aa2b2f;
+  }
+
   .lg\:bg-bottom {
     background-position: bottom;
   }
@@ -4514,6 +4573,11 @@ a:hover {
   .lg\:border-white,
   .lg\:hover\:border-white:hover {
     border-color: #ffffff;
+  }
+
+  .lg\:border-red,
+  .lg\:hover\:border-red:hover {
+    border-color: #aa2b2f;
   }
 
   .lg\:border-dashed {
@@ -5369,6 +5433,11 @@ a:hover {
     color: #ffffff;
   }
 
+  .xl\:text-red,
+  .xl\:hover\:text-red:hover {
+    color: #aa2b2f;
+  }
+
   .xl\:leading-normal {
     line-height: 1.5;
   }
@@ -5533,6 +5602,11 @@ a:hover {
     background-color: #ffffff;
   }
 
+  .xl\:bg-red,
+  .xl\:hover\:bg-red:hover {
+    background-color: #aa2b2f;
+  }
+
   .xl\:bg-bottom {
     background-position: bottom;
   }
@@ -5648,6 +5722,11 @@ a:hover {
   .xl\:border-white,
   .xl\:hover\:border-white:hover {
     border-color: #ffffff;
+  }
+
+  .xl\:border-red,
+  .xl\:hover\:border-red:hover {
+    border-color: #aa2b2f;
   }
 
   .xl\:border-dashed {

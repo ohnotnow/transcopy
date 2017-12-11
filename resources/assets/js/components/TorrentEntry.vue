@@ -1,6 +1,6 @@
 <template>
     <div>
-        <label>
+        <label :class="{ error: this.broken }">
             <input type="checkbox" @change="changed" v-model="checked" :value="entry.id">
             {{ entry.name }}
             <span class="opacity-50">
@@ -13,7 +13,7 @@
                     Done: {{ entry.percent }}%
                 </span>
                 <span v-show="entry.copied" title="Already copied">
-                    (COPIED)
+                    <svg class="icon-small" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M0 11l2-2 5 5L18 3l2 2L7 18z"/></svg>
                 </span>
             </span>
         </label>
@@ -28,7 +28,8 @@
             return {
                 entry: this.torrent,
                 counter: 0,
-                checked: false
+                checked: false,
+                broken: false
             }
         },
 
@@ -63,6 +64,10 @@
                             console.log('      ' + val + ' / ' + this.entry.torrent_id);
                             setTimeout(this.update, this.randomDelay());
                         }
+                    })
+                    .catch((error) => {
+                        this.$emit('error');
+                        this.broken = true;
                     });
             },
 

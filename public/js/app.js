@@ -1650,7 +1650,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             entry: this.torrent,
             counter: 0,
-            checked: false
+            checked: false,
+            broken: false
         };
     },
 
@@ -1688,6 +1689,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     console.log('      ' + val + ' / ' + _this.entry.torrent_id);
                     setTimeout(_this.update, _this.randomDelay());
                 }
+            }).catch(function (error) {
+                _this.$emit('error');
+                _this.broken = true;
             });
         },
         changed: function changed() {
@@ -1762,6 +1766,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -1769,7 +1774,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             torrents: [],
             copies: [],
             copyList: '',
-            refreshing: true
+            refreshing: true,
+            serverError: false
         };
     },
     mounted: function mounted() {
@@ -1796,8 +1802,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         copyTorrents: function copyTorrents() {
             var _this2 = this;
 
+            this.serverError = false;
             axios.post('/api/copy/torrents', { copies: this.copies }).then(function (response) {
                 _this2.markTorrentsAsCopying();
+            }).catch(function (error) {
+                _this2.serverError = error.response.data.message;
             });
         },
         markTorrentsAsCopying: function markTorrentsAsCopying() {
@@ -1817,12 +1826,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this4 = this;
 
             this.refreshing = true;
+            this.serverError = false;
             axios.post('/api/refresh/torrents').then(function (response) {
                 _this4.torrents = response.data.data;
                 _this4.refreshing = false;
             }).catch(function (error) {
                 _this4.copyList = 'Error';
                 _this4.refreshing = false;
+                _this4.serverError = error.response.data.message;
             });
         }
     }
@@ -2421,7 +2432,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("label", [
+    _c("label", { class: { error: this.broken } }, [
       _c("input", {
         directives: [
           {
@@ -2516,7 +2527,19 @@ var render = function() {
             ],
             attrs: { title: "Already copied" }
           },
-          [_vm._v("\n                (COPIED)\n            ")]
+          [
+            _c(
+              "svg",
+              {
+                staticClass: "icon-small",
+                attrs: {
+                  xmlns: "http://www.w3.org/2000/svg",
+                  viewBox: "0 0 20 20"
+                }
+              },
+              [_c("path", { attrs: { d: "M0 11l2-2 5 5L18 3l2 2L7 18z" } })]
+            )
+          ]
         )
       ])
     ])
@@ -2602,9 +2625,25 @@ var render = function() {
           )
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "flex mx-2" }, [
-          _vm._v("\n                " + _vm._s(_vm.copyList) + "\n            ")
-        ])
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.serverError,
+                expression: "serverError"
+              }
+            ],
+            staticClass: "flex mx-2"
+          },
+          [
+            _vm._v(
+              "\n                " + _vm._s(_vm.serverError) + "\n            "
+            )
+          ]
+        )
       ])
     ]),
     _vm._v(" "),
@@ -2624,6 +2663,9 @@ var render = function() {
                 },
                 unselected: function($event) {
                   _vm.unselect(torrent.id)
+                },
+                error: function($event) {
+                  _vm.serverError = "Error refreshing " + torrent.name
                 }
               }
             })
