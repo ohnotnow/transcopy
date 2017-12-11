@@ -1863,6 +1863,39 @@ a:hover {
   }
 }
 
+.pulse {
+  -webkit-animation: pulse 1s infinite;
+          animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
 @media (min-width: 576px) {
   .sm\:appearance-none {
     -webkit-appearance: none;

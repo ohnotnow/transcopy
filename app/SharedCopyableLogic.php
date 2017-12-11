@@ -38,7 +38,7 @@ trait SharedCopyableLogic
 
     public function markCopying()
     {
-        $this->update(['is_copying' => true]);
+        $this->update(['is_copying' => true, 'was_copied' => false]);
     }
 
 }

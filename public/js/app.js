@@ -1656,13 +1656,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
     computed: {
-        isIncomplete: function isIncomplete() {
-            return this.entry.incomplete;
+        copying: function copying() {
+            return this.entry.copying;
+        }
+    },
+
+    watch: {
+        copying: function copying() {
+            this.checked = false;
+            setTimeout(this.update, this.randomDelay());
         }
     },
 
     mounted: function mounted() {
-        if (this.isIncomplete) {
+        if (this.shouldUpdate()) {
             setTimeout(this.update, this.randomDelay());
         }
     },
@@ -1677,14 +1684,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             console.log('HELLO ' + val + ' / ' + this.entry.torrent_id);
             axios.get('/api/torrents/' + this.entry.torrent_id).then(function (response) {
                 _this.entry = response.data.data;
-                if (_this.isIncomplete) {
+                if (_this.shouldUpdate()) {
                     console.log('      ' + val + ' / ' + _this.entry.torrent_id);
                     setTimeout(_this.update, _this.randomDelay());
                 }
             });
         },
         changed: function changed() {
-            console.log(this.checked);
             if (this.checked) {
                 this.$emit('selected');
             } else {
@@ -1698,6 +1704,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         isCopying: function isCopying() {
             return this.entry.copying;
+        },
+        isIncomplete: function isIncomplete() {
+            return this.entry.incomplete;
+        },
+        shouldUpdate: function shouldUpdate() {
+            if (this.isCopying() || this.isIncomplete()) {
+                return true;
+            }
+            return false;
         }
     }
 });
@@ -1773,35 +1788,41 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         select: function select(id) {
             this.copies.push(id);
-            console.log(this.copies);
         },
         unselect: function unselect(id) {
             var index = this.copies.indexOf(id);
             this.copies.splice(index, 1);
-            console.log(this.copies);
         },
         copyTorrents: function copyTorrents() {
             var _this2 = this;
 
-            console.log(this.copies);
             axios.post('/api/copy/torrents', { copies: this.copies }).then(function (response) {
-                _this2.copyList = 'Copying: ' + response.data.data.message;
-                _this2.copies = [];
+                _this2.markTorrentsAsCopying();
             });
         },
-        refreshTorrents: function refreshTorrents() {
+        markTorrentsAsCopying: function markTorrentsAsCopying() {
             var _this3 = this;
+
+            this.copies.forEach(function (id) {
+                var index = _this3.torrents.findIndex(function (torrent) {
+                    return torrent.id == id;
+                });
+                var torrent = _this3.torrents[index];
+                torrent.copying = true;
+                _this3.torrents.splice(index, 1, torrent);
+            });
+            this.copies = [];
+        },
+        refreshTorrents: function refreshTorrents() {
+            var _this4 = this;
 
             this.refreshing = true;
             axios.post('/api/refresh/torrents').then(function (response) {
-                _this3.copyList = '';
-                _this3.copies = [];
-                _this3.torrents = response.data.data;
-                _this3.refreshing = false;
+                _this4.torrents = response.data.data;
+                _this4.refreshing = false;
             }).catch(function (error) {
-                _this3.copies = [];
-                _this3.copyList = 'Error';
-                _this3.refreshing = false;
+                _this4.copyList = 'Error';
+                _this4.refreshing = false;
             });
         }
     }
@@ -2454,7 +2475,7 @@ var render = function() {
                 expression: "isCopying()"
               }
             ],
-            staticClass: "flashing"
+            staticClass: "pulse"
           },
           [_vm._v("\n                Copying\n            ")]
         ),
@@ -2466,8 +2487,8 @@ var render = function() {
               {
                 name: "show",
                 rawName: "v-show",
-                value: _vm.isIncomplete,
-                expression: "isIncomplete"
+                value: _vm.isIncomplete(),
+                expression: "isIncomplete()"
               }
             ]
           },

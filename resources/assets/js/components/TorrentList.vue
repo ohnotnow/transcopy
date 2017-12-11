@@ -62,35 +62,38 @@
 
             select(id) {
                 this.copies.push(id);
-                console.log(this.copies);
             },
 
             unselect(id) {
                 var index = this.copies.indexOf(id);
                 this.copies.splice(index, 1);
-                console.log(this.copies);
             },
 
             copyTorrents() {
-                console.log(this.copies);
                 axios.post('/api/copy/torrents', {copies: this.copies})
                     .then((response) => {
-                        this.copyList = 'Copying: ' + response.data.data.message;
-                        this.copies = [];
+                        this.markTorrentsAsCopying();
                     });
+            },
+
+            markTorrentsAsCopying() {
+                this.copies.forEach(id => {
+                    let index = this.torrents.findIndex(torrent => { return torrent.id == id; });
+                    let torrent = this.torrents[index];
+                    torrent.copying = true;
+                    this.torrents.splice(index, 1, torrent);
+                });
+                this.copies = [];
             },
 
             refreshTorrents() {
                 this.refreshing = true;
                 axios.post('/api/refresh/torrents')
                     .then((response) => {
-                        this.copyList = '';
-                        this.copies = [];
                         this.torrents = response.data.data;
                         this.refreshing = false;
                     })
                     .catch((error) => {
-                        this.copies = [];
                         this.copyList = 'Error';
                         this.refreshing = false;
                     });

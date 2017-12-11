@@ -5,10 +5,10 @@
             {{ entry.name }}
             <span class="opacity-50">
                 ({{ entry.size }})
-                <span class="flashing" v-show="isCopying()">
+                <span class="pulse" v-show="isCopying()">
                     Copying
                 </span>
-                <span v-show="isIncomplete">
+                <span v-show="isIncomplete()">
                     ETA: {{ entry.eta }}
                     Done: {{ entry.percent }}%
                 </span>
@@ -33,13 +33,20 @@
         },
 
         computed: {
-            isIncomplete() {
-                return this.entry.incomplete;
+            copying() {
+                return this.entry.copying;
+            }
+        },
+
+        watch: {
+            copying() {
+                this.checked = false;
+                setTimeout(this.update, this.randomDelay());
             }
         },
 
         mounted() {
-            if (this.isIncomplete) {
+            if (this.shouldUpdate()) {
                 setTimeout(this.update, this.randomDelay());
             }
         },
@@ -52,7 +59,7 @@
                 axios.get('/api/torrents/' + this.entry.torrent_id)
                     .then((response) => {
                         this.entry = response.data.data;
-                        if (this.isIncomplete) {
+                        if (this.shouldUpdate()) {
                             console.log('      ' + val + ' / ' + this.entry.torrent_id);
                             setTimeout(this.update, this.randomDelay());
                         }
@@ -60,7 +67,6 @@
             },
 
             changed() {
-                console.log(this.checked);
                 if (this.checked) {
                     this.$emit('selected');
                 } else {
@@ -76,6 +82,17 @@
 
             isCopying() {
                 return this.entry.copying;
+            },
+
+            isIncomplete() {
+                return this.entry.incomplete;
+            },
+
+            shouldUpdate() {
+                if (this.isCopying() || this.isIncomplete()) {
+                    return true;
+                }
+                return false;
             }
         }
     }
