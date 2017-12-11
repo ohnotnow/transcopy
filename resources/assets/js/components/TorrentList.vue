@@ -25,20 +25,12 @@
 
         <div class="py-8 px-4 border-l-2 border-grey">
             <div class="mb-4" v-for="(torrent, index) in torrents">
-                <label>
-                    <input type="checkbox" v-model="copies" :value="torrent.id">
-                    {{ torrent.name }}
-                    <span class="opacity-50">
-                        ({{torrent.size }})
-                        <span v-if="torrent.incomplete">
-                            ETA: {{ torrent.eta }}
-                            Done: {{ torrent.percent }}%
-                        </span>
-                        <span v-if="torrent.copied" title="Already copied">
-                            (COPIED)
-                        </span>
-                    </span>
-                </label>
+                <torrent-entry
+                    :torrent="torrent"
+                    @selected="select(torrent.id)"
+                    @unselected="unselect(torrent.id)"
+                >
+                </torrent-entry>
             </div>
         </div>
     </div>
@@ -51,7 +43,6 @@
                 torrents: [],
                 copies: [],
                 copyList: '',
-                timeouts: [],
                 refreshing: true
             }
         },
@@ -66,28 +57,18 @@
                     .then((response) => {
                         this.refreshing = false;
                         this.torrents = response.data.data;
-                        setTimeout(this.getUpdatedTorrents, 1000);
                     });
             },
 
-            getUpdatedTorrents() {
-                let incomplete = this.torrents.filter(torrent => torrent.incomplete);
-                let counter = 0;
-                incomplete.forEach((torrent) => {
-                    this.updateTorrent(torrent);
-                });
+            select(id) {
+                this.copies.push(id);
+                console.log(this.copies);
             },
 
-            updateTorrent(torrent) {
-                axios.get('/api/torrents/' + torrent.torrent_id)
-                    .then((response) => {
-                        let index = this.torrents.findIndex(curTorrent => curTorrent.id == torrent.id);
-                        let updatedTorrent = response.data.data;
-                        this.torrents.splice(index, 1, updatedTorrent);
-                        if (updatedTorrent.incomplete) {
-                            this.timeouts.push(setTimeout(this.updateTorrent(torrent), 1000));
-                        }
-                    });
+            unselect(id) {
+                var index = this.copies.indexOf(id);
+                this.copies.splice(index, 1);
+                console.log(this.copies);
             },
 
             copyTorrents() {
@@ -104,15 +85,12 @@
                 axios.post('/api/refresh/torrents')
                     .then((response) => {
                         this.copyList = '';
+                        this.copies = [];
                         this.torrents = response.data.data;
                         this.refreshing = false;
-                        this.timeouts.forEach((timeout) => {
-                            clearTimeout(timeout);
-                        });
-                        this.timeouts = [];
-                        setTimeout(this.getUpdatedTorrents, 1000);
                     })
                     .catch((error) => {
+                        this.copies = [];
                         this.copyList = 'Error';
                         this.refreshing = false;
                     });

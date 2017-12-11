@@ -17,6 +17,7 @@ window.Vue = require('vue');
 
 // Vue.component('example', require('./components/Example.vue'));
 Vue.component('torrent-list', require('./components/TorrentList.vue'));
+Vue.component('torrent-entry', require('./components/TorrentEntry.vue'));
 
 const app = new Vue({
      el: '#app'
