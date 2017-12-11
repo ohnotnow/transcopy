@@ -66,8 +66,8 @@
             },
             
             randomDelay() {
-                let min = 1000;
-                let max = 1000;
+                let min = 2000;
+                let max = 5000;
                 return Math.floor(Math.random() * (max - min)) + min;
             }
         }

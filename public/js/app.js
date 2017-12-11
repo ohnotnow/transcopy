@@ -1689,8 +1689,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
         },
         randomDelay: function randomDelay() {
-            var min = 1000;
-            var max = 1000;
+            var min = 2000;
+            var max = 5000;
             return Math.floor(Math.random() * (max - min)) + min;
         }
     }
