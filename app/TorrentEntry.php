@@ -17,6 +17,7 @@ class TorrentEntry extends Model implements Copyable
 
     protected $casts = [
         'was_copied' => 'boolean',
+        'is_copying' => 'boolean',
     ];
 
     protected $diskName = 'torrents';
@@ -50,6 +51,11 @@ class TorrentEntry extends Model implements Copyable
     public function wasAlreadyCopied()
     {
         return $this->was_copied;
+    }
+
+    public function isCopying()
+    {
+        return $this->is_copying;
     }
 
     public function isFile()

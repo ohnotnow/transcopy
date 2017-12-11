@@ -1639,6 +1639,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['torrent'],
@@ -1692,6 +1695,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var min = 2000;
             var max = 5000;
             return Math.floor(Math.random() * (max - min)) + min;
+        },
+        isCopying: function isCopying() {
+            return this.entry.copying;
         }
     }
 });
@@ -2437,6 +2443,22 @@ var render = function() {
       _vm._v("\n        " + _vm._s(_vm.entry.name) + "\n        "),
       _c("span", { staticClass: "opacity-50" }, [
         _vm._v("\n            (" + _vm._s(_vm.entry.size) + ")\n            "),
+        _c(
+          "span",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.isCopying(),
+                expression: "isCopying()"
+              }
+            ],
+            staticClass: "flashing"
+          },
+          [_vm._v("\n                Copying\n            ")]
+        ),
+        _vm._v(" "),
         _c(
           "span",
           {

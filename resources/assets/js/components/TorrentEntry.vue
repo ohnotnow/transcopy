@@ -5,6 +5,9 @@
             {{ entry.name }}
             <span class="opacity-50">
                 ({{ entry.size }})
+                <span class="flashing" v-show="isCopying()">
+                    Copying
+                </span>
                 <span v-show="isIncomplete">
                     ETA: {{ entry.eta }}
                     Done: {{ entry.percent }}%
@@ -69,6 +72,10 @@
                 let min = 2000;
                 let max = 5000;
                 return Math.floor(Math.random() * (max - min)) + min;
+            },
+
+            isCopying() {
+                return this.entry.copying;
             }
         }
     }

@@ -18,6 +18,7 @@ class TorrentEntryResource extends Resource
             'copied' => $this->wasAlreadyCopied(),
             'percent' => number_format($this->percent, 2),
             'incomplete' => $this->isStillDownloading(),
+            'copying' => $this->isCopying(),
             //'incomplete' => rand(0, 1),
         ];
     }
