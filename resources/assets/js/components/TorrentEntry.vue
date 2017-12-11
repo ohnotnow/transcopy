@@ -45,12 +45,12 @@
             update() {
                 let val = this.counter;
                 this.counter++;
-                console.log('HELLO ' + val);
+                console.log('HELLO ' + val + ' / ' + this.entry.torrent_id);
                 axios.get('/api/torrents/' + this.entry.torrent_id)
                     .then((response) => {
                         this.entry = response.data.data;
                         if (this.isIncomplete) {
-                            console.log('      ' + val);
+                            console.log('      ' + val + ' / ' + this.entry.torrent_id);
                             setTimeout(this.update, this.randomDelay());
                         }
                     });

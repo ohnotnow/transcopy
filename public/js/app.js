@@ -1671,11 +1671,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             var val = this.counter;
             this.counter++;
-            console.log('HELLO ' + val);
+            console.log('HELLO ' + val + ' / ' + this.entry.torrent_id);
             axios.get('/api/torrents/' + this.entry.torrent_id).then(function (response) {
                 _this.entry = response.data.data;
                 if (_this.isIncomplete) {
-                    console.log('      ' + val);
+                    console.log('      ' + val + ' / ' + _this.entry.torrent_id);
                     setTimeout(_this.update, _this.randomDelay());
                 }
             });
