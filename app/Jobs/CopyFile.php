@@ -24,7 +24,7 @@ class CopyFile implements ShouldQueue
 
     public function handle()
     {
-        $this->markCopying();
+        $this->file->markCopying();
         if ($this->file->isDirectory()) {
             $this->copyDirectory($this->file);
         } else {
