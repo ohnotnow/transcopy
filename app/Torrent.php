@@ -17,11 +17,13 @@ class Torrent
 
     public function index()
     {
-        return DB::transaction(function () {
+        $torrents = DB::transaction(function () {
             return collect($this->transmission->all())->map(function ($entry) {
                 return $this->store($entry);
             });
         });
+        TorrentEntry::whereNotIn('id', $torrents->pluck('id'))->delete();
+        return $torrents;
     }
 
     public function refresh()

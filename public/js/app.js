@@ -1827,6 +1827,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             this.refreshing = true;
             this.serverError = false;
+            this.torrents = [];
             axios.post('/api/refresh/torrents').then(function (response) {
                 _this4.torrents = response.data.data;
                 _this4.refreshing = false;

@@ -95,6 +95,7 @@
             refreshTorrents() {
                 this.refreshing = true;
                 this.serverError = false;
+                this.torrents = [];
                 axios.post('/api/refresh/torrents')
                     .then((response) => {
                         this.torrents = response.data.data;
