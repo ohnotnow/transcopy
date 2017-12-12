@@ -12,7 +12,6 @@ class TorrentListController extends Controller
 {
     public function index()
     {
-        app(Torrent::class)->index();
         return TorrentEntryResource::collection(TorrentEntry::orderByDesc('torrent_id')->get());
     }
 
