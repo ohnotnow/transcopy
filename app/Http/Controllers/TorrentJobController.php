@@ -14,13 +14,12 @@ class TorrentJobController extends Controller
             return response(422);
         }
 
-        $fileList = [];
         foreach ($request->copies as $fileId) {
             $torrent = TorrentEntry::findOrFail($fileId);
-            $filelist[] = $torrent->name;
+            $torrent->markCopying();
             CopyFile::dispatch($torrent);
         }
 
-        return response()->json(['data' => ['message' => implode(', ', $fileList)]]);
+        return response()->json(['data' => ['message' => count($request->copies) . ' files queued']]);
     }
 }
