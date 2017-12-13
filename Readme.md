@@ -8,7 +8,10 @@ A very bare-bones web app which lets me copy files from my raspberry pi to my li
 
 ## What it does
 
-It will show you a list of torrents (via the Transmission daemon) or a list of arbitrary files.  You can pick some of those and kick off a series of queued background jobs which will copy those files to another directory (eg, a samba share).  It does them one at a time as doing multiple files at once seems to make my poor rpi wifi fall over.  It can also send you notification emails when the files have copied.
+It will show you a list of torrents (via the Transmission daemon).  You can pick some of those and kick off a series of queued background jobs which will copy those files to another directory (eg, a samba share).  It does them one at a time as doing multiple files at once seems to make my poor rpi wifi fall over.  It can also send you notification emails when the files have copied.
+
+It's somewhat of an SPA (single page app) in that it'll show live progress of downloading files, copying status etc. It uses
+Vue.js to handle most of that.
 
 ## Installation
 
@@ -30,7 +33,7 @@ In theory you are now good to go.
 
 ## Running
 
-You should really [set up apache](https://blog.mythic-beasts.com/2017/03/22/php7-on-a-raspberry-pi-3-in-the-cloud/) or nginx to serve the app.  That's beyond of the scope of these docs, but if you install apache2+php7 on your rpi, then at the very least in the `/etc/apache2/sites-available/000-default.conf` you can set 
+You should really [set up apache](https://blog.mythic-beasts.com/2017/03/22/php7-on-a-raspberry-pi-3-in-the-cloud/) or nginx to serve the app.  That's beyond of the scope of these docs, but if you install apache2+php7 on your rpi, then at the very least in the `/etc/apache2/sites-available/000-default.conf` you can set
 
  `DocumentRoot /var/www/html/transcopy/public`
 
@@ -62,5 +65,4 @@ WantedBy=multi-user.target
 
 Then run `systemctl enable transcopy.service` and `systemctl start transcopy`.
 
-Now you should be able to point your browser to `http://your-rpi-ip-address/` and see the default page.  Click the yellow 'refresh' button to get the up-to-date list of torrents from the transmission daemon.
-
+Now you should be able to point your browser to `http://your-rpi-ip-address/` and see the default page.  Click the 'refresh' button to get the up-to-date list of torrents from the transmission daemon.

@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Storage;
 
 class TorrentEntry extends Model
 {
-    use FormattingHelpers;
-
     protected $guarded = [];
 
     protected $casts = [
@@ -100,12 +98,13 @@ class TorrentEntry extends Model
         if (!$this->source()->exists($this->getPath())) {
             throw new \InvalidArgumentException('Directory does not exist : ' . $this->getPath());
         }
-        return collect($this->source()->listContents($this->getPath(), true))->filter(function ($entry) {
-            return $entry['type'] === 'file';
-        })->map(function ($entry) {
-            $entry['fullpath'] = $this->applyPathPrefix($entry['path']);
-            return $entry;
-        });
+        return collect($this->source()->listContents($this->getPath(), true))
+            ->filter(function ($entry) {
+                return $entry['type'] === 'file';
+            })->map(function ($entry) {
+                $entry['fullpath'] = $this->applyPathPrefix($entry['path']);
+                return $entry;
+            });
     }
 
     public function markCopied()

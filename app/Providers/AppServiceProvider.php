@@ -34,34 +34,19 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Queue::failing(function (JobFailed $event) {
-            $job = $event->job->payload();
-            $jobObj = unserialize($job['data']['command']);
-            $filename = $jobObj->file->getBasename();
             if (config('transcopy.send_failure_notifications')) {
-                Mail::to(config('transcopy.notification_address'))->send(new CopyFailed($filename));
+                Mail::to(config('transcopy.notification_address'))->send(
+                    new CopyFailed($this->getJobFilename($event))
+                );
             }
         });
         Queue::after(function (JobProcessed $event) {
-            $job = $event->job->payload();
-            $jobObj = unserialize($job['data']['command']);
-            $filename = $jobObj->file->getBasename();
             if (config('transcopy.send_success_notifications')) {
-                Mail::to(config('transcopy.notification_address'))->send(new CopySucceeded($filename));
+                Mail::to(config('transcopy.notification_address'))->send(
+                    new CopySucceeded($this->getJobFilename($event))
+                );
             }
         });
-
-        Blade::directive('svg', function ($arguments) {
-            list($path, $class) = array_pad(explode(',', trim($arguments, "() ")), 2, '');
-            $path = trim($path, "' ");
-            $class = trim($class, "' ");
-
-            $svg = new \DOMDocument();
-            $svg->load(public_path($path));
-            $svg->documentElement->setAttribute("class", $class);
-            $output = $svg->saveXML($svg->documentElement);
-
-            return $output;
-        });    
     }
 
     /**
@@ -72,5 +57,12 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
+    }
+
+    protected function getJobFilename($event)
+    {
+        $job = $event->job->payload();
+        $jobObj = unserialize($job['data']['command']);
+        return $jobObj->file->getBasename();
     }
 }

@@ -12,13 +12,17 @@ class TorrentListController extends Controller
 {
     public function index()
     {
-        return TorrentEntryResource::collection(TorrentEntry::orderByDesc('torrent_id')->get());
+        return TorrentEntryResource::collection(
+            TorrentEntry::orderByDesc('torrent_id')->get()
+        );
     }
 
     public function update()
     {
         app(Torrent::class)->index();
-        return TorrentEntryResource::collection(TorrentEntry::orderByDesc('torrent_id')->get());
+        return TorrentEntryResource::collection(
+            TorrentEntry::orderByDesc('torrent_id')->get()
+        );
     }
 
     public function show($id)
