@@ -1812,6 +1812,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         markTorrentsAsCopying: function markTorrentsAsCopying() {
             var _this3 = this;
 
+            console.log('marking');
+            console.log(this.copies);
             this.copies.forEach(function (id) {
                 var index = _this3.torrents.findIndex(function (torrent) {
                     return torrent.id == id;
@@ -1819,7 +1821,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 var torrent = _this3.torrents[index];
                 torrent.copying = true;
                 _this3.torrents.splice(index, 1, torrent);
+                console.log(id);
             });
+            console.log('marked');
             this.copies = [];
         },
         refreshTorrents: function refreshTorrents() {
