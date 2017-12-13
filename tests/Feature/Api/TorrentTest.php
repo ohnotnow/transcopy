@@ -6,6 +6,8 @@ use App\Torrent;
 use Tests\TestCase;
 use App\FakeTorrent;
 use App\TorrentEntry;
+use App\Jobs\CopyFile;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TorrentTest extends TestCase
@@ -13,9 +15,8 @@ class TorrentTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function can_get_a_list_of_all_torrents()
+    public function can_get_a_list_of_all_torrents_ordered_by_newest_torrent_id()
     {
-        $this->withoutExceptionHandling();
         $torrent1 = factory(TorrentEntry::class)->create(['torrent_id' => 10]);
         $torrent2 = factory(TorrentEntry::class)->create(['torrent_id' => 1]);
         $torrent3 = factory(TorrentEntry::class)->create(['torrent_id' => 5]);
@@ -59,7 +60,6 @@ class TorrentTest extends TestCase
     /** @test */
     public function can_get_a_fresh_copy_of_a_torrent()
     {
-        $this->withoutExceptionHandling();
         app()->singleton(Torrent::class, function ($app) {
             return app(FakeTorrent::class);
         });
@@ -75,5 +75,31 @@ class TorrentTest extends TestCase
                 'name' => $torrent2->name,
             ],
         ]);
+    }
+
+    /** @test */
+    public function can_trigger_copy_jobs_for_torrents()
+    {
+        Queue::fake();
+
+        $torrent1 = factory(TorrentEntry::class)->create();
+        $torrent2 = factory(TorrentEntry::class)->create();
+        $torrent3 = factory(TorrentEntry::class)->create();
+
+        $response = $this->post(route('api.torrent.copy'), [
+            'copies' => [
+                $torrent1->id,
+                $torrent3->id,
+            ]
+        ]);
+
+        $response->assertSuccessful();
+        Queue::assertPushed(CopyFile::class, 2); // exactly 2 jobs were queued
+        Queue::assertPushed(CopyFile::class, function ($job) use ($torrent1) {
+            return $job->file->id == $torrent1->id;
+        });
+        Queue::assertPushed(CopyFile::class, function ($job) use ($torrent3) {
+            return $job->file->id == $torrent3->id;
+        });
     }
 }

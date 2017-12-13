@@ -7,11 +7,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
-use App\FileEntry;
 use App\Jobs\CopyFile;
 use App\Mail\CopyFailed;
 use App\Mail\CopySucceeded;
-use App\Filesystem;
 use App\FakeTorrent;
 use App\TorrentEntry;
 
@@ -25,7 +23,12 @@ class NotificationTest extends TestCase
         Storage::fake('torrents');
         Storage::fake('destination');
         Mail::fake();
-        config(['transcopy' => ['send_failure_notifications' => true, 'notification_address' => 'test@example.com']]);
+        config([
+            'transcopy' => [
+                'send_failure_notifications' => true,
+                'notification_address' => 'test@example.com'
+            ]
+        ]);
         $nonExistantFile = factory(TorrentEntry::class)->create();
 
         try {
@@ -46,7 +49,12 @@ class NotificationTest extends TestCase
         Storage::fake('torrents');
         Storage::fake('destination');
         Mail::fake();
-        config(['transcopy' => ['send_failure_notifications' => false, 'notification_address' => 'test@example.com']]);
+        config([
+            'transcopy' => [
+                'send_failure_notifications' => false,
+                'notification_address' => 'test@example.com'
+            ]
+        ]);
         $nonExistantFile = factory(TorrentEntry::class)->create();
 
         try {
@@ -65,7 +73,12 @@ class NotificationTest extends TestCase
         Storage::fake('torrents');
         Storage::fake('destination');
         Mail::fake();
-        config(['transcopy' => ['send_success_notifications' => true, 'notification_address' => 'test@example.com']]);
+        config([
+            'transcopy' => [
+                'send_success_notifications' => true,
+                'notification_address' => 'test@example.com'
+            ]
+        ]);
         Storage::disk('torrents')->put('test', 'hello');
         app()->singleton(Torrent::class, function ($app) {
             return app(FakeTorrent::class);
@@ -86,7 +99,12 @@ class NotificationTest extends TestCase
         Storage::fake('torrents');
         Storage::fake('destination');
         Mail::fake();
-        config(['transcopy' => ['send_failure_notifications' => false, 'notification_address' => 'test@example.com']]);
+        config([
+            'transcopy' => [
+                'send_failure_notifications' => false,
+                'notification_address' => 'test@example.com'
+            ]
+        ]);
         Storage::disk('files')->put('test', 'hello');
         Storage::disk('torrents')->put('test', 'hello');
         app()->singleton(Torrent::class, function ($app) {
@@ -99,6 +117,4 @@ class NotificationTest extends TestCase
 
         Mail::assertNotSent(CopySucceeded::class);
     }
-
-
 }

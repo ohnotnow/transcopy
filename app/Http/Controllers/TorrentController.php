@@ -8,9 +8,8 @@ use App\TorrentEntry;
 
 class TorrentController extends Controller
 {
-    public function update($id)
+    public function index()
     {
-        app(Torrent::class)->update($id);
-        return redirect()->route('torrent.index');
+        return view('torrents.index');
     }
 }

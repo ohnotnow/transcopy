@@ -17,7 +17,7 @@ class CopyTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function can_copy_a_regular_torrrent_entry()
+    public function can_copy_a_regular_torrent_entry()
     {
         Mail::fake();
         Storage::fake('torrents');

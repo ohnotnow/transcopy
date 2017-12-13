@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TorrentEntryResource;
 
-class TorrentListController extends Controller
+class TorrentController extends Controller
 {
     public function index()
     {
