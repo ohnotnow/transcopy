@@ -17,42 +17,6 @@ class CopyTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function can_copy_a_regular_file_entry()
-    {
-        Mail::fake();
-        Storage::fake('files');
-        Storage::fake('destination');
-        Storage::disk('files')->put('file1', 'hello');
-        (new Filesystem)->index();
-        $file = FileEntry::first();
-
-        CopyFile::dispatch($file);
-
-        Storage::disk('destination')->assertExists('file1');
-    }
-
-    /** @test */
-    public function can_recusively_copy_a_file_entry_which_is_a_directory()
-    {
-        Mail::fake();
-        Storage::fake('files');
-        Storage::fake('destination');
-        Storage::disk('files')->put('dir1/file1', 'dead');
-        Storage::disk('files')->put('dir1/file2', 'apples');
-        Storage::disk('files')->put('dir1/dir2/file3', 'dont');
-        Storage::disk('files')->put('dir1/dir2/file4', 'rot');
-        (new Filesystem)->index();
-        $file = FileEntry::first();
-
-        CopyFile::dispatch($file);
-
-        Storage::disk('destination')->assertExists('dir1/file1');
-        Storage::disk('destination')->assertExists('dir1/file2');
-        Storage::disk('destination')->assertExists('dir1/dir2/file3');
-        Storage::disk('destination')->assertExists('dir1/dir2/file4');
-    }
-
-    /** @test */
     public function can_copy_a_regular_torrrent_entry()
     {
         Mail::fake();
@@ -91,18 +55,9 @@ class CopyTest extends TestCase
     /** @test */
     public function a_successful_job_will_mark_its_file_or_torrent_as_copied_in_the_db()
     {
-        Storage::fake('files');
         Storage::fake('destination');
         Mail::fake();
         config(['transcopy' => ['send_success_notifications' => false]]);
-        Storage::disk('files')->put('test', 'hello'); (new Filesystem)->index();
-        $file = FileEntry::first();
-        $this->assertFalse($file->wasAlreadyCopied());
-
-        CopyFile::dispatch($file);
-
-        $this->assertTrue($file->fresh()->wasAlreadyCopied());
-
         Storage::disk('torrents')->put('file1', 'hello');
         app(FakeTorrent::class)->index();
         $torrent = TorrentEntry::first();

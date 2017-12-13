@@ -22,11 +22,11 @@ class NotificationTest extends TestCase
     /** @test */
     public function a_failed_job_will_send_a_notification_if_so_configured()
     {
-        Storage::fake('files');
+        Storage::fake('torrents');
         Storage::fake('destination');
         Mail::fake();
         config(['transcopy' => ['send_failure_notifications' => true, 'notification_address' => 'test@example.com']]);
-        $nonExistantFile = factory(FileEntry::class)->create(['type' => 'file']);
+        $nonExistantFile = factory(TorrentEntry::class)->create();
 
         try {
             CopyFile::dispatch($nonExistantFile);
@@ -43,11 +43,11 @@ class NotificationTest extends TestCase
     /** @test */
     public function a_failed_job_will_not_send_a_notification_if_not_configured()
     {
-        Storage::fake('files');
+        Storage::fake('torrents');
         Storage::fake('destination');
         Mail::fake();
         config(['transcopy' => ['send_failure_notifications' => false, 'notification_address' => 'test@example.com']]);
-        $nonExistantFile = factory(FileEntry::class)->create(['type' => 'file']);
+        $nonExistantFile = factory(TorrentEntry::class)->create();
 
         try {
             CopyFile::dispatch($nonExistantFile);
@@ -62,13 +62,16 @@ class NotificationTest extends TestCase
     /** @test */
     public function a_successful_job_will_send_a_notification_if_so_configured()
     {
-        Storage::fake('files');
+        Storage::fake('torrents');
         Storage::fake('destination');
         Mail::fake();
         config(['transcopy' => ['send_success_notifications' => true, 'notification_address' => 'test@example.com']]);
-        Storage::disk('files')->put('test', 'hello');
-        (new Filesystem)->index();
-        $file = FileEntry::first();
+        Storage::disk('torrents')->put('test', 'hello');
+        app()->singleton(Torrent::class, function ($app) {
+            return app(FakeTorrent::class);
+        });
+        app(Torrent::class)->index();
+        $file = TorrentEntry::first();
 
         CopyFile::dispatch($file);
 
@@ -80,13 +83,17 @@ class NotificationTest extends TestCase
     /** @test */
     public function a_successful_job_will_not_send_a_notification_if_not_configured()
     {
-        Storage::fake('files');
+        Storage::fake('torrents');
         Storage::fake('destination');
         Mail::fake();
         config(['transcopy' => ['send_failure_notifications' => false, 'notification_address' => 'test@example.com']]);
         Storage::disk('files')->put('test', 'hello');
-        (new Filesystem)->index();
-        $file = FileEntry::first();
+        Storage::disk('torrents')->put('test', 'hello');
+        app()->singleton(Torrent::class, function ($app) {
+            return app(FakeTorrent::class);
+        });
+        app(Torrent::class)->index();
+        $file = TorrentEntry::first();
 
         CopyFile::dispatch($file);
 

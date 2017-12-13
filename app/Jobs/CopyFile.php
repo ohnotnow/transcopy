@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
-use App\Copyable;
+use App\TorrentEntry;
 
 class CopyFile implements ShouldQueue
 {
@@ -17,7 +17,7 @@ class CopyFile implements ShouldQueue
 
     public $file;
 
-    public function __construct(Copyable $file)
+    public function __construct(TorrentEntry $file)
     {
         $this->file = $file;
     }
@@ -30,7 +30,7 @@ class CopyFile implements ShouldQueue
         } else {
             $this->copyFile($this->file->getFullPath(), $this->file->getBasename());
         }
-        
+
         $this->file->markCopied();
     }
 
@@ -43,6 +43,9 @@ class CopyFile implements ShouldQueue
 
     protected function copyFile($sourceName, $destName)
     {
+        if (!file_exists($sourceName)) {
+            throw new \InvalidArgumentException('No such file ' . $sourceName);
+        }
         Storage::disk('destination')->put($destName, fopen($sourceName, 'r+'));
         Log::info('Copied ' . $destName);
     }
