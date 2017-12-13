@@ -1806,6 +1806,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this2.markTorrentsAsCopying();
             }).catch(function (error) {
                 _this2.serverError = error.response.data.message;
+                console.log('Error while copying torrents');
             });
         },
         markTorrentsAsCopying: function markTorrentsAsCopying() {

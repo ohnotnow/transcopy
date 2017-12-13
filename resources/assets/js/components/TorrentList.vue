@@ -78,6 +78,7 @@
                     })
                     .catch((error) => {
                         this.serverError = error.response.data.message;
+                        console.log('Error while copying torrents');
                     });
             },
 
