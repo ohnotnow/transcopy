@@ -23,7 +23,7 @@
         </h3>
 
         <div class="py-8 px-4 border-l-2 border-grey">
-            <div class="mb-4" v-for="(torrent, index) in torrents">
+            <div class="mb-4" v-for="(torrent, index) in torrents" :key="torrent.id">
                 <torrent-entry
                     :torrent="torrent"
                     @selected="select(torrent.id)"
@@ -94,7 +94,7 @@
             refreshTorrents() {
                 this.refreshing = true;
                 this.serverError = false;
-                this.torrents = [];
+                //this.torrents = [];
                 axios.post('/api/refresh/torrents')
                     .then((response) => {
                         this.torrents = response.data.data;
