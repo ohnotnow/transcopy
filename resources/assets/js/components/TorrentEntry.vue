@@ -2,7 +2,7 @@
     <div>
         <label :class="{ error: this.broken }">
             <input type="checkbox" @change="changed" v-model="checked" :value="entry.id">
-            {{ entry.id }} - {{ entry.name }}
+            {{ entry.name }}
             <span class="opacity-50">
                 ({{ entry.size }})
                 <span class="pulse" v-show="isCopying()">
