@@ -8,7 +8,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
 use App\TorrentEntry;
 
 class CopyFile implements ShouldQueue
@@ -25,6 +24,7 @@ class CopyFile implements ShouldQueue
     public function handle()
     {
         $this->file->markCopying();
+
         if ($this->file->isDirectory()) {
             $this->copyDirectory($this->file);
         } else {
@@ -47,6 +47,5 @@ class CopyFile implements ShouldQueue
             throw new \InvalidArgumentException('No such file ' . $sourceName);
         }
         Storage::disk('destination')->put($destName, fopen($sourceName, 'r+'));
-        Log::info('Copied ' . $destName);
     }
 }
