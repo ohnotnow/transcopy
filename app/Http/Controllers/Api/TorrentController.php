@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Torrent;
 use App\TorrentEntry;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TorrentEntryResource;
 

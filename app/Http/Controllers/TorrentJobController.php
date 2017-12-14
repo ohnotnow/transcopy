@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Jobs\CopyFile;
 use App\TorrentEntry;
+use Illuminate\Http\Request;
 
 class TorrentJobController extends Controller
 {
@@ -14,9 +13,7 @@ class TorrentJobController extends Controller
             return response(422);
         }
 
-        foreach ($request->copies as $fileId) {
-            TorrentEntry::findOrFail($fileId)->queueCopy();
-        }
+        TorrentEntry::findMany($request->copies)->each->queueCopy();
 
         return response()->json([
             'data' => [
