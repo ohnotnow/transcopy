@@ -62,6 +62,7 @@
             },
 
             select(id) {
+                console.log(id);
                 this.copies.push(id);
             },
 
@@ -83,16 +84,10 @@
             },
 
             markTorrentsAsCopying() {
-                console.log('marking');
-                console.log(this.copies);
                 this.copies.forEach(id => {
-                    let index = this.torrents.findIndex(torrent => { return torrent.id == id; });
-                    let torrent = this.torrents[index];
-                    torrent.copying = true;
-                    this.torrents.splice(index, 1, torrent);
-                    console.log(id);
+                    console.log('Emitting ' + id);
+                    Event.$emit('copying', id);
                 });
-                console.log('marked');
                 this.copies = [];
             },
 

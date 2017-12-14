@@ -2,7 +2,7 @@
     <div>
         <label :class="{ error: this.broken }">
             <input type="checkbox" @change="changed" v-model="checked" :value="entry.id">
-            {{ entry.name }}
+            {{ entry.id }} - {{ entry.name }}
             <span class="opacity-50">
                 ({{ entry.size }})
                 <span class="pulse" v-show="isCopying()">
@@ -47,6 +47,18 @@
         },
 
         mounted() {
+            var self = this;
+            console.log('HELLO ' + self.entry.name + ' ID ' + self.entry.id);
+            Event.$on('copying', function(id, event) {
+                if (self.entry.id == id) {
+                    console.log('unchecked ' + id + ' I AM ' + self.entry.name + ' #' + self.randomDelay());
+                    self.checked = false;
+                    self.entry.copying = true;
+                }
+                else {
+                    console.log('IGNORED event for ' + id + ' I AM ' + self.entry.name + ' ID ' + self.entry.id + ' #' + self.randomDelay());
+                }
+            });
             if (this.shouldUpdate()) {
                 setTimeout(this.update, this.randomDelay());
             }
@@ -54,14 +66,10 @@
 
         methods: {
             update() {
-                let val = this.counter;
-                this.counter++;
-                console.log('HELLO ' + val + ' / ' + this.entry.torrent_id);
                 axios.get('/api/torrents/' + this.entry.torrent_id)
                     .then((response) => {
                         this.entry = response.data.data;
                         if (this.shouldUpdate()) {
-                            console.log('      ' + val + ' / ' + this.entry.torrent_id);
                             setTimeout(this.update, this.randomDelay());
                         }
                     })
@@ -73,12 +81,12 @@
 
             changed() {
                 if (this.checked) {
-                    this.$emit('selected');
+                    this.$emit('selected', this.entry.id);
                 } else {
-                    this.$emit('unselected');
+                    this.$emit('unselected', this.entry.id);
                 }
             },
-            
+
             randomDelay() {
                 let min = 2000;
                 let max = 5000;

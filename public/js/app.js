@@ -1670,6 +1670,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     mounted: function mounted() {
+        var self = this;
+        console.log('HELLO ' + self.entry.name + ' ID ' + self.entry.id);
+        Event.$on('copying', function (id, event) {
+            if (self.entry.id == id) {
+                console.log('unchecked ' + id + ' I AM ' + self.entry.name + ' #' + self.randomDelay());
+                self.checked = false;
+                self.entry.copying = true;
+            } else {
+                console.log('IGNORED event for ' + id + ' I AM ' + self.entry.name + ' ID ' + self.entry.id + ' #' + self.randomDelay());
+            }
+        });
         if (this.shouldUpdate()) {
             setTimeout(this.update, this.randomDelay());
         }
@@ -1680,13 +1691,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         update: function update() {
             var _this = this;
 
-            var val = this.counter;
-            this.counter++;
-            console.log('HELLO ' + val + ' / ' + this.entry.torrent_id);
             axios.get('/api/torrents/' + this.entry.torrent_id).then(function (response) {
                 _this.entry = response.data.data;
                 if (_this.shouldUpdate()) {
-                    console.log('      ' + val + ' / ' + _this.entry.torrent_id);
                     setTimeout(_this.update, _this.randomDelay());
                 }
             }).catch(function (error) {
@@ -1696,9 +1703,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         changed: function changed() {
             if (this.checked) {
-                this.$emit('selected');
+                this.$emit('selected', this.entry.id);
             } else {
-                this.$emit('unselected');
+                this.$emit('unselected', this.entry.id);
             }
         },
         randomDelay: function randomDelay() {
@@ -1792,6 +1799,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         select: function select(id) {
+            console.log(id);
             this.copies.push(id);
         },
         unselect: function unselect(id) {
@@ -1810,35 +1818,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         markTorrentsAsCopying: function markTorrentsAsCopying() {
-            var _this3 = this;
-
-            console.log('marking');
-            console.log(this.copies);
             this.copies.forEach(function (id) {
-                var index = _this3.torrents.findIndex(function (torrent) {
-                    return torrent.id == id;
-                });
-                var torrent = _this3.torrents[index];
-                torrent.copying = true;
-                _this3.torrents.splice(index, 1, torrent);
-                console.log(id);
+                console.log('Emitting ' + id);
+                Event.$emit('copying', id);
             });
-            console.log('marked');
             this.copies = [];
         },
         refreshTorrents: function refreshTorrents() {
-            var _this4 = this;
+            var _this3 = this;
 
             this.refreshing = true;
             this.serverError = false;
             //this.torrents = [];
             axios.post('/api/refresh/torrents').then(function (response) {
-                _this4.torrents = response.data.data;
-                _this4.refreshing = false;
+                _this3.torrents = response.data.data;
+                _this3.refreshing = false;
             }).catch(function (error) {
-                _this4.copyList = 'Error';
-                _this4.refreshing = false;
-                _this4.serverError = error.response.data.message;
+                _this3.copyList = 'Error';
+                _this3.refreshing = false;
+                _this3.serverError = error.response.data.message;
             });
         }
     }
@@ -2477,7 +2475,13 @@ var render = function() {
           ]
         }
       }),
-      _vm._v("\n        " + _vm._s(_vm.entry.name) + "\n        "),
+      _vm._v(
+        "\n        " +
+          _vm._s(_vm.entry.id) +
+          " - " +
+          _vm._s(_vm.entry.name) +
+          "\n        "
+      ),
       _c("span", { staticClass: "opacity-50" }, [
         _vm._v("\n            (" + _vm._s(_vm.entry.size) + ")\n            "),
         _c(
@@ -13365,6 +13369,8 @@ module.exports = g;
 __webpack_require__("./resources/assets/js/bootstrap.js");
 
 window.Vue = __webpack_require__("./node_modules/vue/dist/vue.common.js");
+
+window.Event = new Vue({});
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
