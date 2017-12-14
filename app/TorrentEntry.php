@@ -30,6 +30,14 @@ class TorrentEntry extends Model
             return 'Done';
         }
 
+        if ($this->eta < 0) {
+            return 'Unknown';
+        }
+
+        if ($this->eta < 60) {
+            return "{$this->eta}sec";
+        }
+
         $mins = intval($this->eta / 60);
         if ($mins < 60) {
             return $mins . 'min';
