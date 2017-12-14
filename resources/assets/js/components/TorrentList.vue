@@ -85,7 +85,6 @@
 
             markTorrentsAsCopying() {
                 this.copies.forEach(id => {
-                    console.log('Emitting ' + id);
                     Event.$emit('copying', id);
                 });
                 this.copies = [];

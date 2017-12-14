@@ -48,15 +48,10 @@
 
         mounted() {
             var self = this;
-            console.log('HELLO ' + self.entry.name + ' ID ' + self.entry.id);
             Event.$on('copying', function(id, event) {
                 if (self.entry.id == id) {
-                    console.log('unchecked ' + id + ' I AM ' + self.entry.name + ' #' + self.randomDelay());
                     self.checked = false;
                     self.entry.copying = true;
-                }
-                else {
-                    console.log('IGNORED event for ' + id + ' I AM ' + self.entry.name + ' ID ' + self.entry.id + ' #' + self.randomDelay());
                 }
             });
             if (this.shouldUpdate()) {
