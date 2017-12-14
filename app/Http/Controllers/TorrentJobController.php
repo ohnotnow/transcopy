@@ -15,11 +15,13 @@ class TorrentJobController extends Controller
         }
 
         foreach ($request->copies as $fileId) {
-            $torrent = TorrentEntry::findOrFail($fileId);
-            $torrent->markCopying();
-            CopyFile::dispatch($torrent);
+            TorrentEntry::findOrFail($fileId)->queueCopy();
         }
 
-        return response()->json(['data' => ['message' => count($request->copies) . ' files queued']]);
+        return response()->json([
+            'data' => [
+                'message' => count($request->copies) . ' files queued'
+            ]
+        ]);
     }
 }

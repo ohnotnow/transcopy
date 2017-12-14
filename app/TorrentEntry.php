@@ -2,8 +2,9 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Jobs\CopyFile;
 use Illuminate\Support\Facades\File;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 class TorrentEntry extends Model
@@ -16,6 +17,12 @@ class TorrentEntry extends Model
     ];
 
     protected $diskName = 'torrents';
+
+    public function queueCopy()
+    {
+        $this->markCopying();
+        CopyFile::dispatch($this);
+    }
 
     public function formattedEta()
     {
