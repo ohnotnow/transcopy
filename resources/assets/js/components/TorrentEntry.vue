@@ -27,7 +27,6 @@
         data() {
             return {
                 entry: this.torrent,
-                counter: 0,
                 checked: false,
                 broken: false
             }
