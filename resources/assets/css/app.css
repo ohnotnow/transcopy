@@ -29,23 +29,13 @@ a:hover {
     @apply .bg-white .shadow-lg;
 }
 
-.spin { 
+.spin {
     transform-origin: 44% 50%;
-    -webkit-transform-origin: 44% 50%;
-    -moz-transform-origin: 44% 50%;
     animation: spin 2s linear infinite;
 };
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
-}
-@-moz-keyframes spin {
-    from { -moz-transform: rotate(0deg); }
-    to { -moz-transform: rotate(360deg); }
-}
-@-webkit-keyframes spin {
-    from { -webkit-transform: rotate(0deg); }
-    to { -webkit-transform: rotate(360deg); }
 }
 
 .pulse {
@@ -53,18 +43,6 @@ a:hover {
 }
 
 @keyframes pulse {
-  0% { opacity: 0; }
-  50% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-@-moz-keyframes pulse {
-  0% { opacity: 0; }
-  50% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-@-webkit-keyframes pulse {
   0% { opacity: 0; }
   50% { opacity: 1; }
   100% { opacity: 0; }
