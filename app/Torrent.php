@@ -35,7 +35,9 @@ class Torrent
     public function update($id)
     {
         $entry = $this->transmission->get(intval($id));
-        return $this->store($entry);
+        return DB::transaction(function () use ($entry) {
+            return $this->store($entry);
+        });
     }
 
     protected function store($entry)
