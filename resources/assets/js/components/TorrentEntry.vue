@@ -46,11 +46,10 @@
         },
 
         mounted() {
-            var self = this;
-            Event.$on('copying', function(id, event) {
-                if (self.entry.id == id) {
-                    self.checked = false;
-                    self.entry.copying = true;
+            Event.$on('copying', (id, event) => {
+                if (this.entry.id == id) {
+                    this.checked = false;
+                    this.entry.copying = true;
                 }
             });
             if (this.shouldUpdate()) {
