@@ -52,9 +52,7 @@
                     this.entry.copying = true;
                 }
             });
-            if (this.shouldUpdate()) {
-                setTimeout(this.update, this.randomDelay());
-            }
+            this.checkForUpdates();
         },
 
         methods: {
@@ -62,14 +60,19 @@
                 axios.get('/api/torrents/' + this.entry.torrent_id)
                     .then((response) => {
                         this.entry = response.data.data;
-                        if (this.shouldUpdate()) {
-                            setTimeout(this.update, this.randomDelay());
-                        }
+                        this.checkForUpdates();
                     })
                     .catch((error) => {
                         this.$emit('error');
                         this.broken = true;
+                        this.checkForUpdates();
                     });
+            },
+
+            checkForUpdates() {
+                if (this.shouldUpdate()) {
+                    setTimeout(this.update, this.randomDelay());
+                }
             },
 
             changed() {
