@@ -11,21 +11,24 @@ class TorrentController extends Controller
 {
     public function index()
     {
-        return TorrentEntryResource::collection(
-            TorrentEntry::orderByDesc('torrent_id')->get()
-        );
+        return $this->orderedTorrents();
     }
 
     public function update()
     {
         app(Torrent::class)->index();
-        return TorrentEntryResource::collection(
-            TorrentEntry::orderByDesc('torrent_id')->get()
-        );
+        return $this->orderedTorrents();
     }
 
     public function show($id)
     {
         return new TorrentEntryResource(app(Torrent::class)->update($id));
+    }
+
+    protected function orderedTorrents()
+    {
+        return TorrentEntryResource::collection(
+            TorrentEntry::orderByDesc('torrent_id')->get()
+        );
     }
 }
