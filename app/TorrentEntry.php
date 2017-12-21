@@ -14,6 +14,7 @@ class TorrentEntry extends Model
     protected $casts = [
         'was_copied' => 'boolean',
         'is_copying' => 'boolean',
+        'copy_failed' => 'boolean',
     ];
 
     protected $diskName = 'torrents';
@@ -26,12 +27,17 @@ class TorrentEntry extends Model
 
     public function markCopied()
     {
-        $this->update(['was_copied' => true, 'is_copying' => false]);
+        $this->update(['was_copied' => true, 'is_copying' => false, 'copy_failed' => false]);
     }
 
     public function markCopying()
     {
-        $this->update(['is_copying' => true, 'was_copied' => false]);
+        $this->update(['is_copying' => true, 'was_copied' => false, 'copy_failed' => false]);
+    }
+
+    public function markFailed()
+    {
+        $this->update(['is_copying' => false, 'was_copied' => false, 'copy_failed' => true]);
     }
 
     public function wasAlreadyCopied()
@@ -42,6 +48,11 @@ class TorrentEntry extends Model
     public function isCopying()
     {
         return $this->is_copying;
+    }
+
+    public function copyFailed()
+    {
+        return $this->copy_failed;
     }
 
     public function isStillDownloading()
