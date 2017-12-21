@@ -8,6 +8,9 @@
                 <span class="pulse" v-show="isCopying()">
                     Copying
                 </span>
+                <span class="pulse" v-show="copyFailed()">
+                    Copy Failed
+                </span>
                 <span v-show="isIncomplete()">
                     ETA: {{ entry.eta }}
                     Done: {{ entry.percent }}%
@@ -60,6 +63,7 @@
                 axios.get('/api/torrents/' + this.entry.torrent_id)
                     .then((response) => {
                         this.entry = response.data.data;
+                        this.broken = false;
                         this.checkForUpdates();
                     })
                     .catch((error) => {
@@ -95,6 +99,13 @@
 
             isIncomplete() {
                 return this.entry.incomplete;
+            },
+
+            copyFailed() {
+                if (this.entry.copy_failed) {
+                    this.broken = true;
+                }
+                return this.entry.copy_failed;
             },
 
             shouldUpdate() {

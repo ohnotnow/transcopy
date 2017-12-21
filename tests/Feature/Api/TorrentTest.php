@@ -34,6 +34,7 @@ class TorrentTest extends TestCase
                     'size' => $torrent1->formattedSize(),
                     'copied' => $torrent1->wasAlreadyCopied(),
                     'incomplete' => $torrent1->isStillDownloading(),
+                    'copy_failed' => $torrent1->copy_failed,
                 ],
                 [
                     'id' => $torrent3->id,
@@ -43,6 +44,7 @@ class TorrentTest extends TestCase
                     'size' => $torrent3->formattedSize(),
                     'copied' => $torrent3->wasAlreadyCopied(),
                     'incomplete' => $torrent3->isStillDownloading(),
+                    'copy_failed' => $torrent3->copy_failed,
                 ],
                 [
                     'id' => $torrent2->id,
@@ -52,6 +54,7 @@ class TorrentTest extends TestCase
                     'size' => $torrent2->formattedSize(),
                     'copied' => $torrent2->wasAlreadyCopied(),
                     'incomplete' => $torrent2->isStillDownloading(),
+                    'copy_failed' => $torrent2->copy_failed,
                 ],
             ],
         ]);
@@ -73,6 +76,7 @@ class TorrentTest extends TestCase
             'data' => [
                 'id' => 2,
                 'name' => $torrent2->name,
+                'copy_failed' => $torrent2->copy_failed,
             ],
         ]);
     }

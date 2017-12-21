@@ -67,4 +67,20 @@ class CopyTest extends TestCase
 
         $this->assertTrue($torrent->fresh()->wasAlreadyCopied());
     }
+
+    /** @test */
+    public function a_failed_job_will_mark_itself_as_such()
+    {
+        Storage::fake('destination');
+        Mail::fake();
+        $nonExistantTorrent = factory(TorrentEntry::class)->create();
+        $this->assertFalse($nonExistantTorrent->copyFailed());
+
+        try {
+            CopyFile::dispatch($nonExistantTorrent);
+            $this->fail('Expected an exception and none thrown');
+        } catch (\Exception $e) {
+            $this->assertTrue($nonExistantTorrent->fresh()->copyFailed());
+        }
+    }
 }

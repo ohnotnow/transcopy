@@ -23,15 +23,20 @@ class CopyFile implements ShouldQueue
 
     public function handle()
     {
-        $this->file->markCopying();
+        try {
+            $this->file->markCopying();
 
-        if ($this->file->isDirectory()) {
-            $this->copyDirectory($this->file);
-        } else {
-            $this->copyFile($this->file->getFullPath(), $this->file->getBasename());
+            if ($this->file->isDirectory()) {
+                $this->copyDirectory($this->file);
+            } else {
+                $this->copyFile($this->file->getFullPath(), $this->file->getBasename());
+            }
+
+            $this->file->markCopied();
+        } catch (\Exception $e) {
+            $this->file->markFailed();
+            throw $e;
         }
-
-        $this->file->markCopied();
     }
 
     protected function copyDirectory($directory)

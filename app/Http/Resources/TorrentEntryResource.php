@@ -19,6 +19,7 @@ class TorrentEntryResource extends Resource
             'percent' => number_format($this->percent, 2),
             'incomplete' => $this->isStillDownloading(),
             'copying' => $this->isCopying(),
+            'copy_failed' => $this->copy_failed,
             //'incomplete' => rand(0, 1),
         ];
     }

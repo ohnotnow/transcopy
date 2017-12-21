@@ -11,5 +11,6 @@ $factory->define(\App\TorrentEntry::class, function (Faker $faker) {
         'percent' => $this->faker->numberBetween(1, 100),
         'path' => Storage::disk('torrents')->getDriver()->getAdapter()->applyPathPrefix($filename),
         'eta' => $this->faker->randomNumber(),
+        'copy_failed' => false,
     ];
 });
