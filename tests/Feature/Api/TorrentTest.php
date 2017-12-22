@@ -100,10 +100,10 @@ class TorrentTest extends TestCase
         $response->assertSuccessful();
         Queue::assertPushed(CopyFile::class, 2); // exactly 2 jobs were queued
         Queue::assertPushed(CopyFile::class, function ($job) use ($torrent1) {
-            return $job->file->id == $torrent1->id;
+            return $job->torrent->id == $torrent1->id;
         });
         Queue::assertPushed(CopyFile::class, function ($job) use ($torrent3) {
-            return $job->file->id == $torrent3->id;
+            return $job->torrent->id == $torrent3->id;
         });
     }
 }

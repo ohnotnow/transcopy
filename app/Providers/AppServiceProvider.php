@@ -65,7 +65,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $job = $event->job->payload();
         $jobObj = unserialize($job['data']['command']);
-        return $jobObj->file->getBasename();
+        return $jobObj->torrent->getBasename();
     }
 
     /**

@@ -14,34 +14,39 @@ class CopyFile implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $file;
+    public $torrent;
 
-    public function __construct(TorrentEntry $file)
+    public function __construct(TorrentEntry $torrent)
     {
-        $this->file = $file;
+        $this->torrent = $torrent;
     }
 
     public function handle()
     {
+        $this->torrent->markCopying();
+
         try {
-            $this->file->markCopying();
-
-            if ($this->file->isDirectory()) {
-                $this->copyDirectory($this->file);
-            } else {
-                $this->copyFile($this->file->getFullPath(), $this->file->getBasename());
-            }
-
-            $this->file->markCopied();
+            $this->copyTorrent();
         } catch (\Exception $e) {
-            $this->file->markFailed();
+            $this->torrent->markFailed();
             throw $e;
         }
+
+        $this->torrent->markCopied();
+    }
+
+    protected function copyTorrent()
+    {
+        if ($this->torrent->isDirectory()) {
+            return $this->copyDirectory($this->torrent);
+        }
+
+        return $this->copyFile($this->torrent->getFullPath(), $this->torrent->getBasename());
     }
 
     protected function copyDirectory($directory)
     {
-        return $directory->findFiles()->each(function ($entry) {
+        $directory->findFiles()->each(function ($entry) {
             $this->copyFile($entry['fullpath'], $entry['path']);
         });
     }
