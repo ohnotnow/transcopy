@@ -35,19 +35,6 @@
             }
         },
 
-        computed: {
-            copying() {
-                return this.entry.copying;
-            }
-        },
-
-        watch: {
-            copying() {
-                this.checked = false;
-                setTimeout(this.update, this.randomDelay());
-            }
-        },
-
         mounted() {
             Event.$on('copying', (id, event) => {
                 if (this.entry.id == id) {
