@@ -25,19 +25,24 @@ class TorrentEntry extends Model
         CopyFile::dispatch($this);
     }
 
-    public function markCopied()
-    {
-        $this->update(['was_copied' => true, 'is_copying' => false, 'copy_failed' => false]);
-    }
-
     public function markCopying()
     {
         $this->update(['is_copying' => true, 'was_copied' => false, 'copy_failed' => false]);
     }
 
+    public function markCopied()
+    {
+        $this->update(['is_copying' => false, 'was_copied' => true, 'copy_failed' => false]);
+    }
+
     public function markFailed()
     {
         $this->update(['is_copying' => false, 'was_copied' => false, 'copy_failed' => true]);
+    }
+
+    public function clearFlags()
+    {
+        $this->update(['is_copying' => false, 'was_copied' => false, 'copy_failed' => false]);
     }
 
     public function wasAlreadyCopied()

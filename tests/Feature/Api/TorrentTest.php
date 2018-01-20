@@ -106,4 +106,23 @@ class TorrentTest extends TestCase
             return $job->torrent->id == $torrent3->id;
         });
     }
+
+    /** @test */
+    public function can_clear_copy_flags_on_a_torrent()
+    {
+        $this->withoutExceptionHandling();
+        $torrent = factory(TorrentEntry::class)->create([
+            'was_copied' => true,
+            'copy_failed' => true,
+            'is_copying' => true,
+        ]);
+
+        $response = $this->deleteJson(route('api.torrent.clear_flags', $torrent->id));
+
+        $response->assertSuccessful();
+        $torrent = $torrent->fresh();
+        $this->assertFalse($torrent->was_copied);
+        $this->assertFalse($torrent->copy_failed);
+        $this->assertFalse($torrent->is_copying);
+    }
 }

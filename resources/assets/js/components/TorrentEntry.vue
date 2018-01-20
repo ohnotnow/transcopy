@@ -1,15 +1,12 @@
 <template>
     <div>
-        <label :class="{ error: this.broken }">
+        <label class="hover:text-grey-darkest" :class="{ error: this.broken }">
             <input type="checkbox" @change="changed" v-model="checked" :value="entry.id">
             {{ entry.name }}
             <span class="opacity-50">
                 ({{ entry.size }})
                 <span class="pulse" v-show="isCopying()">
                     Copying
-                </span>
-                <span class="pulse" v-show="copyFailed()">
-                    Copy Failed
                 </span>
                 <span v-show="isIncomplete()">
                     ETA: {{ entry.eta }}
@@ -20,6 +17,9 @@
                 </span>
             </span>
         </label>
+            <a href="#" class="pulse" v-show="copyFailed()" @click="clearFlags">
+                Copy Failed
+            </a>
     </div>
 </template>
 
@@ -96,10 +96,22 @@
             },
 
             shouldUpdate() {
-                if (this.isCopying() || this.isIncomplete()) {
+                if (this.isCopying() || this.isIncomplete() || this.copyFailed()) {
                     return true;
                 }
                 return false;
+            },
+
+            clearFlags() {
+                axios.delete('/api/torrents/' + this.entry.torrent_id + '/clear-flags')
+                    .then((response) => {
+                        this.checkForUpdates();
+                    })
+                    .catch((error) => {
+                        this.$emit('error');
+                        this.broken = true;
+                        this.checkForUpdates();
+                    });
             }
         }
     }

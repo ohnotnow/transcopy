@@ -47,6 +47,7 @@ var colors = {
   'transparent': 'transparent',
   'black': '#222b2f',
   'grey': '#dae4e9',
+  'grey-darkest': '#3d4852',
   'grey-lighter': '#f3f7f9',
   'white': '#ffffff',
   'red': '#AA2b2f'
@@ -474,6 +475,7 @@ module.exports = {
 
   padding: {
     'px': '1px',
+    '2': '0.5rem',
     '4': '1rem',
     '8': '2rem',
   },
