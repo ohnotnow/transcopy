@@ -103,7 +103,7 @@
             },
 
             clearFlags() {
-                axios.delete('/api/torrents/' + this.entry.torrent_id + '/clear-flags')
+                axios.delete('/api/torrents/' + this.entry.id + '/clear-flags')
                     .then((response) => {
                         this.checkForUpdates();
                     })
