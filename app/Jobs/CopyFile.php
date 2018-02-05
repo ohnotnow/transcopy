@@ -25,6 +25,17 @@ class CopyFile implements ShouldQueue
     {
         $this->torrent->markCopying();
 
+        /**
+         * if the torrent is still downloading, then assume we 'pre-queued' the
+         * copy to take place (ie, pressed the copy button while it was still
+         * downloading in the UI) - so we put the job back on the queue and
+         * try again in 5 minutes.
+         */
+        if ($this->torrent->isStillDownloading()) {
+            $this->release(5 * 60);
+            return;
+        }
+
         try {
             $this->copyTorrent();
         } catch (\Exception $e) {

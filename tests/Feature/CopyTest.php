@@ -2,15 +2,17 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Mail;
-use App\Filesystem;
 use App\FileEntry;
+use Tests\TestCase;
+use App\Filesystem;
+use App\FakeTorrent;
 use App\TorrentEntry;
 use App\Jobs\CopyFile;
-use App\FakeTorrent;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CopyTest extends TestCase
 {
@@ -19,6 +21,7 @@ class CopyTest extends TestCase
     /** @test */
     public function can_copy_a_regular_torrent_entry()
     {
+        $this->withoutExceptionHandling();
         Mail::fake();
         Storage::fake('torrents');
         Storage::fake('destination');
@@ -82,5 +85,23 @@ class CopyTest extends TestCase
         } catch (\Exception $e) {
             $this->assertTrue($nonExistantTorrent->fresh()->copyFailed());
         }
+    }
+
+    /** @test */
+    public function starting_a_copy_job_on_a_torrent_which_is_still_downloading_results_in_it_being_requeued_in_five_minutes()
+    {
+        Storage::fake('destination');
+        Mail::fake();
+        Storage::disk('torrents')->put('file1', 'hello');
+        app(FakeTorrent::class)->index();
+        $torrent = TorrentEntry::first();
+        $torrent->percent = 90;
+        $torrent->save();
+
+        Queue::after(function (JobProcessed $event) {
+            $this->assertTrue($event->job->isReleased());
+        });
+
+        CopyFile::dispatch($torrent);
     }
 }

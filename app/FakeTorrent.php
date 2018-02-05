@@ -21,7 +21,7 @@ class FakeTorrent
                 'torrent_id' => $this->faker->unique()->randomNumber(),
                 'name' => $entry['path'],
                 'size' => $entry['type'] === 'file' ? $entry['size'] : 0,
-                'percent' => $this->faker->numberBetween(1, 100),
+                'percent' => 100,
                 'path' => Storage::disk('torrents')->getDriver()->getAdapter()->applyPathPrefix($entry['path']),
                 'eta' => $this->faker->randomNumber(),
             ]);
