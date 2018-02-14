@@ -66,3 +66,17 @@ WantedBy=multi-user.target
 Then run `systemctl enable transcopy.service` and `systemctl start transcopy`.
 
 Now you should be able to point your browser to `http://your-rpi-ip-address/` and see the default page.  Click the 'refresh' button to get the up-to-date list of torrents from the transmission daemon.
+
+## Copying torrents which are still downloading
+
+If you want to be able to mark torrents which are still downloading so that they will
+automatically be copied once they're finished, then just add a cron entry to your
+system like this :
+
+```
+* * * * * /usr/bin/php /path-to-transcopy/artisan schedule:run >> /dev/null 2>&1
+```
+
+Then when you click a torrent which is still downloading and then the 'download' button,
+the system will check for it finishing every five minutes - once it's done it will
+be added to the queue and copied as normal.

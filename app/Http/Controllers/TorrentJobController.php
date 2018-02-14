@@ -13,7 +13,13 @@ class TorrentJobController extends Controller
             return response(422);
         }
 
-        TorrentEntry::findMany($request->copies)->each->queueCopy();
+        TorrentEntry::findMany($request->copies)->each(function ($entry) {
+            if ($entry->isStillDownloading()) {
+                $entry->markShouldCopy();
+            } else {
+                $entry->queueCopy();
+            }
+        });
 
         return response()->json([
             'data' => [

@@ -108,6 +108,24 @@ class TorrentTest extends TestCase
     }
 
     /** @test */
+    public function trying_to_copy_a_torrent_which_is_still_downloading_marks_it_but_doesnt_queue_a_job()
+    {
+        Queue::fake();
+
+        $torrent = factory(TorrentEntry::class)->create(['percent' => 90, 'should_copy' => false]);
+
+        $response = $this->post(route('api.torrent.copy'), [
+            'copies' => [
+                $torrent->id,
+            ]
+        ]);
+
+        $response->assertSuccessful();
+        Queue::assertNotPushed(CopyFile::class);
+        $this->assertTrue($torrent->fresh()->should_copy);
+    }
+
+    /** @test */
     public function can_clear_copy_flags_on_a_torrent()
     {
         $this->withoutExceptionHandling();
@@ -115,6 +133,7 @@ class TorrentTest extends TestCase
             'was_copied' => true,
             'copy_failed' => true,
             'is_copying' => true,
+            'should_copy' => true,
         ]);
 
         $response = $this->deleteJson(route('api.torrent.clear_flags', $torrent->id));
@@ -124,5 +143,6 @@ class TorrentTest extends TestCase
         $this->assertFalse($torrent->was_copied);
         $this->assertFalse($torrent->copy_failed);
         $this->assertFalse($torrent->is_copying);
+        $this->assertFalse($torrent->should_copy);
     }
 }

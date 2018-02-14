@@ -20,6 +20,7 @@ class TorrentEntryResource extends Resource
             'incomplete' => $this->isStillDownloading(),
             'copying' => $this->isCopying(),
             'copy_failed' => $this->copy_failed,
+            'should_copy' => $this->should_copy,
             //'incomplete' => rand(0, 1),
         ];
     }

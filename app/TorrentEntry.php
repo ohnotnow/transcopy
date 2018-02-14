@@ -15,6 +15,7 @@ class TorrentEntry extends Model
         'was_copied' => 'boolean',
         'is_copying' => 'boolean',
         'copy_failed' => 'boolean',
+        'should_copy' => 'boolean',
     ];
 
     protected $diskName = 'torrents';
@@ -27,12 +28,30 @@ class TorrentEntry extends Model
 
     public function markCopying()
     {
-        $this->update(['is_copying' => true, 'was_copied' => false, 'copy_failed' => false]);
+        $this->update(['is_copying' => true, 'was_copied' => false, 'copy_failed' => false, 'should_copy' => false]);
     }
 
     public function markCopied()
     {
-        $this->update(['is_copying' => false, 'was_copied' => true, 'copy_failed' => false]);
+        $this->update(['is_copying' => false, 'was_copied' => true, 'copy_failed' => false, 'should_copy' => false]);
+    }
+
+    public function scopeShouldBeQueued($query)
+    {
+        return $query->where('should_copy', '=', true)->where('percent', '>=', 100);
+    }
+
+    public function markShouldCopy()
+    {
+        $this->update(['should_copy' => true]);
+    }
+
+    public function shouldBeCopied()
+    {
+        if ($this->should_copy and $this->isComplete()) {
+            return true;
+        }
+        return false;
     }
 
     public function markFailed()
@@ -42,7 +61,12 @@ class TorrentEntry extends Model
 
     public function clearFlags()
     {
-        $this->update(['is_copying' => false, 'was_copied' => false, 'copy_failed' => false]);
+        $this->update([
+            'is_copying' => false,
+            'was_copied' => false,
+            'copy_failed' => false,
+            'should_copy' => false,
+        ]);
     }
 
     public function wasAlreadyCopied()
