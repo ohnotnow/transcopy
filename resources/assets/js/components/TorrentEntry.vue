@@ -97,6 +97,10 @@
                 return ! this.isIncomplete();
             },
 
+            shouldCopy() {
+                return this.entry.should_copy;
+            },
+
             copyFailed() {
                 if (this.entry.copy_failed) {
                     this.broken = true;
@@ -105,7 +109,7 @@
             },
 
             shouldUpdate() {
-                if (this.isCopying() || this.isIncomplete() || this.copyFailed()) {
+                if (this.isCopying() || this.isIncomplete() || this.copyFailed() || this.shouldCopy()) {
                     return true;
                 }
                 return false;
