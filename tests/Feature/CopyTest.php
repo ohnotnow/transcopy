@@ -8,8 +8,10 @@ use App\Filesystem;
 use App\FakeTorrent;
 use App\TorrentEntry;
 use App\Jobs\CopyFile;
+use App\Torrent;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -88,9 +90,13 @@ class CopyTest extends TestCase
     }
 
     /** @test */
-    public function starting_a_copy_job_on_a_torrent_which_is_still_downloading_results_in_it_being_requeued_in_five_minutes()
+    public function starting_a_copy_job_on_a_torrent_which_is_still_downloading_results_new_job_being_fired_with_a_delay_of_five_minutes()
     {
         Storage::fake('destination');
+        app()->singleton(Torrent::class, function ($app) {
+            return app(FakeTorrent::class);
+        });
+        config(['queue.default' => 'database']);
         Mail::fake();
         Storage::disk('torrents')->put('file1', 'hello');
         app(FakeTorrent::class)->index();
@@ -98,10 +104,17 @@ class CopyTest extends TestCase
         $torrent->percent = 90;
         $torrent->save();
 
-        Queue::after(function (JobProcessed $event) {
-            $this->assertTrue($event->job->isReleased());
-        });
-
         CopyFile::dispatch($torrent);
+
+        $this->assertDatabaseMissing('jobs', ['id' => 2]);
+
+        Artisan::call('queue:work', ['--once' => true]);
+
+        $this->assertDatabaseHas('jobs', ['id' => 2]);
+        $newJob = \DB::table('jobs')->where('id', '=', 2)->first();
+        $this->assertEquals(
+            \Carbon\Carbon::createFromTimestamp($newJob->available_at)->format('d/m/Y H:i'),
+            now()->addMinutes(5)->format('d/m/Y H:i')
+        );
     }
 }

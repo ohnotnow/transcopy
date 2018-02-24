@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Torrent;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -23,8 +24,6 @@ class CopyFile implements ShouldQueue
 
     public function handle()
     {
-        $this->torrent->markCopying();
-
         /**
          * if the torrent is still downloading, then assume we 'pre-queued' the
          * copy to take place (ie, pressed the copy button while it was still
@@ -32,9 +31,11 @@ class CopyFile implements ShouldQueue
          * try again in 5 minutes.
          */
         if ($this->torrent->isStillDownloading()) {
-            $this->release(5 * 60);
+            $this->requeue();
             return;
         }
+
+        $this->torrent->markCopying();
 
         try {
             $this->copyTorrent();
@@ -68,5 +69,16 @@ class CopyFile implements ShouldQueue
             throw new \InvalidArgumentException('No such file ' . $sourceName);
         }
         Storage::disk('destination')->put($destName, fopen($sourceName, 'r+'));
+    }
+
+    /**
+     * Put a new copy of this job onto the queue with a delay
+     *
+     * @return void
+     */
+    protected function requeue($delaySeconds = 5 * 60)
+    {
+        app(Torrent::class)->update($this->torrent->torrent_id);
+        $this->dispatch(TorrentEntry::find($this->torrent->id))->delay(now()->addSeconds($delaySeconds));
     }
 }

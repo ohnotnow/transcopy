@@ -22,7 +22,6 @@ class TorrentEntry extends Model
 
     public function queueCopy()
     {
-        $this->markCopying();
         CopyFile::dispatch($this);
     }
 
@@ -36,9 +35,14 @@ class TorrentEntry extends Model
         $this->update(['is_copying' => false, 'was_copied' => true, 'copy_failed' => false, 'should_copy' => false]);
     }
 
+    public function scopeCopyWhenFinished($query)
+    {
+        return $query->where('should_copy', '=', true);
+    }
+
     public function scopeShouldBeQueued($query)
     {
-        return $query->where('should_copy', '=', true)->where('percent', '>=', 100);
+        return $query->shouldBeCopied()->where('percent', '>=', 100);
     }
 
     public function markShouldCopy()

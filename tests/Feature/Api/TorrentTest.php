@@ -84,6 +84,7 @@ class TorrentTest extends TestCase
     /** @test */
     public function can_trigger_copy_jobs_for_torrents()
     {
+        $this->withoutExceptionHandling();
         Queue::fake();
 
         $torrent1 = factory(TorrentEntry::class)->create();
