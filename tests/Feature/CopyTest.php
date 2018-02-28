@@ -90,7 +90,7 @@ class CopyTest extends TestCase
     }
 
     /** @test */
-    public function starting_a_copy_job_on_a_torrent_which_is_still_downloading_results_new_job_being_fired_with_a_delay_of_five_minutes()
+    public function if_a_torrent_is_still_downloading_a_new_job_is_fired_with_a_five_minute_delay_and_a_flag_is_set_on_the_torrent()
     {
         Storage::fake('destination');
         app()->singleton(Torrent::class, function ($app) {
@@ -104,6 +104,8 @@ class CopyTest extends TestCase
         $torrent->percent = 90;
         $torrent->save();
 
+        $this->assertFalse($torrent->fresh()->shouldBeCopied());
+
         CopyFile::dispatch($torrent);
 
         $this->assertDatabaseMissing('jobs', ['id' => 2]);
@@ -116,5 +118,6 @@ class CopyTest extends TestCase
             \Carbon\Carbon::createFromTimestamp($newJob->available_at)->format('d/m/Y H:i'),
             now()->addMinutes(5)->format('d/m/Y H:i')
         );
+        $this->assertTrue($torrent->fresh()->shouldBeCopied());
     }
 }

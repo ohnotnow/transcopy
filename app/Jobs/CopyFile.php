@@ -31,6 +31,7 @@ class CopyFile implements ShouldQueue
          * try again in 5 minutes.
          */
         if ($this->torrent->isStillDownloading()) {
+            $this->torrent->markShouldCopy();
             $this->requeue();
             return;
         }

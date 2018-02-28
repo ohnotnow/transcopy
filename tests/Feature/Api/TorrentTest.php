@@ -109,8 +109,12 @@ class TorrentTest extends TestCase
     }
 
     /** @test */
-    public function trying_to_copy_a_torrent_which_is_still_downloading_marks_it_but_doesnt_queue_a_job()
+    public function trying_to_copy_a_torrent_which_is_still_downloading_still_queues_an_initial_job()
     {
+        // note: the queued job itself checks to see if the file is still downloading, if so
+        // it 'requeues' until it is available. See
+        // 'CopyTest @ if_a_torrent_is_still_downloading_a_new_job_is_fired_with_a_five_minute_delay_and_a_flag_is_set_on_the_torrent'
+
         Queue::fake();
 
         $torrent = factory(TorrentEntry::class)->create(['percent' => 90, 'should_copy' => false]);
@@ -122,8 +126,7 @@ class TorrentTest extends TestCase
         ]);
 
         $response->assertSuccessful();
-        Queue::assertNotPushed(CopyFile::class);
-        $this->assertTrue($torrent->fresh()->should_copy);
+        Queue::assertPushed(CopyFile::class);
     }
 
     /** @test */
