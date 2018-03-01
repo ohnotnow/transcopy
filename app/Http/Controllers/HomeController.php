@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-class TorrentController extends Controller
+class HomeController extends Controller
 {
     public function index()
     {
