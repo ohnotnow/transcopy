@@ -122,31 +122,4 @@ class CopyTest extends TestCase
         );
         $this->assertTrue($torrent->fresh()->shouldBeCopied());
     }
-
-    /** @test */
-    public function queued_copy_jobs_dont_send_notifications_until_actually_copyied()
-    {
-        Storage::fake('destination');
-        app()->singleton(Torrent::class, function ($app) {
-            return app(FakeTorrent::class);
-        });
-        config(['queue.default' => 'database']);
-        Mail::fake();
-        Storage::disk('torrents')->put('file1', 'hello');
-        app(FakeTorrent::class)->index();
-        $torrent = TorrentEntry::first();
-        $torrent->percent = 90;
-        $torrent->save();
-
-        $this->assertFalse($torrent->fresh()->shouldBeCopied());
-
-        CopyFile::dispatch($torrent);
-
-        $this->assertDatabaseMissing('jobs', ['id' => 2]);
-        Mail::assertNotSent(CopySucceeded::class);
-
-        Artisan::call('queue:work', ['--once' => true]);
-
-        Mail::assertSent(CopySucceeded::class);
-    }
 }

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use App\Jobs\CopyFile;
@@ -12,6 +13,7 @@ use App\Mail\CopyFailed;
 use App\Mail\CopySucceeded;
 use App\FakeTorrent;
 use App\TorrentEntry;
+use App\Torrent;
 
 class NotificationTest extends TestCase
 {
@@ -116,5 +118,50 @@ class NotificationTest extends TestCase
         CopyFile::dispatch($file);
 
         Mail::assertNotSent(CopySucceeded::class);
+    }
+
+    /** @test */
+    public function queued_copy_jobs_dont_send_notifications_until_actually_copied()
+    {
+        // fake the storage
+        Storage::fake('torrents');
+        Storage::fake('destination');
+
+        // bind our fake torrent API
+        app()->singleton(Torrent::class, function ($app) {
+            return app(FakeTorrent::class);
+        });
+
+        // we need to use the DB driver for the queue as sync doesn't understand ->delay() jobs :'-/
+        config(['queue.default' => 'database']);
+        Mail::fake();
+
+        // put a file in storage
+        Storage::disk('torrents')->put('file1', 'hello');
+
+        // index the torrents
+        app(FakeTorrent::class)->index();
+
+        // and fake it as still downloading
+        $torrent = TorrentEntry::first();
+        $torrent->percent = 90;
+        $torrent->save();
+
+        $this->assertFalse($torrent->fresh()->shouldBeCopied());
+
+        // send the job to the queue
+        CopyFile::dispatch($torrent);
+
+        // it shouldn't have yet run
+        $this->assertDatabaseMissing('jobs', ['id' => 2]);
+        Mail::assertNotSent(CopySucceeded::class);
+        $this->assertFalse($torrent->fresh()->shouldBeCopied());
+
+        // run the queue once
+        Artisan::call('queue:work', ['--once' => true]);
+
+        // the queued torrent will now be 'finished downloading' (see FakeTorrent.php)
+        $this->assertTrue($torrent->fresh()->shouldBeCopied());
+        Mail::assertSent(CopySucceeded::class);
     }
 }
