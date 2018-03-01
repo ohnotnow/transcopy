@@ -36,18 +36,11 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Queue::failing(function (JobFailed $event) {
-            if (config('transcopy.send_failure_notifications')) {
-                Mail::to(config('transcopy.notification_address'))->send(
-                    new CopyFailed($this->getJobFilename($event))
-                );
-            }
+            $this->notifyFailure($event);
         });
+
         Queue::after(function (JobProcessed $event) {
-            if (config('transcopy.send_success_notifications')) {
-                Mail::to(config('transcopy.notification_address'))->send(
-                    new CopySucceeded($this->getJobFilename($event))
-                );
-            }
+            $this->notifySuccess($event);
         });
     }
 
@@ -61,11 +54,48 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
+    public function notifyFailure($event)
+    {
+        if (! config('transcopy.send_failure_notifications')) {
+            return;
+        }
+
+        Mail::to(config('transcopy.notification_address'))->send(
+            new CopyFailed($this->getJobFilename($event))
+        );
+    }
+
+    protected function notifySuccess($event)
+    {
+        if (! config('transcopy.send_success_notifications')) {
+            return;
+        }
+
+        if ($this->torrentStillDownloading($event)) {
+            return;
+        }
+
+        Mail::to(config('transcopy.notification_address'))->send(
+            new CopySucceeded($this->getJobFilename($event))
+        );
+    }
+
     protected function getJobFilename($event)
     {
+        $job = $this->getJobFromEvent($event);
+        return $job->torrent->getBasename();
+    }
+
+    protected function torrentStillDownloading($event)
+    {
+        $job = $this->getJobFromEvent($event);
+        return $job->torrent->isStillDownloading();
+    }
+
+    protected function getJobFromEvent($event)
+    {
         $job = $event->job->payload();
-        $jobObj = unserialize($job['data']['command']);
-        return $jobObj->torrent->getBasename();
+        return unserialize($job['data']['command']);
     }
 
     /**

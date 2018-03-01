@@ -9,6 +9,8 @@ use App\FakeTorrent;
 use App\TorrentEntry;
 use App\Jobs\CopyFile;
 use App\Torrent;
+use App\Mail\CopyFailed;
+use App\Mail\CopySucceeded;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Artisan;
@@ -119,5 +121,32 @@ class CopyTest extends TestCase
             now()->addMinutes(5)->format('d/m/Y H:i')
         );
         $this->assertTrue($torrent->fresh()->shouldBeCopied());
+    }
+
+    /** @test */
+    public function queued_copy_jobs_dont_send_notifications_until_actually_copyied()
+    {
+        Storage::fake('destination');
+        app()->singleton(Torrent::class, function ($app) {
+            return app(FakeTorrent::class);
+        });
+        config(['queue.default' => 'database']);
+        Mail::fake();
+        Storage::disk('torrents')->put('file1', 'hello');
+        app(FakeTorrent::class)->index();
+        $torrent = TorrentEntry::first();
+        $torrent->percent = 90;
+        $torrent->save();
+
+        $this->assertFalse($torrent->fresh()->shouldBeCopied());
+
+        CopyFile::dispatch($torrent);
+
+        $this->assertDatabaseMissing('jobs', ['id' => 2]);
+        Mail::assertNotSent(CopySucceeded::class);
+
+        Artisan::call('queue:work', ['--once' => true]);
+
+        Mail::assertSent(CopySucceeded::class);
     }
 }
