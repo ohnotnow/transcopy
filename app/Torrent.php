@@ -5,12 +5,13 @@ namespace App;
 use DB;
 use App\TorrentEntry;
 use Transmission\Transmission;
+use Ohffs\LaravelTransmission\Client;
 
 class Torrent
 {
     protected $transmission;
 
-    public function __construct(Transmission $transmission)
+    public function __construct(Client $transmission)
     {
         $this->transmission = $transmission;
     }
@@ -18,7 +19,7 @@ class Torrent
     public function index()
     {
         $torrents = DB::transaction(function () {
-            return collect($this->transmission->all())->map(function ($entry) {
+            return collect($this->transmission->authenticate()->all())->map(function ($entry) {
                 return $this->store($entry);
             });
         });
@@ -34,7 +35,7 @@ class Torrent
 
     public function update($id)
     {
-        $entry = $this->transmission->get(intval($id));
+        $entry = $this->transmission->authenticate()->find(intval($id));
         return DB::transaction(function () use ($entry) {
             return $this->store($entry);
         });
@@ -42,13 +43,13 @@ class Torrent
 
     protected function store($entry)
     {
-        return TorrentEntry::updateOrCreate(['name' => $entry->getName()], [
-            'torrent_id' => $entry->getId(),
-            'name' => $entry->getName(),
-            'size' => $entry->getSize(),
-            'percent' => $entry->getPercentDone(),
-            'path' => $entry->getDownloadDir() . '/' . $entry->getName(),
-            'eta' => $entry->getEta()
+        return TorrentEntry::updateOrCreate(['name' => $entry->name], [
+            'torrent_id' => $entry->id,
+            'name' => $entry->name,
+            'size' => $entry->totalSize,
+            'percent' => $entry->percentDone,
+            'path' => $entry->downloadDir . '/' . $entry->name,
+            'eta' => $entry->eta
         ]);
     }
 }
