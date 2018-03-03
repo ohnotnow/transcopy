@@ -7,12 +7,10 @@
     "require": {
         "php": ">=7.0.0",
         "fideloper/proxy": "~3.3",
-        "kslr/transmission-php": "dev-master",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/remote": "^5.5",
         "league/flysystem-aws-s3-v3": "^1.0",
-        "league/flysystem-sftp": "^1.0",
         "ohnotnow/laravel-transmission": "~1.0.0"
     },
     "require-dev": {

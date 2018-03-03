@@ -47,7 +47,7 @@ class Torrent
             'torrent_id' => $entry->id,
             'name' => $entry->name,
             'size' => $entry->totalSize,
-            'percent' => $entry->percentDone,
+            'percent' => $entry->percentDone * 100,
             'path' => $entry->downloadDir . '/' . $entry->name,
             'eta' => $entry->eta
         ]);
