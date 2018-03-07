@@ -19,7 +19,7 @@ class Torrent
     public function index()
     {
         $torrents = DB::transaction(function () {
-            return collect($this->transmission->authenticate()->all())->map(function ($entry) {
+            return collect($this->transmission->all())->map(function ($entry) {
                 return $this->store($entry);
             });
         });
@@ -35,7 +35,7 @@ class Torrent
 
     public function update($id)
     {
-        $entry = $this->transmission->authenticate()->find(intval($id));
+        $entry = $this->transmission->find(intval($id));
         return DB::transaction(function () use ($entry) {
             return $this->store($entry);
         });
