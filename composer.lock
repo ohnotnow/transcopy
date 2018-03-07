@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6b1106d0bcfea712cc58f14a1e1a7c3a",
+    "content-hash": "30bd6c51f6563b2faa807e3da8704bb4",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1383,16 +1383,16 @@
         },
         {
             "name": "ohnotnow/laravel-transmission",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ohnotnow/laravel-transmission.git",
-                "reference": "837b0be0ec29f2635f693245cf1e4e9212a323ff"
+                "reference": "7aa254f149a52cb7125c25528877be6bc5c7a40e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ohnotnow/laravel-transmission/zipball/837b0be0ec29f2635f693245cf1e4e9212a323ff",
-                "reference": "837b0be0ec29f2635f693245cf1e4e9212a323ff",
+                "url": "https://api.github.com/repos/ohnotnow/laravel-transmission/zipball/7aa254f149a52cb7125c25528877be6bc5c7a40e",
+                "reference": "7aa254f149a52cb7125c25528877be6bc5c7a40e",
                 "shasum": ""
             },
             "require": {
@@ -1429,7 +1429,7 @@
                 }
             ],
             "description": "Laravel wrapper for the Transmission torrent server API",
-            "time": "2018-03-03T17:03:15+00:00"
+            "time": "2018-03-04T10:18:28+00:00"
         },
         {
             "name": "paragonie/random_compat",

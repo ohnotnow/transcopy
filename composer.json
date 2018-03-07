@@ -11,7 +11,7 @@
         "laravel/tinker": "~1.0",
         "laravelcollective/remote": "^5.5",
         "league/flysystem-aws-s3-v3": "^1.0",
-        "ohnotnow/laravel-transmission": "~1.0.0"
+        "ohnotnow/laravel-transmission": "~1.1.0"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
