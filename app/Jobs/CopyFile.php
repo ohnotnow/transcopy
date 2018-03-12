@@ -63,6 +63,7 @@ class CopyFile implements ShouldQueue
         if (!file_exists($sourceName)) {
             throw new \InvalidArgumentException('No such file ' . $sourceName);
         }
+
         Storage::disk('destination')->put($destName, fopen($sourceName, 'r+'));
     }
 
@@ -74,6 +75,8 @@ class CopyFile implements ShouldQueue
     protected function tryAgainIn($delayMinutes = 5)
     {
         app(Torrent::class)->update($this->torrent->torrent_id);
-        $this->dispatch(TorrentEntry::find($this->torrent->id))->delay(now()->addMinutes($delayMinutes));
+
+        $this->dispatch(TorrentEntry::find($this->torrent->id))
+             ->delay(now()->addMinutes($delayMinutes));
     }
 }
