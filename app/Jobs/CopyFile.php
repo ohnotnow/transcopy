@@ -24,15 +24,9 @@ class CopyFile implements ShouldQueue
 
     public function handle()
     {
-        /**
-         * if the torrent is still downloading, then assume we 'pre-queued' the
-         * copy to take place (ie, pressed the copy button while it was still
-         * downloading in the UI) - so we put the job back on the queue and
-         * try again in 5 minutes.
-         */
         if ($this->torrent->isStillDownloading()) {
             $this->torrent->markShouldCopy();
-            $this->requeue();
+            $this->tryAgainIn(5);
             return;
         }
 
@@ -77,9 +71,9 @@ class CopyFile implements ShouldQueue
      *
      * @return void
      */
-    protected function requeue($delaySeconds = 5 * 60)
+    protected function tryAgainIn($delayMinutes = 5)
     {
         app(Torrent::class)->update($this->torrent->torrent_id);
-        $this->dispatch(TorrentEntry::find($this->torrent->id))->delay(now()->addSeconds($delaySeconds));
+        $this->dispatch(TorrentEntry::find($this->torrent->id))->delay(now()->addMinutes($delayMinutes));
     }
 }
