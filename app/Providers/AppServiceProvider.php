@@ -72,6 +72,11 @@ class AppServiceProvider extends ServiceProvider
         }
 
         if ($this->torrentStillDownloading($event)) {
+            // as laravel no longer lets us silently 'requeue' a job, we
+            // have to dispatch a new copy for torrents which are still
+            // downloading - which unfortunatly still fires the job
+            // event for the original, so we have to bail out here
+            // in the handler. See app/Jobs/CopyFile.php
             return;
         }
 

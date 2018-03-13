@@ -106,8 +106,6 @@ class CopyTest extends TestCase
         $torrent->percent = 90;
         $torrent->save();
 
-        $this->assertFalse($torrent->fresh()->shouldBeCopied());
-
         CopyFile::dispatch($torrent);
 
         $this->assertDatabaseMissing('jobs', ['id' => 2]);
@@ -120,6 +118,5 @@ class CopyTest extends TestCase
             \Carbon\Carbon::createFromTimestamp($newJob->available_at)->format('d/m/Y H:i'),
             now()->addMinutes(5)->format('d/m/Y H:i')
         );
-        $this->assertTrue($torrent->fresh()->shouldBeCopied());
     }
 }

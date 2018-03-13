@@ -27,40 +27,38 @@ class TorrentEntry extends Model
 
     public function markCopying()
     {
-        $this->update(['is_copying' => true, 'was_copied' => false, 'copy_failed' => false, 'should_copy' => false]);
+        $this->update([
+            'is_copying' => true,
+            'was_copied' => false,
+            'copy_failed' => false,
+            'should_copy' => false
+        ]);
     }
 
     public function markCopied()
     {
-        $this->update(['is_copying' => false, 'was_copied' => true, 'copy_failed' => false, 'should_copy' => false]);
-    }
-
-    public function scopeCopyWhenFinished($query)
-    {
-        return $query->where('should_copy', '=', true);
-    }
-
-    public function scopeShouldBeQueued($query)
-    {
-        return $query->shouldBeCopied()->where('percent', '>=', 100);
+        $this->update([
+            'is_copying' => false,
+            'was_copied' => true,
+            'copy_failed' => false,
+            'should_copy' => false
+        ]);
     }
 
     public function markShouldCopy()
     {
-        $this->update(['should_copy' => true]);
-    }
-
-    public function shouldBeCopied()
-    {
-        if ($this->should_copy and $this->isComplete()) {
-            return true;
-        }
-        return false;
+        $this->update([
+            'should_copy' => true
+        ]);
     }
 
     public function markFailed()
     {
-        $this->update(['is_copying' => false, 'was_copied' => false, 'copy_failed' => true]);
+        $this->update([
+            'is_copying' => false,
+            'was_copied' => false,
+            'copy_failed' => true
+        ]);
     }
 
     public function clearFlags()

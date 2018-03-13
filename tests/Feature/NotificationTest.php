@@ -147,21 +147,17 @@ class NotificationTest extends TestCase
         $torrent->percent = 90;
         $torrent->save();
 
-        $this->assertFalse($torrent->fresh()->shouldBeCopied());
-
         // send the job to the queue
         CopyFile::dispatch($torrent);
 
         // it shouldn't have yet run
         $this->assertDatabaseMissing('jobs', ['id' => 2]);
         Mail::assertNotSent(CopySucceeded::class);
-        $this->assertFalse($torrent->fresh()->shouldBeCopied());
 
         // run the queue once
         Artisan::call('queue:work', ['--once' => true]);
 
         // the queued torrent will now be 'finished downloading' (see FakeTorrent.php)
-        $this->assertTrue($torrent->fresh()->shouldBeCopied());
         Mail::assertSent(CopySucceeded::class);
     }
 }
