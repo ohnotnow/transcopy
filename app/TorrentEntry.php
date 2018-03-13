@@ -143,7 +143,7 @@ class TorrentEntry extends Model
     }
 
     /**
-     * Returns an array of files inside 'this' directory.
+     * Returns an collection of files inside 'this' directory.
      *
      * @return array
      */
