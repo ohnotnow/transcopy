@@ -29,6 +29,7 @@
                     @selected="select(torrent.id)"
                     @unselected="unselect(torrent.id)"
                     @error="serverError = 'Error refreshing ' + torrent.name"
+                    @success="clearErrorFor(torrent)"
                 >
                 </torrent-entry>
             </div>
@@ -104,6 +105,12 @@
                         this.refreshing = false;
                         this.serverError = error.response.data.message;
                     });
+            },
+
+            clearErrorFor(torrent) {
+                if (this.serverError.indexOf(torrent.name) > -1) {
+                    this.serverError = '';
+                }
             }
         }
     }

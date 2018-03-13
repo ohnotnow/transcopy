@@ -54,6 +54,7 @@
             update() {
                 axios.get('/api/torrents/' + this.entry.torrent_id)
                     .then((response) => {
+                        this.$emit('success');
                         this.entry = response.data.data;
                         this.broken = false;
                         this.checkForUpdates();
