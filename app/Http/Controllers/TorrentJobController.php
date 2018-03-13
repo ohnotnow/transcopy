@@ -9,9 +9,12 @@ class TorrentJobController extends Controller
 {
     public function store(Request $request)
     {
-        if (!$request->exists('copies')) {
-            return response(422);
-        }
+        $request->validate([
+            'copies' => 'required|array|min:1',
+        ]);
+        // if (!$request->exists('copies')) {
+        //     return response(422);
+        // }
 
         TorrentEntry::findMany($request->copies)->each->queueCopy();
 

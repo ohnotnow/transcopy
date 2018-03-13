@@ -14,15 +14,18 @@ class TorrentController extends Controller
         return $this->orderedTorrents();
     }
 
+    public function show($id)
+    {
+        return new TorrentEntryResource(
+            app(Torrent::class)->update($id)
+        );
+    }
+
     public function update()
     {
         app(Torrent::class)->index();
-        return $this->orderedTorrents();
-    }
 
-    public function show($id)
-    {
-        return new TorrentEntryResource(app(Torrent::class)->update($id));
+        return $this->orderedTorrents();
     }
 
     protected function orderedTorrents()
