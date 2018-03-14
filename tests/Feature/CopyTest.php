@@ -9,6 +9,7 @@ use App\FakeTorrent;
 use App\TorrentEntry;
 use App\Jobs\CopyFile;
 use App\Torrent;
+use App\RedisStore;
 use App\Mail\CopyFailed;
 use App\Mail\CopySucceeded;
 use Illuminate\Support\Facades\Mail;
@@ -22,6 +23,14 @@ class CopyTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function getTransmissionClient()
+    {
+        app()->bind(Torrent::class, function ($app) {
+            return app(FakeTorrent::class);
+        });
+        return app(Torrent::class);
+    }
+
     /** @test */
     public function can_copy_a_regular_torrent_entry()
     {
@@ -31,9 +40,9 @@ class CopyTest extends TestCase
         Storage::fake('destination');
         Storage::disk('torrents')->put('file1', 'hello');
         app(FakeTorrent::class)->index();
-        $torrent = TorrentEntry::first();
+        $torrent = app(RedisStore::class)->first();
 
-        CopyFile::dispatch($torrent);
+        CopyFile::dispatch($torrent->id);
 
         Storage::disk('destination')->assertExists('file1');
     }
@@ -49,9 +58,9 @@ class CopyTest extends TestCase
         Storage::disk('torrents')->put('dir1/dir2/file3', 'dont');
         Storage::disk('torrents')->put('dir1/dir2/file4', 'rot');
         app(FakeTorrent::class)->index();
-        $torrent = TorrentEntry::first();
+        $torrent = app(RedisStore::class)->first();
 
-        CopyFile::dispatch($torrent);
+        CopyFile::dispatch($torrent->id);
 
         Storage::disk('destination')->assertExists('dir1/file1');
         Storage::disk('destination')->assertExists('dir1/file2');
@@ -67,27 +76,35 @@ class CopyTest extends TestCase
         config(['transcopy' => ['send_success_notifications' => false]]);
         Storage::disk('torrents')->put('file1', 'hello');
         app(FakeTorrent::class)->index();
-        $torrent = TorrentEntry::first();
+        $torrent = app(RedisStore::class)->first();
         $this->assertFalse($torrent->wasAlreadyCopied());
 
-        CopyFile::dispatch($torrent);
+        CopyFile::dispatch($torrent->id);
 
-        $this->assertTrue($torrent->fresh()->wasAlreadyCopied());
+        $torrent = app(RedisStore::class)->first();
+        $this->assertTrue($torrent->wasAlreadyCopied());
     }
 
     /** @test */
     public function a_failed_job_will_mark_itself_as_such()
     {
+        $this->getTransmissionClient();
         Storage::fake('destination');
         Mail::fake();
-        $nonExistantTorrent = factory(TorrentEntry::class)->create();
+        $nonExistantTorrent = new TorrentEntry([
+            'id' => 12345,
+            'name' => 'whatever',
+            'path' => 'testeroo',
+            'percent' => 100,
+        ]);
+        $nonExistantTorrent->save();
         $this->assertFalse($nonExistantTorrent->copyFailed());
 
         try {
-            CopyFile::dispatch($nonExistantTorrent);
+            CopyFile::dispatch($nonExistantTorrent->id);
             $this->fail('Expected an exception and none thrown');
         } catch (\Exception $e) {
-            $this->assertTrue($nonExistantTorrent->fresh()->copyFailed());
+            $this->assertTrue(app(RedisStore::class)->find($nonExistantTorrent->id)->copyFailed());
         }
     }
 
@@ -95,18 +112,15 @@ class CopyTest extends TestCase
     public function if_a_torrent_is_still_downloading_a_new_job_is_fired_with_a_five_minute_delay_and_a_flag_is_set_on_the_torrent()
     {
         Storage::fake('destination');
-        app()->singleton(Torrent::class, function ($app) {
-            return app(FakeTorrent::class);
-        });
+        $this->getTransmissionClient();
         config(['queue.default' => 'database']);
         Mail::fake();
         Storage::disk('torrents')->put('file1', 'hello');
         app(FakeTorrent::class)->index();
-        $torrent = TorrentEntry::first();
-        $torrent->percent = 90;
-        $torrent->save();
+        $torrent = app(RedisStore::class)->first();
+        $torrent->update(['percent' => 90]);
 
-        CopyFile::dispatch($torrent);
+        CopyFile::dispatch($torrent->id);
 
         $this->assertDatabaseMissing('jobs', ['id' => 2]);
 

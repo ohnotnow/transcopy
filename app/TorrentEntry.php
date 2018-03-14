@@ -3,22 +3,78 @@
 namespace App;
 
 use App\Jobs\CopyFile;
+use App\RedisStore;
 use Illuminate\Support\Facades\File;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
-class TorrentEntry extends Model
+class TorrentEntry
 {
-    protected $guarded = [];
+    protected $attribs = [
+        'id' => null,
+        'name' => null,
+        'size' => null,
+        'percent' => null,
+        'path' => null,
+        'eta' => null,
+        'was_copied' => false,
+        'is_copying' => false,
+        'copy_failed' => false,
+        'should_copy' => false,
+    ];
 
-    protected $casts = [
-        'was_copied' => 'boolean',
-        'is_copying' => 'boolean',
-        'copy_failed' => 'boolean',
-        'should_copy' => 'boolean',
+    protected $booleans = [
+        'was_copied',
+        'is_copying',
+        'copy_failed',
+        'should_copy',
     ];
 
     protected $diskName = 'torrents';
+
+    public function __construct($attribs = [])
+    {
+        $this->attribs = array_merge($this->attribs, $attribs);
+        $this->store = app(RedisStore::class);
+    }
+
+    public function __get($key)
+    {
+        if (array_key_exists($key, $this->attribs)) {
+            if (in_array($key, $this->booleans)) {
+                return !! $this->attribs[$key];
+            }
+            return $this->attribs[$key];
+        }
+
+        return null;
+    }
+
+    public function save()
+    {
+        return $this->update();
+    }
+
+    public function update($attribs = [])
+    {
+        $this->attribs = array_merge($this->attribs, $attribs);
+        $this->store->update($this->attribs);
+        return $this;
+    }
+
+    public static function find($torrentId)
+    {
+        return $this->store->find($torrentId);
+    }
+
+    public function toArray()
+    {
+        return $this->attribs;
+    }
+
+    public function toJson()
+    {
+        return json_encode($this->toArray());
+    }
 
     public function queueCopy()
     {

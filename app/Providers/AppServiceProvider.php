@@ -88,13 +88,13 @@ class AppServiceProvider extends ServiceProvider
     protected function getJobFilename($event)
     {
         $job = $this->getJobFromEvent($event);
-        return $job->torrent->getBasename();
+        return $job->getTorrent()->getBasename();
     }
 
     protected function torrentStillDownloading($event)
     {
         $job = $this->getJobFromEvent($event);
-        return $job->torrent->isStillDownloading();
+        return $job->getTorrent()->isStillDownloading();
     }
 
     protected function getJobFromEvent($event)

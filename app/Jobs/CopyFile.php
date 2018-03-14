@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Torrent;
+use App\RedisStore;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -15,15 +16,18 @@ class CopyFile implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $torrentId;
+
     public $torrent;
 
-    public function __construct(TorrentEntry $torrent)
+    public function __construct($torrentId)
     {
-        $this->torrent = $torrent;
+        $this->torrentId = $torrentId;
     }
 
     public function handle()
     {
+        $this->torrent = $this->getTorrent();
         if ($this->torrent->isStillDownloading()) {
             $this->torrent->markShouldCopy();
             $this->tryAgainIn(5);
@@ -74,9 +78,14 @@ class CopyFile implements ShouldQueue
      */
     protected function tryAgainIn($delayMinutes = 5)
     {
-        app(Torrent::class)->update($this->torrent->torrent_id);
+        app(Torrent::class)->update($this->torrentId);
 
-        $this->dispatch(TorrentEntry::find($this->torrent->id))
+        $this->dispatch($this->torrentId)
              ->delay(now()->addMinutes($delayMinutes));
+    }
+
+    public function getTorrent()
+    {
+        return app(RedisStore::class)->find($this->torrentId);
     }
 }
