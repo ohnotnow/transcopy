@@ -52,7 +52,7 @@
 
         methods: {
             update() {
-                axios.get('/api/torrents/' + this.entry.torrent_id)
+                axios.get('/api/torrents/' + this.entry.id)
                     .then((response) => {
                         this.$emit('success');
                         this.entry = response.data.data;
@@ -81,8 +81,8 @@
             },
 
             randomDelay() {
-                let min = 4000;
-                let max = 6000;
+                let min = 500;
+                let max = 2000;
                 return Math.floor(Math.random() * (max - min)) + min;
             },
 

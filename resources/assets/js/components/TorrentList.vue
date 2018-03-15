@@ -45,7 +45,7 @@
                 copies: [],
                 copyList: '',
                 refreshing: true,
-                serverError: false,
+                serverError: '',
             }
         },
 

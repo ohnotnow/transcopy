@@ -4,6 +4,7 @@ namespace App;
 
 use DB;
 use App\TorrentEntry;
+use App\RedisStore;
 use Ohffs\LaravelTransmission\Client;
 
 class Torrent
@@ -30,7 +31,7 @@ class Torrent
 
     protected function store($entry)
     {
-        $torrent = TorrentEntry::find($entry->id);
+        $torrent = app(RedisStore::class)->find($entry->id);
         if (! $torrent) {
             $torrent = new TorrentEntry;
         }
