@@ -15,7 +15,7 @@ Vue.js to handle most of that.
 
 ## Installation
 
-Assuming you have PHPv7 and [composer](https://getcomposer.org/) installed.
+Assuming you have PHPv7, [composer](https://getcomposer.org/) and [redis](https://redis.io/) installed.
 
 Clone the project, then run (in the project directory) :
 
@@ -29,7 +29,15 @@ Now edit the `.env` file to fill in the values that match your system setup (eg,
 
 Then edit `config/filesystems.php` - the default is set to use [minio](https://minio.io/) on your remote server (which is what I have going).  If you are just mounting your remote/kodi box via samba then comment out the current 'destination' entry and comment in the one with the 'driver' set to 'local'.
 
-In theory you are now good to go.
+In theory you are now good to go.  You *might* want to disable redis from auto-saving it's db if this is the only thing
+you are using it for.  On debian/ubuntu for instance if you have `apt-get install redis-server` to install it then set
+the following in `/etc/redis/redis.conf`:
+
+```
+# save 900 1
+# save 300 10
+# save 60 10000
+```
 
 ## Running
 
