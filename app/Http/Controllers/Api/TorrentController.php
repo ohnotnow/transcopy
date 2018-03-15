@@ -32,7 +32,9 @@ class TorrentController extends Controller
     protected function orderedTorrents()
     {
         return TorrentEntryResource::collection(
-            app(RedisStore::class)->all()->sortByDesc('id')
+            app(RedisStore::class)->all()->sortByDesc(function ($torrent, $key) {
+                return $torrent->id;
+            })->values()
         );
     }
 }

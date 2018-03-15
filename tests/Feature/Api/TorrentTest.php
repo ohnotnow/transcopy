@@ -57,13 +57,13 @@ class TorrentTest extends TestCase
         $response->assertJson([
             'data' => [
                 [
-                    'id' => $torrent2->id,
-                    'name' => $torrent2->webFriendlyName(),
-                    'eta' => $torrent2->formattedEta(),
-                    'size' => $torrent2->formattedSize(),
-                    'copied' => $torrent2->wasAlreadyCopied(),
-                    'incomplete' => $torrent2->isStillDownloading(),
-                    'copy_failed' => $torrent2->copy_failed,
+                    'id' => $torrent3->id,
+                    'name' => $torrent3->webFriendlyName(),
+                    'eta' => $torrent3->formattedEta(),
+                    'size' => $torrent3->formattedSize(),
+                    'copied' => $torrent3->wasAlreadyCopied(),
+                    'incomplete' => $torrent3->isStillDownloading(),
+                    'copy_failed' => $torrent3->copy_failed,
                 ],
                 [
                     'id' => $torrent1->id,
@@ -75,13 +75,13 @@ class TorrentTest extends TestCase
                     'copy_failed' => $torrent1->copy_failed,
                 ],
                 [
-                    'id' => $torrent3->id,
-                    'name' => $torrent3->webFriendlyName(),
-                    'eta' => $torrent3->formattedEta(),
-                    'size' => $torrent3->formattedSize(),
-                    'copied' => $torrent3->wasAlreadyCopied(),
-                    'incomplete' => $torrent3->isStillDownloading(),
-                    'copy_failed' => $torrent3->copy_failed,
+                    'id' => $torrent2->id,
+                    'name' => $torrent2->webFriendlyName(),
+                    'eta' => $torrent2->formattedEta(),
+                    'size' => $torrent2->formattedSize(),
+                    'copied' => $torrent2->wasAlreadyCopied(),
+                    'incomplete' => $torrent2->isStillDownloading(),
+                    'copy_failed' => $torrent2->copy_failed,
                 ],
             ],
         ]);
