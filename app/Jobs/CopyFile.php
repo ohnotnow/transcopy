@@ -4,13 +4,13 @@ namespace App\Jobs;
 
 use App\Torrent;
 use App\RedisStore;
+use App\Contracts\TorrentContract;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Storage;
-use App\TorrentEntry;
 
 class CopyFile implements ShouldQueue
 {
@@ -78,7 +78,7 @@ class CopyFile implements ShouldQueue
      */
     protected function tryAgainIn($delayMinutes = 5)
     {
-        app(Torrent::class)->update($this->torrentId);
+        app(TorrentContract::class)->update($this->torrentId);
 
         $this->dispatch($this->torrentId)
              ->delay(now()->addMinutes($delayMinutes));

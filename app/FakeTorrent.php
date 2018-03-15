@@ -7,8 +7,9 @@ use App\TorrentEntry;
 use App\Filesystem;
 use App\RedisStore;
 use Faker\Generator as Faker;
+use App\Contracts\TorrentContract;
 
-class FakeTorrent
+class FakeTorrent implements TorrentContract
 {
     public function __construct(Faker $faker)
     {

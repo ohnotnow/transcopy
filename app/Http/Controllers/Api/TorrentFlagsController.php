@@ -8,9 +8,16 @@ use App\Http\Controllers\Controller;
 
 class TorrentFlagsController extends Controller
 {
+    protected $redis;
+
+    public function __construct(RedisStore $redis)
+    {
+        $this->redis = $redis;
+    }
+
     public function destroy($id)
     {
-        app(RedisStore::class)->find($id)->clearFlags();
+        $this->redis->find($id)->clearFlags();
 
         return response()->json([
             'data' => [

@@ -93,7 +93,7 @@
 
             refreshTorrents() {
                 this.refreshing = true;
-                this.serverError = false;
+                this.serverError = '';
                 //this.torrents = [];
                 axios.post('/api/refresh/torrents')
                     .then((response) => {

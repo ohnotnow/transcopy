@@ -8,6 +8,7 @@ use App\FakeTorrent;
 use App\TorrentEntry;
 use App\RedisStore;
 use App\Jobs\CopyFile;
+use App\Contracts\TorrentContract;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -17,15 +18,16 @@ class TorrentTest extends TestCase
 
     protected function getTransmissionClient()
     {
-        app()->bind(Torrent::class, function ($app) {
+        app()->bind(TorrentContract::class, function ($app) {
             return app(FakeTorrent::class);
         });
-        return app(Torrent::class);
+        return app(TorrentContract::class);
     }
 
     /** @test */
     public function can_get_a_list_of_all_torrents_ordered_by_newest_torrent_id()
     {
+        $this->getTransmissionClient();
         $torrent1 = new TorrentEntry([
             'id' => 3,
             'name' => 'whatever3',
@@ -90,6 +92,7 @@ class TorrentTest extends TestCase
     /** @test */
     public function can_get_a_fresh_copy_of_a_torrent()
     {
+        $this->withoutExceptionHandling();
         $this->getTransmissionClient();
         $torrent1 = new TorrentEntry([
             'id' => 3,
@@ -123,7 +126,6 @@ class TorrentTest extends TestCase
     /** @test */
     public function can_trigger_copy_jobs_for_torrents()
     {
-        $this->withoutExceptionHandling();
         $this->getTransmissionClient();
         Queue::fake();
 

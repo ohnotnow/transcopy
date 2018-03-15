@@ -8,7 +8,7 @@ use App\Filesystem;
 use App\FakeTorrent;
 use App\TorrentEntry;
 use App\Jobs\CopyFile;
-use App\Torrent;
+use App\Contracts\TorrentContract;
 use App\RedisStore;
 use App\Mail\CopyFailed;
 use App\Mail\CopySucceeded;
@@ -25,19 +25,16 @@ class CopyTest extends TestCase
 
     protected function getTransmissionClient()
     {
-        app()->bind(Torrent::class, function ($app) {
+        app()->bind(TorrentContract::class, function ($app) {
             return app(FakeTorrent::class);
         });
-        return app(Torrent::class);
+        return app(TorrentContract::class);
     }
 
     /** @test */
     public function can_copy_a_regular_torrent_entry()
     {
-        $this->withoutExceptionHandling();
-        Mail::fake();
-        Storage::fake('torrents');
-        Storage::fake('destination');
+
         Storage::disk('torrents')->put('file1', 'hello');
         app(FakeTorrent::class)->index();
         $torrent = app(RedisStore::class)->first();

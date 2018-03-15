@@ -2,13 +2,14 @@
 
 namespace App;
 
-use App\Jobs\CopyFile;
 use App\RedisStore;
+use App\Jobs\CopyFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class TorrentEntry
 {
+    // default attribs for a new object
     protected $attribs = [
         'id' => null,
         'name' => null,
@@ -22,6 +23,7 @@ class TorrentEntry
         'should_copy' => false,
     ];
 
+    // which attribs should be cast to booleans when doing a $this->attrib
     protected $booleans = [
         'was_copied',
         'is_copying',
@@ -29,25 +31,38 @@ class TorrentEntry
         'should_copy',
     ];
 
+    // the config/storage.php disk name for the local 'disk' that torrents are in
     protected $diskName = 'torrents';
 
     public function __construct($attribs = [])
     {
         $this->attribs = array_merge($this->attribs, $attribs);
-        $this->store = app(RedisStore::class);
     }
 
     public function __get($key)
     {
-        if (array_key_exists($key, $this->attribs)) {
-            if (in_array($key, $this->booleans)) {
-                return !! $this->attribs[$key];
-            }
-            return $this->attribs[$key];
+        if (! array_key_exists($key, $this->attribs)) {
+            return null;
         }
 
-        return null;
+        if (in_array($key, $this->booleans)) {
+            return !! $this->attribs[$key];
+        }
+
+        return $this->attribs[$key];
     }
+
+    public function source()
+    {
+        return Storage::disk($this->diskName);
+    }
+
+    public function backend()
+    {
+        return app(RedisStore::class);
+    }
+
+    /****** some Eloquent-isms *******/
 
     public function save()
     {
@@ -57,13 +72,13 @@ class TorrentEntry
     public function update($attribs = [])
     {
         $this->attribs = array_merge($this->attribs, $attribs);
-        $this->store->update($this->attribs);
+        $this->backend()->update($this->attribs);
         return $this;
     }
 
     public static function find($torrentId)
     {
-        return $this->store->find($torrentId);
+        return $this->backend()->find($torrentId);
     }
 
     public function toArray()
@@ -75,6 +90,8 @@ class TorrentEntry
     {
         return json_encode($this->toArray());
     }
+
+    /******* actions *******/
 
     public function queueCopy()
     {
@@ -127,6 +144,8 @@ class TorrentEntry
         ]);
     }
 
+    /******* Boolean wrappers/checkers *******/
+
     public function wasAlreadyCopied()
     {
         return $this->was_copied;
@@ -162,6 +181,8 @@ class TorrentEntry
         return ! $this->isFile();
     }
 
+    /******* File/path gubbins *******/
+
     public function getBasename()
     {
         return File::basename($this->path);
@@ -175,11 +196,6 @@ class TorrentEntry
     public function getPath()
     {
         return $this->getBasename();
-    }
-
-    public function source()
-    {
-        return Storage::disk($this->diskName);
     }
 
     /**
@@ -216,6 +232,8 @@ class TorrentEntry
                 return $entry;
             });
     }
+
+    /******* Formatting helpers *******/
 
     public function formattedSize()
     {

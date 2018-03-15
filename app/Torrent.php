@@ -6,14 +6,18 @@ use DB;
 use App\TorrentEntry;
 use App\RedisStore;
 use Ohffs\LaravelTransmission\Client;
+use App\Contracts\TorrentContract;
 
-class Torrent
+class Torrent implements TorrentContract
 {
     protected $transmission;
 
-    public function __construct(Client $transmission)
+    protected $redis;
+
+    public function __construct(Client $transmission, RedisStore $redis)
     {
         $this->transmission = $transmission;
+        $this->redis = $redis;
     }
 
     public function index()
@@ -31,7 +35,7 @@ class Torrent
 
     protected function store($entry)
     {
-        $torrent = app(RedisStore::class)->find($entry->id);
+        $torrent = $this->redis->find($entry->id);
         if (! $torrent) {
             $torrent = new TorrentEntry;
         }

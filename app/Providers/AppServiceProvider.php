@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use DB;
+use App\Torrent;
+use App\Contracts\TorrentContract;
 use App\Mail\CopyFailed;
 use Transmission\Client;
 use App\Mail\CopySucceeded;
@@ -33,6 +35,9 @@ class AppServiceProvider extends ServiceProvider
             $transmission = new Transmission(config('transcopy.host', '127.0.0.1'), config('transcopy.port', 9091));
             $transmission->setClient($client);
             return $transmission;
+        });
+        $this->app->bind(TorrentContract::class, function ($app) {
+            return app(Torrent::class);
         });
 
         Queue::failing(function (JobFailed $event) {
