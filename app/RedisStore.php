@@ -14,12 +14,19 @@ class RedisStore
         return new TorrentEntry(Redis::hgetall("{$this->prefix}:{$torrentId}"));
     }
 
+    public function findMany($torrentIds)
+    {
+        return collect($torrentIds)->map(function ($id) {
+            return $this->find($id);
+        });
+    }
+
     public function all()
     {
         $members = Redis::smembers("{$this->prefix}:all");
         $list = [];
         foreach ($members as $torrentId) {
-            $list[$torrentId] = new TorrentEntry(Redis::hgetall("{$this->prefix}:{$torrentId}"));
+            $list[] = new TorrentEntry(Redis::hgetall("{$this->prefix}:{$torrentId}"));
         }
         return collect($list);
     }

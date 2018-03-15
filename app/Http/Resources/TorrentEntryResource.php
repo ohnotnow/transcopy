@@ -11,7 +11,6 @@ class TorrentEntryResource extends Resource
     {
         return [
             'id' => $this->id,
-            'torrent_id' => $this->torrent_id,
             'name' => $this->webFriendlyName(),
             'eta' => $this->formattedEta(),
             'size' => $this->formattedSize(),
@@ -21,7 +20,6 @@ class TorrentEntryResource extends Resource
             'copying' => $this->isCopying(),
             'copy_failed' => $this->copy_failed,
             'should_copy' => $this->should_copy,
-            //'incomplete' => rand(0, 1),
         ];
     }
 }

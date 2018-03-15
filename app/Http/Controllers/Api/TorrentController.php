@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Torrent;
 use App\TorrentEntry;
+use App\RedisStore;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TorrentEntryResource;
 
@@ -31,7 +32,7 @@ class TorrentController extends Controller
     protected function orderedTorrents()
     {
         return TorrentEntryResource::collection(
-            TorrentEntry::orderByDesc('torrent_id')->get()
+            app(RedisStore::class)->all()->sortByDesc('id')
         );
     }
 }

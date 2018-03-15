@@ -14,10 +14,19 @@ use App\Mail\CopySucceeded;
 use App\FakeTorrent;
 use App\TorrentEntry;
 use App\Torrent;
+use App\RedisStore;
 
 class NotificationTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function getTransmissionClient()
+    {
+        app()->bind(Torrent::class, function ($app) {
+            return app(FakeTorrent::class);
+        });
+        return app(Torrent::class);
+    }
 
     /** @test */
     public function a_failed_job_will_send_a_notification_if_so_configured()
@@ -31,10 +40,16 @@ class NotificationTest extends TestCase
                 'notification_address' => 'test@example.com'
             ]
         ]);
-        $nonExistantFile = factory(TorrentEntry::class)->create();
+        $nonExistantTorrent = new TorrentEntry([
+            'id' => 12345,
+            'name' => 'whatever',
+            'path' => 'testeroo',
+            'percent' => 100,
+        ]);
+        $nonExistantTorrent->save();
 
         try {
-            CopyFile::dispatch($nonExistantFile);
+            CopyFile::dispatch($nonExistantTorrent->id);
         } catch (\Exception $e) {
             Mail::assertSent(CopyFailed::class, function ($mail) {
                 return $mail->hasTo('test@example.com');
@@ -57,10 +72,16 @@ class NotificationTest extends TestCase
                 'notification_address' => 'test@example.com'
             ]
         ]);
-        $nonExistantFile = factory(TorrentEntry::class)->create();
+        $nonExistantTorrent = new TorrentEntry([
+            'id' => 12345,
+            'name' => 'whatever',
+            'path' => 'testeroo',
+            'percent' => 100,
+        ]);
+        $nonExistantTorrent->save();
 
         try {
-            CopyFile::dispatch($nonExistantFile);
+            CopyFile::dispatch($nonExistantTorrent->id);
         } catch (\Exception $e) {
             Mail::assertNotSent(CopyFailed::class);
             return true;
@@ -82,13 +103,11 @@ class NotificationTest extends TestCase
             ]
         ]);
         Storage::disk('torrents')->put('test', 'hello');
-        app()->singleton(Torrent::class, function ($app) {
-            return app(FakeTorrent::class);
-        });
+        $this->getTransmissionClient();
         app(Torrent::class)->index();
-        $file = TorrentEntry::first();
+        $torrent = app(RedisStore::class)->first();
 
-        CopyFile::dispatch($file);
+        CopyFile::dispatch($torrent->id);
 
         Mail::assertSent(CopySucceeded::class, function ($mail) {
             return $mail->hasTo('test@example.com');
@@ -109,13 +128,11 @@ class NotificationTest extends TestCase
         ]);
         Storage::disk('files')->put('test', 'hello');
         Storage::disk('torrents')->put('test', 'hello');
-        app()->singleton(Torrent::class, function ($app) {
-            return app(FakeTorrent::class);
-        });
+        $this->getTransmissionClient();
         app(Torrent::class)->index();
-        $file = TorrentEntry::first();
+        $torrent = app(RedisStore::class)->first();
 
-        CopyFile::dispatch($file);
+        CopyFile::dispatch($torrent->id);
 
         Mail::assertNotSent(CopySucceeded::class);
     }
@@ -128,9 +145,7 @@ class NotificationTest extends TestCase
         Storage::fake('destination');
 
         // bind our fake torrent API
-        app()->singleton(Torrent::class, function ($app) {
-            return app(FakeTorrent::class);
-        });
+        $this->getTransmissionClient();
 
         // we need to use the DB driver for the queue as sync doesn't understand ->delay() jobs :'-/
         config(['queue.default' => 'database']);
@@ -140,15 +155,14 @@ class NotificationTest extends TestCase
         Storage::disk('torrents')->put('file1', 'hello');
 
         // index the torrents
-        app(FakeTorrent::class)->index();
+        app(Torrent::class)->index();
+        $torrent = app(RedisStore::class)->first();
 
         // and fake it as still downloading
-        $torrent = TorrentEntry::first();
-        $torrent->percent = 90;
-        $torrent->save();
+        $torrent->update(['percent' => 90]);
 
         // send the job to the queue
-        CopyFile::dispatch($torrent);
+        CopyFile::dispatch($torrent->id);
 
         // it shouldn't have yet run
         $this->assertDatabaseMissing('jobs', ['id' => 2]);

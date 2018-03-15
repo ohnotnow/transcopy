@@ -78,7 +78,7 @@ class TorrentEntry
 
     public function queueCopy()
     {
-        CopyFile::dispatch($this);
+        CopyFile::dispatch($this->id);
     }
 
     public function markCopying()

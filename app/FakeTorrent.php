@@ -20,7 +20,7 @@ class FakeTorrent
         return collect(Storage::disk('torrents')->listContents())->map(function ($entry) {
             $torrent = new TorrentEntry([
                 'id' => md5($entry['path']),
-                'name' => $entry['path'],
+                'name' => $entry['name'] ?? $entry['path'],
                 'size' => $entry['type'] === 'file' ? $entry['size'] : 0,
                 'percent' => 100,
                 'path' => Storage::disk('torrents')->getDriver()->getAdapter()->applyPathPrefix($entry['path']),

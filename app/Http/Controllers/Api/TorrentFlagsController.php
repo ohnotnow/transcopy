@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\TorrentEntry;
+use App\RedisStore;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -10,7 +10,7 @@ class TorrentFlagsController extends Controller
 {
     public function destroy($id)
     {
-        $torrent = TorrentEntry::findOrFail($id)->clearFlags();
+        app(RedisStore::class)->find($id)->clearFlags();
 
         return response()->json([
             'data' => [

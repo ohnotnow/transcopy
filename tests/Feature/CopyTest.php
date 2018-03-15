@@ -72,6 +72,7 @@ class CopyTest extends TestCase
     public function a_successful_job_will_mark_its_file_or_torrent_as_copied_in_the_db()
     {
         Storage::fake('destination');
+        Storage::fake('torrents');
         Mail::fake();
         config(['transcopy' => ['send_success_notifications' => false]]);
         Storage::disk('torrents')->put('file1', 'hello');
