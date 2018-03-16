@@ -4,26 +4,11 @@
 @tailwind utilities;
 
 
-.icon-button {
-    @apply .w-8 .text-black;
-}
-.icon-button:hover {
-    @apply .opacity-50;
-}
 .error {
-    @apply .text-red;
-}
-button:hover {
-    @apply .opacity-50;
-}
-a {
-    @apply .text-black .no-underline;
-}
-a:hover {
-    @apply .opacity-50 .underline;
+    @apply .text-red-lighter;
 }
 .icon-small {
-    @apply .w-4 .text-black .shadow mx-2 my-0;
+    @apply .w-4 .fill-current .shadow mx-2 my-0;
 }
 .icon-small:hover {
     @apply .bg-white .shadow-lg;

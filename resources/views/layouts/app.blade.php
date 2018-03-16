@@ -17,8 +17,8 @@
 </script>
 </head>
 
-<body>
-    <div class="container px-4 mx-auto pb-8">
+<body class="bg-grey-darkest">
+    <div class="container px-0 sm:px-8 mx-auto pb-8 bg-grey-darkest">
         <div class="section" id="app">
             @yield('contents')
         </div>

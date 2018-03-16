@@ -1,7 +1,10 @@
 <template>
     <div>
-        <label class="hover:text-grey-darkest" :class="{ error: this.broken }">
-            <input type="checkbox" @change="changed" v-model="checked" :value="entry.id">
+        <label class="text-grey-light hover:text-grey">
+            <span v-if="broken" class="text-white bg-red shadow">&nbsp;&nbsp;&nbsp;</span>
+            <span v-else>
+                <input type="checkbox" @change="changed" v-model="checked" :value="entry.id">
+            </span>
             {{ entry.name }}
             <span class="opacity-50">
                 ({{ entry.size }})
