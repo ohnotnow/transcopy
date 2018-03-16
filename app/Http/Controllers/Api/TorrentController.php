@@ -30,14 +30,16 @@ class TorrentController extends Controller
 
     public function update()
     {
-        $stime = time();
+        $stime1 = time();
         $oldTorrents = $this->redis->all();
         $currentTorrents = $this->transmission->index();
         $missingTorrents = $oldTorrents->reject(function ($torrent) use ($currentTorrents) {
             return $currentTorrents->pluck('id')->contains($torrent->id);
         });
+        \Log::info('Finding missing torrents took ' . (time() - $stime1) . ' seconds');
+        $stime2 = time();
         $this->redis->deleteMany($missingTorrents->pluck('id'));
-        \Log::info('Clearing possible old torrents took ' . (time() - $stime) . ' seconds');
+        \Log::info('Clearing possible old torrents took ' . (time() - $stime2) . ' seconds');
 
         return $this->orderedTorrents();
     }
