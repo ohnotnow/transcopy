@@ -124,6 +124,28 @@ class TorrentTest extends TestCase
     }
 
     /** @test */
+    public function can_clear_and_refresh_the_list_of_torrents()
+    {
+        $this->withoutExceptionHandling();
+        $this->getTransmissionClient();
+        $removedTorrent = new TorrentEntry([
+            'id' => 99999,
+            'name' => 'whatever3',
+            'path' => 'testeroo3',
+            'percent' => 3,
+            'size' => 3000000,
+        ]);
+        $removedTorrent->save();
+        \Storage::disk('torrents')->put('file1', 'hello');
+
+        $response = $this->postJson(route('api.torrent.refresh'));
+
+        $response->assertSuccessful();
+        $this->assertNull(app(RedisStore::class)->find($removedTorrent->id));
+        $this->assertEquals('file1', app(RedisStore::class)->first()->name);
+    }
+
+    /** @test */
     public function can_trigger_copy_jobs_for_torrents()
     {
         $this->getTransmissionClient();

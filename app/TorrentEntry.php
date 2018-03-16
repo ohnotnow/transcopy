@@ -7,7 +7,7 @@ use App\Jobs\CopyFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
-class TorrentEntry
+class TorrentEntry implements \ArrayAccess
 {
     // default attribs for a new object
     protected $attribs = [
@@ -89,6 +89,28 @@ class TorrentEntry
     public function toJson()
     {
         return json_encode($this->toArray());
+    }
+
+    /******* ArrayAccess interface methods *******/
+
+    public function offsetSet($offset, $value) {
+        if (is_null($offset)) {
+            $this->attribs[] = $value;
+        } else {
+            $this->attribs[$offset] = $value;
+        }
+    }
+
+    public function offsetExists($offset) {
+        return isset($this->attribs[$offset]);
+    }
+
+    public function offsetUnset($offset) {
+        unset($this->attribs[$offset]);
+    }
+
+    public function offsetGet($offset) {
+        return isset($this->attribs[$offset]) ? $this->attribs[$offset] : null;
     }
 
     /******* actions *******/

@@ -30,7 +30,12 @@ class TorrentController extends Controller
 
     public function update()
     {
-        $this->transmission->index();
+        $oldTorrents = $this->redis->all();
+        $currentTorrents = $this->transmission->index();
+        $missingTorrents = $oldTorrents->reject(function ($torrent) use ($currentTorrents) {
+            return $currentTorrents->pluck('id')->contains($torrent->id);
+        });
+        $this->redis->deleteMany($missingTorrents->pluck('id'));
 
         return $this->orderedTorrents();
     }

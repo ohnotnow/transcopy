@@ -11,7 +11,11 @@ class RedisStore
 
     public function find($torrentId)
     {
-        return new TorrentEntry(Redis::hgetall("{$this->prefix}:{$torrentId}"));
+        $torrentData = Redis::hgetall("{$this->prefix}:{$torrentId}");
+        if (! array_key_exists('id', $torrentData)) {
+            return null;
+        }
+        return new TorrentEntry($torrentData);
     }
 
     public function findMany($torrentIds)
@@ -58,5 +62,15 @@ class RedisStore
             }
         });
         return Redis::del("{$this->prefix}:all");
+    }
+
+    public function deleteMany($torrentIds)
+    {
+        Redis::pipeline(function ($pipe) use ($torrentIds) {
+            foreach ($torrentIds as $key => $torrentId) {
+                $pipe->del("{$this->prefix}:{$torrentId}");
+                $pipe->srem("{$this->prefix}:all", $torrentId);
+            }
+        });
     }
 }
