@@ -30,8 +30,8 @@ Now edit the `.env` file to fill in the values that match your system setup (eg,
 Then edit `config/filesystems.php` - the default is set to use [minio](https://minio.io/) on your remote server (which is what I have going).  If you are just mounting your remote/kodi box via samba then comment out the current 'destination' entry and comment in the one with the 'driver' set to 'local'.
 
 In theory you are now good to go.  You *might* want to disable redis from auto-saving it's db if this is the only thing
-you are using it for.  On debian/ubuntu for instance if you have `apt-get install redis-server` to install it then set
-the following in `/etc/redis/redis.conf`:
+you are using it for.  On debian/ubuntu for instance if you have `apt-get install redis-server` to install it then comment out
+the 'save' lines in `/etc/redis/redis.conf` then restart redis, eg:
 
 ```
 # save 900 1
