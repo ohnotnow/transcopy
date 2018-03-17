@@ -19,7 +19,7 @@ if (mix.inProduction()) {
       new purgeCss({
         paths: glob.sync([
           path.join(__dirname, 'resources/views/**/*.blade.php'),
-          path.join(__dirname, 'resources/assets/js/**/*.vue')
+          path.join(__dirname, 'resources/assets/js/**/*.vue'),
         ]),
         extractors: [
           {
