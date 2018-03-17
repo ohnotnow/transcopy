@@ -2,12 +2,14 @@
     <div>
         <h3 class="text-xl shadow-md rounded p-4 bg-grey-dark mb-4">
             <div class="inline-flex items-center text-grey-lightest">
-                <div class="flex-1 mx-2">
-                    <button title="Download" @click="copyTorrents" class="text-grey-light hover:text-grey">
+                <div class="flex-1 mx-2 relative">
+                    <button title="Download" @click="copyTorrents" class="text-grey-light hover:text-grey" :class="{ 'flash': eventHappened }">
                         <svg class="w-8 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                             <path d="M10 20a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-2-8V5h4v5h3l-5 5-5-5h3z"/>
                         </svg>
                     </button>
+                        <span v-show="copies.length > 0" class="absolute pin-b -mx-2 text-white bg-grey-darkest px-1 rounded-lg shadow-lg text-base" v-text="copies.length">
+                        </span>
                 </div>
                 <div class="flex-1 mx-2">
                     <button title="Refresh list" @click="refreshTorrents" class="text-grey-light hover:text-grey">
@@ -46,6 +48,7 @@
                 copyList: '',
                 refreshing: true,
                 serverError: '',
+                eventHappened: false,
             }
         },
 
@@ -65,11 +68,15 @@
             select(id) {
                 console.log(id);
                 this.copies.push(id);
+                this.eventHappened = true;
+                setTimeout(() => {this.eventHappened = false;}, 500);
             },
 
             unselect(id) {
                 var index = this.copies.indexOf(id);
                 this.copies.splice(index, 1);
+                this.eventHappened = true;
+                setTimeout(() => {this.eventHappened = false;}, 500);
             },
 
             copyTorrents() {

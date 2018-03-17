@@ -11,7 +11,7 @@
     @apply .w-4 .fill-current .shadow mx-2 my-0;
 }
 .icon-small:hover {
-    @apply .bg-white .shadow-lg;
+    @apply .shadow-lg;
 }
 
 .spin {
@@ -27,8 +27,18 @@
   animation: pulse 1s infinite;
 }
 
+.flash {
+  animation: flash 0.5s;
+}
+
 @keyframes pulse {
   0% { opacity: 0; }
   50% { opacity: 1; }
   100% { opacity: 0; }
+}
+
+@keyframes flash {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
 }

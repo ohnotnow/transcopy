@@ -68,7 +68,7 @@ class CopyFile implements ShouldQueue
             throw new \InvalidArgumentException('No such file ' . $sourceName);
         }
 
-    Storage::disk('destination')->put($destName, fopen($sourceName, 'r+'));
+        Storage::disk('destination')->put($destName, fopen($sourceName, 'r+'));
     }
 
     /**

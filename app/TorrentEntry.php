@@ -78,7 +78,7 @@ class TorrentEntry implements \ArrayAccess
 
     public static function find($torrentId)
     {
-        return $this->backend()->find($torrentId);
+        return (new static)->backend()->find($torrentId);
     }
 
     public function toArray()
