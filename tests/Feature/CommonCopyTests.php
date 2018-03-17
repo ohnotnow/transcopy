@@ -97,7 +97,7 @@ trait CommonCopyTests
     }
 
     /** @test */
-    public function if_a_torrent_is_still_downloading_a_new_job_is_fired_with_a_five_minute_delay_and_a_flag_is_set_on_the_torrent()
+    public function if_a_torrent_is_still_downloading_a_new_job_is_fired_with_a_delay_and_a_flag_is_set_on_the_torrent()
     {
         Storage::fake('destination');
         $this->getTransmissionClient();
@@ -118,7 +118,7 @@ trait CommonCopyTests
         $newJob = \DB::table('jobs')->where('id', '=', 2)->first();
         $this->assertEquals(
             \Carbon\Carbon::createFromTimestamp($newJob->available_at)->format('d/m/Y H:i'),
-            now()->addMinutes(5)->format('d/m/Y H:i')
+            now()->addMinutes(1)->format('d/m/Y H:i')
         );
     }
 

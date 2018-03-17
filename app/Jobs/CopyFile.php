@@ -30,7 +30,7 @@ class CopyFile implements ShouldQueue
         $this->torrent = $this->getTorrent();
         if ($this->torrent->isStillDownloading()) {
             $this->torrent->markShouldCopy();
-            $this->tryAgainIn(5);
+            $this->tryAgainIn(1);
             return;
         }
 
@@ -68,7 +68,7 @@ class CopyFile implements ShouldQueue
             throw new \InvalidArgumentException('No such file ' . $sourceName);
         }
 
-        Storage::disk('destination')->put($destName, fopen($sourceName, 'r+'));
+    Storage::disk('destination')->put($destName, fopen($sourceName, 'r+'));
     }
 
     /**
