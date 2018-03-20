@@ -8,8 +8,8 @@
                             <path d="M10 20a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-2-8V5h4v5h3l-5 5-5-5h3z"/>
                         </svg>
                     </button>
-                        <span v-show="copies.length > 0" class="absolute pin-b -mx-2 text-white bg-grey-darkest px-1 rounded-lg shadow-lg text-base" v-text="copies.length">
-                        </span>
+                    <span v-show="copies.length > 0" class="absolute pin-b -mx-2 text-green-lightest bg-green-darkest px-1 rounded-lg shadow-lg text-base opacity-50" v-text="copies.length">
+                    </span>
                 </div>
                 <div class="flex-1 mx-2">
                     <button title="Refresh list" @click="refreshTorrents" class="text-grey-light hover:text-grey">
