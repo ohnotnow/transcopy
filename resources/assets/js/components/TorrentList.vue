@@ -53,7 +53,15 @@
         },
 
         mounted() {
-            this.getAllTorrents();
+            //localStorage.removeItem('torrents');
+            var torrents = localStorage.getItem('torrents');
+            if (torrents) {
+                console.log(torrents);
+                this.torrents = JSON.parse(torrents);
+                this.refreshing = false;
+            } else {
+                this.getAllTorrents();
+            }
         },
 
         methods: {
@@ -62,11 +70,11 @@
                     .then((response) => {
                         this.refreshing = false;
                         this.torrents = response.data.data;
+                        localStorage.setItem('torrents', JSON.stringify(this.torrents));
                     });
             },
 
             select(id) {
-                console.log(id);
                 this.copies.push(id);
                 this.eventHappened = true;
                 setTimeout(() => {this.eventHappened = false;}, 500);
@@ -106,6 +114,7 @@
                     .then((response) => {
                         this.torrents = response.data.data;
                         this.refreshing = false;
+                        localStorage.setItem('torrents', JSON.stringify(this.torrents));
                     })
                     .catch((error) => {
                         this.copyList = 'Error';
