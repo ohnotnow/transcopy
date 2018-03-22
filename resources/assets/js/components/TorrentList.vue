@@ -88,7 +88,7 @@
             },
 
             copyTorrents() {
-                this.serverError = false;
+                this.serverError = '';
                 axios.post('/api/copy/torrents', {copies: this.copies})
                     .then((response) => {
                         this.markTorrentsAsCopying();
