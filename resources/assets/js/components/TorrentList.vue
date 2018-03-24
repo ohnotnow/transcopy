@@ -53,10 +53,8 @@
         },
 
         mounted() {
-            //localStorage.removeItem('torrents');
             var torrents = localStorage.getItem('torrents');
             if (torrents) {
-                console.log(torrents);
                 this.torrents = JSON.parse(torrents);
                 this.refreshing = false;
             } else {
@@ -92,6 +90,7 @@
                 axios.post('/api/copy/torrents', {copies: this.copies})
                     .then((response) => {
                         this.markTorrentsAsCopying();
+                        setTimeout(() => {this.refreshTorrents}, 500);
                     })
                     .catch((error) => {
                         this.serverError = error.response.data.message;
