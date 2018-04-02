@@ -117,6 +117,7 @@ class TorrentEntry implements \ArrayAccess
 
     public function queueCopy()
     {
+        $this->markShouldCopy();
         CopyFile::dispatch($this->id);
     }
 
