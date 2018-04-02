@@ -15,6 +15,8 @@ Vue.js to handle most of that.
 
 ## Installation
 
+*Note*: this is _not_ designed to be run on a public-facing internet connection - use on your own LAN only.
+
 Assuming you have PHPv7, [composer](https://getcomposer.org/) and [redis](https://redis.io/) installed.
 
 Clone the project, then run (in the project directory) :
