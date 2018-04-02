@@ -53,13 +53,7 @@
         },
 
         mounted() {
-            var torrents = localStorage.getItem('torrents');
-            if (torrents) {
-                this.torrents = JSON.parse(torrents);
-                this.refreshing = false;
-            } else {
-                this.getAllTorrents();
-            }
+            this.refreshTorrents();
         },
 
         methods: {
@@ -68,7 +62,6 @@
                     .then((response) => {
                         this.refreshing = false;
                         this.torrents = response.data.data;
-                        localStorage.setItem('torrents', JSON.stringify(this.torrents));
                     });
             },
 
@@ -113,7 +106,6 @@
                     .then((response) => {
                         this.torrents = response.data.data;
                         this.refreshing = false;
-                        localStorage.setItem('torrents', JSON.stringify(this.torrents));
                     })
                     .catch((error) => {
                         this.copyList = 'Error';
