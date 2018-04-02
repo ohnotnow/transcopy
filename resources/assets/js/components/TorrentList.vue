@@ -83,7 +83,6 @@
                 axios.post('/api/copy/torrents', {copies: this.copies})
                     .then((response) => {
                         this.markTorrentsAsCopying();
-                        setTimeout(() => {this.refreshTorrents}, 500);
                     })
                     .catch((error) => {
                         this.serverError = error.response.data.message;
