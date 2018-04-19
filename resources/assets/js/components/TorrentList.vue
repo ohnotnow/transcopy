@@ -25,7 +25,7 @@
         </h3>
 
         <div class="py-8 px-4 border border-grey-dark rounded shadow-md bg-grey-dark ">
-            <div class="mb-4" v-for="(torrent, index) in torrents" :key="torrent.id">
+            <div class="mb-4" v-for="(torrent, index) in torrentList" :key="torrent.id">
                 <torrent-entry
                     :torrent="torrent"
                     @selected="select(torrent.id)"
@@ -49,10 +49,27 @@
                 refreshing: true,
                 serverError: '',
                 eventHappened: false,
+                temporaryTorrents: [],
+                fakeTorrents: [],
+                faders: [],
+            }
+        },
+
+        computed: {
+            torrentList() {
+                if (this.torrents.length > 0) {
+                    return this.torrents;
+                }
+                return this.fakeTorrents;
             }
         },
 
         mounted() {
+            var storedTorrents = localStorage.getItem('torrents');
+            if (storedTorrents) {
+                this.temporaryTorrents = JSON.parse(storedTorrents);
+                this.fadeInFakes();
+            }
             this.refreshTorrents();
         },
 
@@ -104,7 +121,9 @@
                 axios.post('/api/refresh/torrents')
                     .then((response) => {
                         this.torrents = response.data.data;
+                        localStorage.setItem('torrents', JSON.stringify(response.data.data.slice(0, 50)));
                         this.refreshing = false;
+                        this.faders.forEach(fader => clearTimeout(fader));
                     })
                     .catch((error) => {
                         this.copyList = 'Error';
@@ -117,6 +136,15 @@
                 if (this.serverError.indexOf(torrent.name) > -1) {
                     this.serverError = '';
                 }
+            },
+
+            fadeInFakes() {
+                if (this.temporaryTorrents.length <= 0) {
+                    return;
+                }
+                var torrent = this.temporaryTorrents.pop();
+                this.fakeTorrents.unshift(torrent);
+                this.faders.push(setTimeout(this.fadeInFakes, 100));
             }
         }
     }
