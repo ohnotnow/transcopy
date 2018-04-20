@@ -121,7 +121,7 @@
                 axios.post('/api/refresh/torrents')
                     .then((response) => {
                         this.torrents = response.data.data;
-                        localStorage.setItem('torrents', JSON.stringify(response.data.data.slice(0, 50)));
+                        localStorage.setItem('torrents', JSON.stringify(response.data.data.slice(0, 100)));
                         this.refreshing = false;
                         this.faders.forEach(fader => clearTimeout(fader));
                     })
@@ -142,8 +142,8 @@
                 if (this.temporaryTorrents.length <= 0) {
                     return;
                 }
-                var torrent = this.temporaryTorrents.pop();
-                this.fakeTorrents.unshift(torrent);
+                var torrent = this.temporaryTorrents.shift();
+                this.fakeTorrents.push(torrent);
                 this.faders.push(setTimeout(this.fadeInFakes, 100));
             }
         }
