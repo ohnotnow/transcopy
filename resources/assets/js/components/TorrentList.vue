@@ -71,6 +71,7 @@
                 this.fadeInFakes();
             }
             this.refreshTorrents();
+            window.addEventListener('beforeunload', this.saveTorrents)
         },
 
         methods: {
@@ -121,7 +122,7 @@
                 axios.post('/api/refresh/torrents')
                     .then((response) => {
                         this.torrents = response.data.data;
-                        localStorage.setItem('torrents', JSON.stringify(response.data.data.slice(0, 100)));
+                        this.saveTorrents();
                         this.refreshing = false;
                         this.faders.forEach(fader => clearTimeout(fader));
                     })
@@ -145,6 +146,10 @@
                 var torrent = this.temporaryTorrents.shift();
                 this.fakeTorrents.push(torrent);
                 this.faders.push(setTimeout(this.fadeInFakes, 100));
+            },
+
+            saveTorrents() {
+                localStorage.setItem('torrents', JSON.stringify(this.torrents.slice(0, 100)));
             }
         }
     }
