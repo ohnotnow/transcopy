@@ -21,6 +21,8 @@ class TorrentEntry implements \ArrayAccess
         'is_copying' => false,
         'copy_failed' => false,
         'should_copy' => false,
+        'copy_started' => null,
+        'copy_ended' => null,
     ];
 
     // which attribs should be cast to booleans when doing a $this->attrib
@@ -127,7 +129,8 @@ class TorrentEntry implements \ArrayAccess
             'is_copying' => true,
             'was_copied' => false,
             'copy_failed' => false,
-            'should_copy' => false
+            'should_copy' => false,
+            'copy_started' => now()->format('Y-m-d H:i:s'),
         ]);
     }
 
@@ -137,7 +140,8 @@ class TorrentEntry implements \ArrayAccess
             'is_copying' => false,
             'was_copied' => true,
             'copy_failed' => false,
-            'should_copy' => false
+            'should_copy' => false,
+            'copy_ended' => now()->format('Y-m-d H:i:s'),
         ]);
     }
 

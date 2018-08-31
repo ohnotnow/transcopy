@@ -66,11 +66,15 @@ trait CommonCopyTests
         app(TorrentContract::class)->index();
         $torrent = app(RedisStore::class)->first();
         $this->assertFalse($torrent->wasAlreadyCopied());
+        $this->assertEmpty($torrent->copy_started);
+        $this->assertEmpty($torrent->copy_ended);
 
         CopyFile::dispatch($torrent->id);
 
         $torrent = app(RedisStore::class)->first();
         $this->assertTrue($torrent->wasAlreadyCopied());
+        $this->assertNotNull($torrent->copy_started);
+        $this->assertNotNull($torrent->copy_ended);
     }
 
     /** @test */
