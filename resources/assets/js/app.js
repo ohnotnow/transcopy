@@ -9,8 +9,6 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
-window.Event = new Vue({});
-
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -18,9 +16,10 @@ window.Event = new Vue({});
  */
 
 // Vue.component('example', require('./components/Example.vue'));
-Vue.component('torrent-list', require('./components/TorrentList.vue'));
-Vue.component('torrent-entry', require('./components/TorrentEntry.vue'));
+// Vue.component('torrents-list', require('./components/TorrentList.vue'));
+// Vue.component('torrent-entry', require('./components/TorrentEntry.vue'));
+Vue.component('torrents', require('./components/Torrents.vue'));
 
 const app = new Vue({
-     el: '#app'
+    el: '#app'
 });

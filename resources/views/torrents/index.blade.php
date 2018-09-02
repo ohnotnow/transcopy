@@ -2,6 +2,6 @@
 
 @section('contents')
 
-    <torrent-list></torrent-list>
+    <torrents></torrents>
 
 @endsection

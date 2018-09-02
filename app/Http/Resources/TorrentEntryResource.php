@@ -22,6 +22,7 @@ class TorrentEntryResource extends Resource
             'should_copy' => $this->should_copy,
             'copy_start' => $this->copy_started,
             'copy_end' => $this->copy_ended,
+            'is_selected' => false,
         ];
     }
 }
