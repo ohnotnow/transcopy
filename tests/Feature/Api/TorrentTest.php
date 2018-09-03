@@ -138,7 +138,7 @@ class TorrentTest extends TestCase
         $removedTorrent->save();
         \Storage::disk('torrents')->put('file1', 'hello');
 
-        $response = $this->postJson(route('api.torrent.refresh'));
+        $response = $this->getJson(route('api.torrent.refresh'));
 
         $response->assertSuccessful();
         $this->assertNull(app(RedisStore::class)->find($removedTorrent->id));
