@@ -82,7 +82,7 @@ export default {
       // set localstorage with cached most recent ~150 torrents
     },
 
-    copy() {
+    async copy() {
       const torrentsToCopy = this.selectedTorrents.map(torrent => {
         return torrent.id;
       });
@@ -91,7 +91,7 @@ export default {
         return;
       }
 
-      const response = api.copy(torrentsToCopy);
+      const response = await api.copy(torrentsToCopy);
       if (response) {
         this.torrentList.forEach(torrent => {
           torrent.is_selected = false;
@@ -100,16 +100,17 @@ export default {
       }
     },
 
-    refresh() {
+    async refresh() {
       this.refreshing = true;
-      axios.get("/api/refresh").then(response => {
-        this.torrentList = response.data.data;
+      const torrents = await api.refresh();
+      if (torrents) {
+        this.torrentList = torrents;
         this.refreshing = false;
-      });
+      }
     },
 
     updateTorrent(torrent) {
-      const index = this.torrentList.findIndex(tor => tor.id === torrent.id);
+      const index = this.torrentList.findIndex(tor => tor.id == torrent.id);
       if (index === -1) {
         return;
       }

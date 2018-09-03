@@ -14,7 +14,7 @@
     </span>
     <span v-if="isActive()">
       <span v-if="isDownloading()">
-        Downloading ETA {{ theTorrent.eta }}
+        Downloading ETA {{ theTorrent.eta }} / {{ theTorrent.percent }}%
       </span>
       <span
         v-if="isCopying()"
@@ -60,14 +60,14 @@ export default {
   computed: {
     icon() {
       // return svg depending on copying/queued/other state
-      if (this.is_selected) {
-        return "<span>Selected</span>";
+      if (this.wasCopied()) {
+        return `<svg xmlns="http://www.w3.org/2000/svg" class="icon-small" fill="currentColor" viewBox="0 0 20 20"><path d="M0 11l2-2 5 5L18 3l2 2L7 18z"/></svg>`;
       }
       if (this.isCopying()) {
-        return "<span>Copying</span>";
+        return `<svg xmlns="http://www.w3.org/2000/svg" class="icon-small pulse spin" fill="currentColor" viewBox="0 0 24 24" width="24" height="24"><path class="heroicon-ui" d="M5.41 16H18a2 2 0 0 0 2-2 1 1 0 0 1 2 0 4 4 0 0 1-4 4H5.41l2.3 2.3a1 1 0 0 1-1.42 1.4l-4-4a1 1 0 0 1 0-1.4l4-4a1 1 0 1 1 1.42 1.4L5.4 16zM6 8a2 2 0 0 0-2 2 1 1 0 0 1-2 0 4 4 0 0 1 4-4h12.59l-2.3-2.3a1 1 0 1 1 1.42-1.4l4 4a1 1 0 0 1 0 1.4l-4 4a1 1 0 0 1-1.42-1.4L18.6 8H6z"/></svg>`;
       }
       if (this.isQueued()) {
-        return `<svg class="icon-small" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2 2c0-1.1.9-2 2-2h12a2 2 0 0 1 2 2v18l-8-4-8 4V2zm2 0v15l6-3 6 3V2H4z"/></svg>`;
+        return `<svg class="icon-small" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M2 2c0-1.1.9-2 2-2h12a2 2 0 0 1 2 2v18l-8-4-8 4V2zm2 0v15l6-3 6 3V2H4z"/></svg>`;
       }
       return `<svg class="icon-small" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z"/></svg>`;
     }
@@ -83,8 +83,8 @@ export default {
       this.update();
     },
 
-    refresh() {
-      const torrent = api.getTorrent(this.theTorrent.id);
+    async refresh() {
+      const torrent = await api.getTorrent(this.theTorrent.id);
       if (torrent) {
         this.theTorrent = torrent;
         this.update();
@@ -109,11 +109,15 @@ export default {
     },
 
     isCopying() {
-      return this.theTorrent.is_copying;
+      return this.theTorrent.copying;
+    },
+
+    wasCopied() {
+      return this.theTorrent.copied;
     },
 
     isQueued() {
-      return this.theTorrent.is_queued;
+      return this.theTorrent.should_copy;
     },
 
     isDownloading() {

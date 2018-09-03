@@ -1,13 +1,13 @@
 export default class Api {
-    constructor() {
-        this.base_uri = "http://localhost/api/";
+    constructor(baseUri) {
+        this.base_uri = baseUri;
         this.error = '';
         this.token = document.head.querySelector('meta[name="csrf-token"]');
     }
 
     getTorrents() {
         try {
-            return this._get('torrents').data.data;
+            return this._get('torrents');
         } catch (e) {
             return false;
         }
@@ -15,7 +15,7 @@ export default class Api {
 
     getTorrent(id) {
         try {
-            return this._get(`torrent/{id}`).data.data;
+            return this._get(`torrent/${id}`);
         } catch (e) {
             return false;
         }
@@ -23,7 +23,7 @@ export default class Api {
 
     updateTorrent(torrent) {
         try {
-            return this._post(`torrent/{torrent.id}`, torrent).data.data;
+            return this._post(`torrent/${torrent.id}`, torrent);
         } catch (e) {
             return false;
         }
@@ -31,7 +31,7 @@ export default class Api {
 
     copy(torrentList) {
         try {
-            return this._post('copy', torrentList)
+            return this._post('copy', { copies: torrentList })
         } catch (e) {
             return false;
         }
@@ -45,16 +45,14 @@ export default class Api {
         }
     }
 
-    _get(endpoint) {
-        const json = fetch(`{this.base_uri}{endpoint}`)
-            .then(result => result.json())
-            .then(json => json)
-            .catch(error => { this.error = error; console.log(error) });
-        return json;
+    async _get(endpoint) {
+        const response = await fetch(`${this.base_uri}${endpoint}`);
+        const json = await response.json();
+        return json.data;
     }
 
-    _post(endpoint, jsonData) {
-        const json = fetch(`{this.base_uri}{endpoint}`, {
+    async _post(endpoint, jsonData) {
+        const response = await fetch(`${this.base_uri}${endpoint}`, {
             method: "post",
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -63,10 +61,8 @@ export default class Api {
                 'X-CSRF-TOKEN': this.token.content
             },
             body: JSON.stringify(jsonData)
-        })
-            .then(result => result.json())
-            .then(json => json)
-            .catch(error => { this.error = error; console.log(error) });
-        return json;
+        });
+        const json = await response.json();
+        return json.data;
     }
 }
