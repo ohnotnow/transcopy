@@ -84,18 +84,14 @@ export default {
     },
 
     refresh() {
-      axios
-        .get("/api/torrent/" + this.theTorrent.id)
-        .then(response => {
-          this.theTorrent = response.data.data;
-          this.update();
-          this.refreshIfActive();
-        })
-        .catch(error => {
-          console.log(error);
-          this.$emit("error", error);
-          this.refreshIfActive();
-        });
+      const torrent = api.getTorrent(this.theTorrent.id);
+      if (torrent) {
+        this.theTorrent = torrent;
+        this.update();
+      } else {
+        this.$emit("error", api.error);
+      }
+      this.refreshIfActive();
     },
 
     refreshIfActive() {

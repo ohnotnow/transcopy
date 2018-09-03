@@ -56,10 +56,10 @@ export default {
 
   computed: {
     numberToCopy() {
-      return this.torrentList.reduce(
-        (sum, torrent) => sum + torrent.is_selected,
-        0
-      );
+      return this.selectedTorrents.length;
+    },
+    selectedTorrents() {
+      return this.torrentList.filter(torrent => torrent.is_selected);
     }
   },
 
@@ -83,24 +83,21 @@ export default {
     },
 
     copy() {
-      const torrentsToCopy = this.torrentList
-        .filter(torrent => {
-          return torrent.is_selected;
-        })
-        .map(torrent => {
-          return torrent.id;
-        });
+      const torrentsToCopy = this.selectedTorrents.map(torrent => {
+        return torrent.id;
+      });
 
       if (torrentsToCopy.length === 0) {
         return;
       }
 
-      axios.post("/api/copy", { copies: torrentsToCopy }).then(response => {
+      const response = api.copy(torrentsToCopy);
+      if (response) {
         this.torrentList.forEach(torrent => {
           torrent.is_selected = false;
           torrent.is_queued = true;
         });
-      });
+      }
     },
 
     refresh() {
@@ -116,6 +113,9 @@ export default {
       if (index === -1) {
         return;
       }
+
+      torrent.is_selected = this.torrentList[index].is_selected;
+
       this.torrentList = [
         ...this.torrentList.slice(0, index),
         torrent,
