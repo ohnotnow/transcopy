@@ -8,11 +8,11 @@
       :class="{'text-green-light': theTorrent.is_selected}"
       v-html="icon"
     />
-    <span class="mr-2">
+    <span class="mr-2 hover:text-grey">
       {{ theTorrent.name }}
       ({{ theTorrent.size }})
     </span>
-    <span v-if="isActive()">
+    <span v-if="isActive()" class="text-grey-dark hover:text-grey">
       <span v-if="isDownloading()">
         Downloading ETA {{ theTorrent.eta }} / {{ theTorrent.percent }}%
       </span>
@@ -81,15 +81,17 @@ export default {
     toggleSelected() {
       this.theTorrent.is_selected = !this.theTorrent.is_selected;
       this.update();
+      this.$emit("toggled");
     },
 
     async refresh() {
       const torrent = await api.getTorrent(this.theTorrent.id);
       if (torrent) {
+        console.log(torrent);
         this.theTorrent = torrent;
         this.update();
       } else {
-        this.$emit("error", api.error);
+        this.$emit("error", `${api.error} : ${this.theTorrent.name}`);
       }
       this.refreshIfActive();
     },

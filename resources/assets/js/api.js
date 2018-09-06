@@ -5,50 +5,58 @@ export default class Api {
         this.token = document.head.querySelector('meta[name="csrf-token"]');
     }
 
-    getTorrents() {
+    async getTorrents() {
         try {
-            return this._get('torrents');
+            return await this._get('torrents');
+        } catch (e) {
+            console.log('Arse');
+            return false;
+        }
+    }
+
+    async getTorrent(id) {
+        try {
+            return await this._get(`torrent/${id}`);
+        } catch (e) {
+            this.error = "Could not refresh torrent"
+            return false;
+        }
+    }
+
+    async updateTorrent(torrent) {
+        try {
+            return await this._post(`torrent/${torrent.id}`, torrent);
+        } catch (e) {
+            this.error = "Could not update torrent"
+            return false;
+        }
+    }
+
+    async copy(torrentList) {
+        try {
+            return await this._post('copy', { copies: torrentList })
         } catch (e) {
             return false;
         }
     }
 
-    getTorrent(id) {
+    async refresh() {
         try {
-            return this._get(`torrent/${id}`);
+            return await this._get('refresh');
         } catch (e) {
-            return false;
-        }
-    }
-
-    updateTorrent(torrent) {
-        try {
-            return this._post(`torrent/${torrent.id}`, torrent);
-        } catch (e) {
-            return false;
-        }
-    }
-
-    copy(torrentList) {
-        try {
-            return this._post('copy', { copies: torrentList })
-        } catch (e) {
-            return false;
-        }
-    }
-
-    refresh() {
-        try {
-            return this._get('refresh');
-        } catch (e) {
+            this.error = "Could not refresh torrents"
             return false;
         }
     }
 
     async _get(endpoint) {
-        const response = await fetch(`${this.base_uri}${endpoint}`);
-        const json = await response.json();
-        return json.data;
+        try {
+            const response = await fetch(`${this.base_uri}${endpoint}`);
+            const json = await response.json();
+            return json.data;
+        } catch (e) {
+            throw "Network Error";
+        }
     }
 
     async _post(endpoint, jsonData) {

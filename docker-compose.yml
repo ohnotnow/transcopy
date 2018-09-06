@@ -1,10 +1,42 @@
-version: '3'
+version: "3"
 services:
-  transcopy:
-    build: .
+  app:
+    image: transcopy
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    depends_on:
+      - redis
+    expose:
+      - "8002"
     ports:
-     - "5000:5000"
+      - "8002:80"
+    environment:
+      APP_ENV: local
+      CONTAINER_ROLE: app
+      CACHE_DRIVER: redis
+      SESSION_DRIVER: redis
+      QUEUE_DRIVER: redis
+      REDIS_HOST: redis
+
+  queue:
+    image: transcopy
+    depends_on:
+      - app
+      - redis
+    environment:
+      APP_ENV: local
+      CONTAINER_ROLE: queue
+      CACHE_DRIVER: redis
+      SESSION_DRIVER: redis
+      QUEUE_DRIVER: redis
+      REDIS_HOST: redis
+
   redis:
-    image: "redis"
+    image: redis:4
     volumes:
-       - ./docker/redis.conf:/usr/local/etc/redis/redis.conf
+      - redis:/data
+
+volumes:
+  redis:
+    driver: "local"
