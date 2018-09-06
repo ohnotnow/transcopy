@@ -9,7 +9,6 @@ export default class Api {
         try {
             return await this._get('torrents');
         } catch (e) {
-            console.log('Arse');
             return false;
         }
     }

@@ -87,7 +87,6 @@ export default {
     async refresh() {
       const torrent = await api.getTorrent(this.theTorrent.id);
       if (torrent) {
-        console.log(torrent);
         this.theTorrent = torrent;
         this.update();
       } else {
