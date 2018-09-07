@@ -353,10 +353,10 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
   mounted: function mounted() {
     this.refresh();
-    // const cachedTorrents = localStorage.getItem("torrents");
-    // if (cachedTorrents) {
-    //   this.torrentList = JSON.parse(cachedTorrents);
-    // }
+    var cachedTorrents = localStorage.getItem("torrents");
+    if (cachedTorrents) {
+      this.torrentList = JSON.parse(cachedTorrents);
+    }
   },
 
 
@@ -430,6 +430,8 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                 torrents = _context2.sent;
 
                 if (torrents) {
+                  // :: sadface :: seem to need this hacky method as just re-assigning the array
+                  // doesn't seem to make Vue properly update - possibly too large to re-eval in one go
                   this.torrentList = [];
                   this.$nextTick(function () {
                     _this.torrentList = torrents;

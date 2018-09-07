@@ -100,10 +100,10 @@ export default {
 
   mounted() {
     this.refresh();
-    // const cachedTorrents = localStorage.getItem("torrents");
-    // if (cachedTorrents) {
-    //   this.torrentList = JSON.parse(cachedTorrents);
-    // }
+    const cachedTorrents = localStorage.getItem("torrents");
+    if (cachedTorrents) {
+      this.torrentList = JSON.parse(cachedTorrents);
+    }
   },
 
   methods: {
@@ -140,6 +140,8 @@ export default {
       this.refreshing = true;
       const torrents = await api.refresh();
       if (torrents) {
+        // :: sadface :: seem to need this hacky method as just re-assigning the array
+        // doesn't seem to make Vue properly update - possibly too large to re-eval in one go
         this.torrentList = [];
         this.$nextTick(() => {
           this.torrentList = torrents;
