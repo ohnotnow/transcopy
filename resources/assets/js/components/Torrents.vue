@@ -140,9 +140,12 @@ export default {
       this.refreshing = true;
       const torrents = await api.refresh();
       if (torrents) {
-        this.torrentList = torrents;
-        this.refreshing = false;
-        this.error = "";
+        this.torrentList = [];
+        this.$nextTick(() => {
+          this.torrentList = torrents;
+          this.refreshing = false;
+          this.error = "";
+        });
       } else {
         this.setError("Could not get current torrent list");
       }
@@ -156,11 +159,11 @@ export default {
 
       torrent.is_selected = this.torrentList[index].is_selected;
 
-      // this.torrentList = [
-      //   ...this.torrentList.slice(0, index),
-      //   torrent,
-      //   ...this.torrentList.slice(index + 1)
-      // ];
+      this.torrentList = [
+        ...this.torrentList.slice(0, index),
+        torrent,
+        ...this.torrentList.slice(index + 1)
+      ];
     },
 
     flashCopyIcon() {

@@ -244,6 +244,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Torrent_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__Torrent_vue__);
 
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 //
@@ -413,6 +415,8 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
     },
     refresh: function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.mark(function _callee2() {
+        var _this = this;
+
         var torrents;
         return __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.wrap(function _callee2$(_context2) {
           while (1) {
@@ -426,9 +430,12 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                 torrents = _context2.sent;
 
                 if (torrents) {
-                  this.torrentList = torrents;
-                  this.refreshing = false;
-                  this.error = "";
+                  this.torrentList = [];
+                  this.$nextTick(function () {
+                    _this.torrentList = torrents;
+                    _this.refreshing = false;
+                    _this.error = "";
+                  });
                 } else {
                   this.setError("Could not get current torrent list");
                 }
@@ -457,18 +464,14 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
       torrent.is_selected = this.torrentList[index].is_selected;
 
-      // this.torrentList = [
-      //   ...this.torrentList.slice(0, index),
-      //   torrent,
-      //   ...this.torrentList.slice(index + 1)
-      // ];
+      this.torrentList = [].concat(_toConsumableArray(this.torrentList.slice(0, index)), [torrent], _toConsumableArray(this.torrentList.slice(index + 1)));
     },
     flashCopyIcon: function flashCopyIcon() {
-      var _this = this;
+      var _this2 = this;
 
       this.torrentToggled = true;
       setTimeout(function () {
-        _this.torrentToggled = false;
+        _this2.torrentToggled = false;
       }, 500);
     }
   }
