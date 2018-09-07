@@ -22,6 +22,12 @@
       >
         Copying
       </span>
+      <span
+        v-if="error"
+        class="text-red"
+      >
+        {{ error }}
+      </span>
     </span>
   </div>
 </template>
@@ -49,7 +55,8 @@ export default {
 
   data() {
     return {
-      theTorrent: this.value
+      theTorrent: this.value,
+      error: ""
     };
   },
 
@@ -89,8 +96,9 @@ export default {
       if (torrent) {
         this.theTorrent = torrent;
         this.update();
+        this.error = "";
       } else {
-        this.$emit("error", `${api.error} : ${this.theTorrent.name}`);
+        this.error = api.error;
       }
       this.refreshIfActive();
     },

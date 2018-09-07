@@ -60,7 +60,6 @@
           :value="torrent"
           @update="updateTorrent"
           @toggled="flashCopyIcon"
-          @error="setError"
         />
       </div>
     </transition-group>
@@ -126,8 +125,10 @@ export default {
       const response = await api.copy(torrentsToCopy);
       if (response) {
         this.torrentList.forEach(torrent => {
+          if (torrent.is_selected) {
+            torrent.should_copy = true;
+          }
           torrent.is_selected = false;
-          torrent.should_copy = true;
         });
       }
     },
