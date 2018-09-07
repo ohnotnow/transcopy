@@ -157,7 +157,7 @@ export default {
       torrent.is_selected = this.torrentList[index].is_selected;
 
       this.torrentList = [
-        ...this.torrentList.slice(0, index),
+        ...this.torrentList.slice(0, index - 1),
         torrent,
         ...this.torrentList.slice(index + 1)
       ];

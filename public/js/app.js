@@ -459,7 +459,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
       torrent.is_selected = this.torrentList[index].is_selected;
 
-      this.torrentList = [].concat(_toConsumableArray(this.torrentList.slice(0, index)), [torrent], _toConsumableArray(this.torrentList.slice(index + 1)));
+      this.torrentList = [].concat(_toConsumableArray(this.torrentList.slice(0, index - 1)), [torrent], _toConsumableArray(this.torrentList.slice(index + 1)));
     },
     flashCopyIcon: function flashCopyIcon() {
       var _this = this;
