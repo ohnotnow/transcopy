@@ -353,10 +353,10 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
   mounted: function mounted() {
     this.refresh();
-    var cachedTorrents = localStorage.getItem("torrents");
-    if (cachedTorrents) {
-      this.torrentList = JSON.parse(cachedTorrents);
-    }
+    // const cachedTorrents = localStorage.getItem("torrents");
+    // if (cachedTorrents) {
+    //   this.torrentList = JSON.parse(cachedTorrents);
+    // }
   },
 
 

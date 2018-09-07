@@ -100,10 +100,10 @@ export default {
 
   mounted() {
     this.refresh();
-    const cachedTorrents = localStorage.getItem("torrents");
-    if (cachedTorrents) {
-      this.torrentList = JSON.parse(cachedTorrents);
-    }
+    // const cachedTorrents = localStorage.getItem("torrents");
+    // if (cachedTorrents) {
+    //   this.torrentList = JSON.parse(cachedTorrents);
+    // }
   },
 
   methods: {
