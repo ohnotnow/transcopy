@@ -108,7 +108,6 @@ export default {
 
   methods: {
     updateCache() {
-      // set localstorage with cached most recent ~150 torrents
       localStorage.setItem(
         "torrents",
         JSON.stringify(this.torrentList.slice(0, 150))
@@ -128,7 +127,7 @@ export default {
       if (response) {
         this.torrentList.forEach(torrent => {
           torrent.is_selected = false;
-          torrent.is_queued = true;
+          torrent.should_copy = true;
         });
       }
     },
