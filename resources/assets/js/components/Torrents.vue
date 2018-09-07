@@ -140,7 +140,7 @@ export default {
       this.refreshing = true;
       const torrents = await api.refresh();
       if (torrents) {
-        this.torrentList = torrents;
+        // this.torrentList = torrents;
         this.refreshing = false;
         this.error = "";
       } else {
