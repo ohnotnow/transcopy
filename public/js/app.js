@@ -428,7 +428,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                 torrents = _context2.sent;
 
                 if (torrents) {
-                  // this.torrentList = torrents;
+                  this.torrentList = torrents;
                   this.refreshing = false;
                   this.error = "";
                 } else {
