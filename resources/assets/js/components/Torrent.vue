@@ -32,6 +32,7 @@
       <span
         v-if="copyFailed()"
         class="text-red pulse"
+        @click="clearFlags"
       >
         Copy Failed
       </span>
@@ -130,7 +131,7 @@ export default {
       this.error = "";
       this.update();
     },
-    
+
     isActive() {
       return this.isCopying() || this.isQueued() || this.isDownloading() || this.error;
     },
