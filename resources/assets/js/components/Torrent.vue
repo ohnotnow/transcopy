@@ -25,6 +25,7 @@
       <span
         v-if="error"
         class="text-red"
+        @click="clearFlags"
       >
         {{ error }}
       </span>
@@ -122,8 +123,16 @@ export default {
       });
     },
 
+    clearFlags() {
+      this.theTorrent.is_copying = false;
+      this.theTorrent.is_queued = false;
+      this.theTorrent.is_selected = false;
+      this.error = "";
+      this.update();
+    },
+    
     isActive() {
-      return this.isCopying() || this.isQueued() || this.isDownloading();
+      return this.isCopying() || this.isQueued() || this.isDownloading() || this.error;
     },
 
     isCopying() {
