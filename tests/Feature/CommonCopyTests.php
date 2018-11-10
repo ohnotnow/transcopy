@@ -78,11 +78,39 @@ trait CommonCopyTests
     }
 
     /** @test */
+    public function a_job_can_fail_and_retry_upto_a_configured_number()
+    {
+        $this->getTransmissionClient();
+        Storage::fake('destination');
+        Mail::fake();
+        config(['transcopy.max_tries' => 3]);
+
+        $nonExistantTorrent = new TorrentEntry([
+            'id' => 12345,
+            'name' => 'whatever',
+            'path' => 'testeroo',
+            'percent' => 100,
+        ]);
+        $nonExistantTorrent->save();
+        $this->assertFalse($nonExistantTorrent->copyFailed());
+
+        try {
+            CopyFile::dispatch($nonExistantTorrent->id);
+            $this->fail('Expected an exception and none thrown');
+        } catch (\Exception $e) {
+            $this->assertTrue(app(RedisStore::class)->find($nonExistantTorrent->id)->copyFailed());
+            $this->assertEquals(3, app(RedisStore::class)->find($nonExistantTorrent->id)->tries);
+        }
+    }
+
+    /** @test */
     public function a_failed_job_will_mark_itself_as_such()
     {
         $this->getTransmissionClient();
         Storage::fake('destination');
         Mail::fake();
+        config(['transcopy.max_tries' => 1]);
+
         $nonExistantTorrent = new TorrentEntry([
             'id' => 12345,
             'name' => 'whatever',

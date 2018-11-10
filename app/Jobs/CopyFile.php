@@ -4,13 +4,14 @@ namespace App\Jobs;
 
 use App\Torrent;
 use App\RedisStore;
-use App\Contracts\TorrentContract;
 use Illuminate\Bus\Queueable;
+use App\Contracts\TorrentContract;
 use Illuminate\Queue\SerializesModels;
+use App\Exceptions\CopyFailedException;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Support\Facades\Storage;
 
 class CopyFile implements ShouldQueue
 {
@@ -36,11 +37,22 @@ class CopyFile implements ShouldQueue
 
         $this->torrent->markCopying();
 
-        try {
-            $this->copyTorrent();
-        } catch (\Exception $e) {
+        $maxTries = config('transcopy.max_tries', 1);
+        $tryCount = 0;
+
+        while ($tryCount < $maxTries) {
+            try {
+                $this->copyTorrent();
+                break;
+            } catch (\Exception $e) {
+                $tryCount = $tryCount + 1;
+                $this->torrent->markRetry($tryCount);
+            }
+        }
+
+        if ($tryCount >= $maxTries) {
             $this->torrent->markFailed();
-            throw $e;
+            throw new CopyFailedException($this->torrent->name);
         }
 
         $this->torrent->markCopied();

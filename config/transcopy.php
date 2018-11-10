@@ -8,4 +8,5 @@ return [
     'send_failure_notifications' => env('NOTIFY_FAILURE', false),
     'send_success_notifications' => env('NOTIFY_SUCCESS', false),
     'notification_address' => env('NOTIFICATION_EMAIL', null),
+    'max_tries' => 3,
 ];

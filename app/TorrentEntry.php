@@ -23,6 +23,7 @@ class TorrentEntry implements \ArrayAccess
         'should_copy' => false,
         'copy_started' => null,
         'copy_ended' => null,
+        'tries' => 0,
     ];
 
     // which attribs should be cast to booleans when doing a $this->attrib
@@ -158,6 +159,13 @@ class TorrentEntry implements \ArrayAccess
             'is_copying' => false,
             'was_copied' => false,
             'copy_failed' => true
+        ]);
+    }
+
+    public function markRetry($retryNumber)
+    {
+        $this->update([
+            'tries' => $retryNumber,
         ]);
     }
 

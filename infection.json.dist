@@ -1,0 +1,19 @@
+{
+    "timeout": 10,
+    "source": {
+        "directories": [
+            "app"
+        ]
+    },
+    "logs": {
+        "text": "infection-log.txt"
+    },
+    "mutators": {
+        "@default": true,
+        "@function_signature": {
+            "ignore" : [
+                "App\\Http\\Controllers\\*"
+            ]
+        }
+    }
+}
