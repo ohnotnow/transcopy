@@ -94,6 +94,7 @@ export default {
   methods: {
     update() {
       this.$emit("update", this.theTorrent);
+      this.refreshIfActive();
     },
 
     toggleSelected() {
