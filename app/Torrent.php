@@ -22,6 +22,8 @@ class Torrent implements TorrentContract
 
     public function index()
     {
+        // make this check the filenames - so that if transmission is restarted we
+        // can keep the 'copied' state
         return collect($this->transmission->all())->map(function ($entry) {
             return $this->store($entry);
         });

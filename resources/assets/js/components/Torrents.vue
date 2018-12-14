@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="text-xl shadow-md rounded p-4 bg-grey-dark mb-4">
+    <h3 class="text-xl shadow-md rounded p-4 bg-grey-dark mb-4 fixed w-full">
       <div class="inline-flex items-center text-grey-lightest">
         <div class="flex-1 mx-2 relative">
           <button
@@ -48,30 +48,46 @@
       </div>
     </h3>
 
-    <transition-group
-      name="fadeIn"
-      tag="span"
+    <filterable-items
+      :items="torrentList"
+      searchables="name"
     >
       <div
-        v-for="torrent in torrentList"
-        :key="torrent.id"
+        slot-scope="{ items: torrents, inputAttrs, inputEvents }"
       >
-        <torrent
-          :value="torrent"
-          @update="updateTorrent"
-          @toggled="flashCopyIcon"
-        />
+        <input
+          autofocus
+          class="fixed pin-t pin-r bg-grey appearance-none border-2 border-grey rounded mt-4 py-2 px-4 text-grey-darker leading-tight focus:outline-none focus:bg-white focus:border-purple mb-8"
+          type="text"
+          v-bind="inputAttrs"
+          placeholder="Search..."
+          v-on="inputEvents"
+        >
+        <div class="pt-xl">
+          <transition-group
+            name="fadeIn"
+            tag="span"
+          >
+            <torrent
+              v-for="torrent in torrents"
+              :key="torrent.id"
+              :value="torrent"
+              @update="updateTorrent"
+              @toggled="flashCopyIcon"
+            />
+          </transition-group>
+        </div>
       </div>
-    </transition-group>
-
+    </filterable-items>
   </div>
 </template>
 
 <script>
 import Torrent from "./Torrent.vue";
+import FilterableItems from "./FilterableItems.vue";
 
 export default {
-  components: { Torrent },
+  components: { Torrent, FilterableItems },
 
   data() {
     return {
