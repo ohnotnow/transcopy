@@ -5,8 +5,8 @@ let mix = require('laravel-mix')
 let purgeCss = require('purgecss-webpack-plugin')
 let tailwind = require('tailwindcss')
 
-mix.js('resources/assets/js/app.js', 'public/js')
-  .postCss('resources/assets/css/app.css', 'public/css/app.css', [
+mix.js('resources/assets/js/app.js', './public/js')
+  .postCss('resources/assets/css/app.css', './public/css/app.css', [
     cssImport(),
     tailwind('tailwind.js'),
     cssNext({ features: { autoprefixer: false }}),

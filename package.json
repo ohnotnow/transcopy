@@ -22,7 +22,7 @@
         "eslint-plugin-react": "^7.11.1",
         "eslint-plugin-vue": "^5.0.0-beta.3",
         "jquery": "^3.3.1",
-        "laravel-mix": "^1.7.2",
+        "laravel-mix": "^4.0.12",
         "lodash": "^4.17.5",
         "purgecss-webpack-plugin": "^0.11.0",
         "purify-css": "^1.2.6",
