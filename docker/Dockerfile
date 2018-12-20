@@ -19,21 +19,16 @@ RUN composer install \
 FROM node:latest as frontend
 
 RUN node --version
-RUN mkdir -p /app/public
-
-COPY package.json webpack.mix.js tailwind.js package-lock.json /app/
-RUN mkdir /app/resources
-RUN mkdir -p /app/public/js
 RUN mkdir -p /app/public/css
-RUN touch /app/public/js/app.js
-RUN touch /app/public/css/app.css
+
+COPY package.json webpack.mix.js tailwind.js yarn.lock /app/
+
+RUN mkdir /app/resources
 COPY resources/ /app/resources/
-RUN ls -lR /app/resources
 
 WORKDIR /app
 
-RUN yarn install
-RUN yarn production
+RUN yarn install && yarn production
 
 # And build the app
 FROM php:7.2-apache
@@ -44,12 +39,13 @@ RUN apt-get update && \
     docker-php-ext-install gd pdo pdo_mysql pdo_sqlite zip gmp bcmath pcntl sysvmsg exif \
     && a2enmod rewrite
 
-COPY vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
 EXPOSE 80
 
 COPY docker/start.sh /usr/local/bin/start
 RUN chmod u+x /usr/local/bin/start
+RUN touch /tmp/torrents.sqlite
 
 COPY . /var/www/html
 COPY --from=vendor /app/vendor/ /var/www/html/vendor/

@@ -10,20 +10,11 @@ services:
     networks:
       - private
     expose:
-      - "80"
-    # environment:
-    #   APP_ENV: production
-    #   APP_URL: "192.168.1.72"
-    #   CONTAINER_ROLE: app
-    #   CACHE_DRIVER: redis
-    #   SESSION_DRIVER: redis
-    #   QUEUE_DRIVER: redis
-    #   REDIS_HOST: redis
-    #   MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-    #   MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-    #   MINIO_REGION: us-east-1
-    #   MINIO_BUCKET: ${MINIO_BUCKET}
-    #   MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      - "8090"
+    ports:
+      - "8090:80"
+    environment:
+      CONTAINER_ROLE: "app"
 
   queue:
     image: transcopy
@@ -32,23 +23,8 @@ services:
       - redis
     networks:
       - private
-    # environment:
-    #   APP_ENV: local
-    #   APP_URL: "http://192.168.1.72"
-    #   CONTAINER_ROLE: queue
-    #   DB_CONNECTION: sqlite
-    #   DB_DATABASE: /tmp/torrents.sqlite
-    #   CACHE_DRIVER: redis
-    #   SESSION_DRIVER: redis
-    #   QUEUE_DRIVER: redis
-    #   REDIS_HOST: redis
-    #   MAIL_HOST: mailhog
-    #   DEFAULT_DISK: images
-    #   MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-    #   MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-    #   MINIO_REGION: us-east-1
-    #   MINIO_BUCKET: ${MINIO_BUCKET}
-    #   MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+    environment:
+      CONTAINER_ROLE: "queue"
 
   redis:
     image: redis:4

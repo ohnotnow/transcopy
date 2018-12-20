@@ -1,5 +1,5 @@
 
-window.Vue = require('vue').default;
+window.Vue = require('vue');
 import Api from './api';
 window.api = new Api(window.api_url);
 
