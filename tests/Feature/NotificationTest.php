@@ -126,7 +126,6 @@ class NotificationTest extends TestCase
                 'notification_address' => 'test@example.com'
             ]
         ]);
-        Storage::disk('files')->put('test', 'hello');
         Storage::disk('torrents')->put('test', 'hello');
         $this->getTransmissionClient();
         app(Torrent::class)->index();
