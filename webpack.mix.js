@@ -5,8 +5,8 @@ let mix = require('laravel-mix')
 let purgeCss = require('purgecss-webpack-plugin')
 let tailwind = require('tailwindcss')
 
-mix.js('resources/assets/js/app.js', 'public/js')
-  .postCss('resources/assets/css/app.css', 'public/css', [
+mix.js('resources/js/app.js', 'public/js')
+  .postCss('resources/css/app.css', 'public/css', [
     cssImport(),
     tailwind('tailwind.js'),
     cssNext({ features: { autoprefixer: false }}),
@@ -18,7 +18,7 @@ if (mix.inProduction()) {
       new purgeCss({
         paths: glob.sync([
           path.join(__dirname, 'resources/views/**/*.blade.php'),
-          path.join(__dirname, 'resources/assets/js/**/*.vue'),
+          path.join(__dirname, 'resources/js/**/*.vue'),
         ]),
         extractors: [
           {
