@@ -1,6 +1,8 @@
 # Transcopy
 
-*NOTE* this is a work in progress and very much a 'scratch my own itch' project.
+*Note* this is a work in progress and very much a 'scratch my own itch' project.
+
+*Also Note*: this is _not_ designed to be run on a public-facing internet connection - use on your own LAN only.
 
 A very bare-bones web app which lets me copy files from my raspberry pi to my little PVR/media box.  My rpi runs a [transmission daemon](http://www.techjawab.com/2014/08/how-to-install-transmission-on.html) to download *entirely legitimate* torrents.  I then copy them to another pi which is running kodi (libreElec) to watch as streaming them can be a little annoying.  I was getting a bit fed up ssh'ing to the pi and running a script which copied files, so thought it would be easier to write a little web app so I could kick off the copying from my phone (or whatever) while I'm slumped on the sofa.
 
@@ -32,8 +34,6 @@ docker stack deploy -c docker-stack.yml transcopy
 The docker stack will bring up the webserver with the app in it and also Redis and a transmission daemon.  You can get to the web frontend of transmission by going to http://your-host:9091 .
 
 ## Installation - Manually
-
-*Note*: this is _not_ designed to be run on a public-facing internet connection - use on your own LAN only.
 
 Assuming you have PHPv7, [composer](https://getcomposer.org/) and [redis](https://redis.io/) installed.
 
