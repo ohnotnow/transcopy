@@ -63,5 +63,5 @@ volumes:
 secrets:
   dotenv:
     external: true
-    name: transcopy-dotenv-8
+    name: ${DOTENV_NAME}
 

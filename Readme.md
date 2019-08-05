@@ -15,12 +15,17 @@ Vue.js to handle most of that.
 
 ## Installation - With Docker
 
-There is a `docker-stack.yml` file which you can use to deploy to a docker swarm (I tend to make even single-node machines into swarms - just run `docker swarm init`).  You just need to create a docker secret with your env file contents then run a build & deploy command.  You'll also have to modify the `docker-stack.yml` file to suit the paths you want to use for downloading torrents etc.  An example run might look like :
+There is a `docker-stack.yml` file which you can use to deploy to a docker swarm (I tend to make even single-node machines into swarms - just run `docker swarm init`).  You just need to create a docker secret with your env file contents then run a build & deploy command.  You'll also have to modify the `docker-stack.yml` file to suit the paths you want to use for downloading torrents etc.  
+
+There is a `deploy.sh` script which can do most of the work for you - you'll have to modify it a little to suit your IP addresses and docker-hub name.  But then you can just run `./deploy.sh` and it'll do the rest for you.
+
+If you want to do things a little more manually, then you can :
 ```
-docker secret create transcopy-dotenv-8 .env.docker
 export APP_PORT=80  # or whatever port you want to run on
 export PHP_VERSION=7.3  # or whichever newer version
 export IMAGE_NAME=transcopy:1.0
+export DOTENV_NAME=transcopy-dotenv-1
+docker secret create transcopy-dotenv-8 .env.docker
 docker build --build-arg=PHP_VERSION=${PHP_VERSION} --target=prod  -t ${IMAGE_NAME} .
 docker stack deploy -c docker-stack.yml transcopy
 ```

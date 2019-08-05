@@ -3,7 +3,8 @@ node_modules/
 vendor/
 npm-debug
 Dockerfile
-stack.yml
+docker-stack.yml
+deploy.sh
+.env
 public/js
 public/css
-#**/mix-manifest.json
