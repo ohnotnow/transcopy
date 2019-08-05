@@ -47,6 +47,7 @@ class CopyFile implements ShouldQueue
             } catch (\Exception $e) {
                 $tryCount = $tryCount + 1;
                 $this->torrent->markRetry($tryCount);
+                \Log::error($e->getMessage());
             }
         }
 
@@ -61,6 +62,7 @@ class CopyFile implements ShouldQueue
     protected function copyTorrent()
     {
         if ($this->torrent->isDirectory()) {
+
             return $this->copyDirectory($this->torrent);
         }
 

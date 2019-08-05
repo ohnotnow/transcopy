@@ -1,0 +1,67 @@
+version: "3.7"
+
+services:
+  app:
+    image: ${IMAGE_NAME}
+    environment:
+      CONTAINER_ROLE: app
+      REDIS_HOST: redis
+      TRANSMISSION_HOST: transmission
+    ports:
+      - "${APP_PORT:-3000}:80"
+    secrets:
+      - source: dotenv
+        target: .env
+    depends_on:
+      - redis
+      - transmission
+    volumes:
+      - sqlite:/tmp/sqlite
+
+  queue:
+    image: ${IMAGE_NAME}
+    environment:
+      CONTAINER_ROLE: queue
+      REDIS_HOST: redis
+      TRANSMISSION_HOST: transmission
+    depends_on:
+      - app
+    secrets:
+      - source: dotenv
+        target: .env
+    volumes:
+      - /home/transmission/downloads:/downloads
+      - sqlite:/tmp/sqlite
+
+  redis:
+    image: redis:5.0.4
+    volumes:
+      - redis:/data
+
+  transmission:
+      image: linuxserver/transmission
+      environment:
+        - PUID=1001
+        - PGID=1001
+        - TZ=Europe/London
+        - TRANSMISSION_WEB_HOME=/combustion-release/ #optional
+      volumes:
+        - /home/transmission/config:/config
+        - /home/transmission/downloads:/downloads
+        - /home/transmission/watch:/watch
+      ports:
+        - 9091:9091
+        - 51413:51413
+        - 51413:51413/udp
+
+volumes:
+  redis:
+    driver: "local"
+  sqlite:
+    driver: "local"
+
+secrets:
+  dotenv:
+    external: true
+    name: transcopy-dotenv-8
+

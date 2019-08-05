@@ -13,7 +13,20 @@ It will show you a list of torrents (via the Transmission daemon).  You can pick
 It's somewhat of an SPA (single page app) in that it'll show live progress of downloading files, copying status etc. It uses
 Vue.js to handle most of that.
 
-## Installation
+## Installation - With Docker
+
+There is a `docker-stack.yml` file which you can use to deploy to a docker swarm (I tend to make even single-node machines into swarms - just run `docker swarm init`).  You just need to create a docker secret with your env file contents then run a build & deploy command.  You'll also have to modify the `docker-stack.yml` file to suit the paths you want to use for downloading torrents etc.  An example run might look like :
+```
+docker secret create transcopy-dotenv-8 .env.docker
+export APP_PORT=80  # or whatever port you want to run on
+export PHP_VERSION=7.3  # or whichever newer version
+export IMAGE_NAME=transcopy:1.0
+docker build --build-arg=PHP_VERSION=${PHP_VERSION} --target=prod  -t ${IMAGE_NAME} .
+docker stack deploy -c docker-stack.yml transcopy
+```
+The docker stack will bring up the webserver with the app in it and also Redis and a transmission daemon.  You can get to the web frontend of transmission by going to http://your-host:9091 .
+
+## Installation - Manually
 
 *Note*: this is _not_ designed to be run on a public-facing internet connection - use on your own LAN only.
 
