@@ -25,7 +25,7 @@ export APP_PORT=80  # or whatever port you want to run on
 export PHP_VERSION=7.3  # or whichever newer version
 export IMAGE_NAME=transcopy:1.0
 export DOTENV_NAME=transcopy-dotenv-1
-docker secret create transcopy-dotenv-8 .env.docker
+docker secret create ${DOTENV_NAME} .env.docker
 docker build --build-arg=PHP_VERSION=${PHP_VERSION} --target=prod  -t ${IMAGE_NAME} .
 docker stack deploy -c docker-stack.yml transcopy
 ```
