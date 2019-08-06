@@ -1,8 +1,24 @@
 version: "3.7"
 
+x-logging:
+  &default-logging
+  options:
+    max-size: '12m'
+    max-file: '5'
+  driver: json-file
+x-deploy:
+  &default-deploy
+  replicas: 1
+  update_config:
+    parallelism: 1
+    failure_action: rollback
+    order: start-first
+
 services:
   app:
     image: ${IMAGE_NAME}
+    logging: *default-logging
+    deploy: *default-deploy
     environment:
       CONTAINER_ROLE: app
       REDIS_HOST: redis
@@ -12,20 +28,17 @@ services:
     secrets:
       - source: dotenv
         target: .env
-    depends_on:
-      - redis
-      - transmission
     volumes:
       - sqlite:/tmp/sqlite
 
   queue:
     image: ${IMAGE_NAME}
+    logging: *default-logging
+    deploy: *default-deploy
     environment:
       CONTAINER_ROLE: queue
       REDIS_HOST: redis
       TRANSMISSION_HOST: transmission
-    depends_on:
-      - app
     secrets:
       - source: dotenv
         target: .env
@@ -35,24 +48,28 @@ services:
 
   redis:
     image: redis:5.0.4
+    logging: *default-logging
+    deploy: *default-deploy
     volumes:
       - redis:/data
 
   transmission:
-      image: linuxserver/transmission
-      environment:
-        - PUID=1001
-        - PGID=1001
-        - TZ=Europe/London
-        - TRANSMISSION_WEB_HOME=/combustion-release/ #optional
-      volumes:
-        - /home/transmission/config:/config
-        - /home/transmission/downloads:/downloads
-        - /home/transmission/watch:/watch
-      ports:
-        - 9091:9091
-        - 51413:51413
-        - 51413:51413/udp
+    image: linuxserver/transmission
+    logging: *default-logging
+    deploy: *default-deploy
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=Europe/London
+      - TRANSMISSION_WEB_HOME=/combustion-release/ #optional
+    volumes:
+      - /home/transmission/config:/config
+      - /home/transmission/downloads:/downloads
+      - /home/transmission/watch:/watch
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
 
 volumes:
   redis:
