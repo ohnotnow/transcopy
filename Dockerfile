@@ -70,17 +70,14 @@ COPY --from=frontend /home/node/mix-manifest.json /var/www/html/mix-manifest.jso
 COPY . /var/www/html
 
 #- make a temp sqlite file
-RUN touch /tmp/torrents.sqlite
+RUN mkdir /tmp/sqlite && touch /tmp/sqlite/torrents.sqlite
 
 #- Symlink the docker secret to the local .env so Laravel can see it
 RUN ln -sf /run/secrets/.env /var/www/html/.env
 
 #- Clean up and production-cache our apps settings/views/routing
 RUN rm -fr /var/www/html/bootstrap/cache/*.php && \
-    chown -R www-data:www-data storage bootstrap/cache&& \
-    php /var/www/html/artisan storage:link
-#     php /var/www/html/artisan view:cache && \
-#     php /var/www/html/artisan route:cache
+    chown -R www-data:www-data storage bootstrap/cache
 
 #- Set up the default healthcheck
 HEALTHCHECK --start-period=30s CMD /usr/local/bin/app-healthcheck
