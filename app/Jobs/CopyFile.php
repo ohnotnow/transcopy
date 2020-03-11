@@ -35,6 +35,8 @@ class CopyFile implements ShouldQueue
             return;
         }
 
+        $start = now();
+
         $this->torrent->markCopying();
 
         $maxTries = config('transcopy.max_tries', 1);
@@ -57,6 +59,9 @@ class CopyFile implements ShouldQueue
         }
 
         $this->torrent->markCopied();
+        $end = now();
+        $speed = floor(($this->torrent->size / 1048576) / ($end->diffInSeconds($start)));
+        \Log::info('Copied file in ' . $end->diffInMinutes($start) . 'minutes (' . $speed . 'mb/s');
     }
 
     protected function copyTorrent()
