@@ -21,6 +21,7 @@ class HomePageTest extends TestCase
     /** @test */
     public function we_can_get_the_homepage()
     {
+        $this->withoutExceptionHandling();
         $response = $this->get('/');
 
         $response->assertSuccessful();

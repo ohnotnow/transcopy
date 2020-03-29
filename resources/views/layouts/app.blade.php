@@ -24,6 +24,6 @@
             @yield('contents')
         </div>
     </div>
+    <script src="/js/app.js"></script>
 </body>
-<script src="/js/app.js"></script>
 </html>

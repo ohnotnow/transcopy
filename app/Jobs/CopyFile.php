@@ -49,7 +49,9 @@ class CopyFile implements ShouldQueue
             } catch (\Exception $e) {
                 $tryCount = $tryCount + 1;
                 $this->torrent->markRetry($tryCount);
-                \Log::error($e->getMessage());
+                if (config('app.env') !== 'testing') {
+                    \Log::error($e->getMessage());
+                }
             }
         }
 
@@ -59,9 +61,12 @@ class CopyFile implements ShouldQueue
         }
 
         $this->torrent->markCopied();
-        $end = now();
-        $speed = floor(($this->torrent->size / 1048576) / ($end->diffInSeconds($start)));
-        \Log::info('Copied file in ' . $end->diffInMinutes($start) . 'minutes (' . $speed . 'mb/s');
+        if (config('app.env') !== 'testing') {
+            $end = now();
+            $time = $end->diffInSeconds($start);
+            $speed = $time > 0 ? floor(($this->torrent->size / 1048576) / $time) : 0;
+            info('Copied file in ' . $end->diffInMinutes($start) . 'minutes (' . $speed . 'mb/s');
+        }
     }
 
     protected function copyTorrent()
