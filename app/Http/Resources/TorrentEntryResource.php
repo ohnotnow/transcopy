@@ -2,10 +2,9 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\Resource;
-use App\TorrentEntry;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class TorrentEntryResource extends Resource
+class TorrentEntryResource extends JsonResource
 {
     public function toArray($request)
     {
