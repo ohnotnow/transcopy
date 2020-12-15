@@ -12,6 +12,8 @@ do
     sleep 5
 done
 
+composer self-update
+
 php /var/www/html/artisan config:cache
 
 if [ "$role" = "app" ]; then
