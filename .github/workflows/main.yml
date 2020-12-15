@@ -30,4 +30,4 @@ jobs:
           build-args: |
             PHP_VERSION=7.4
           tags: |
-            ohffs/transcopy:${GITHUB_SHA}
+            ohffs/transcopy:${{ github.sha }}
